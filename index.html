@@ -2,32 +2,33 @@
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="ru-RU">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>Танки Онлайн – многопользовательский браузерный боевик (Ретро 2010 • Gemini 4 Argon)</title>
+  <meta name="viewport" content="width=1024" />
+  <title>Танки Онлайн &#8211; многопользовательский браузерный боевик (2010–2012 • Gemini 4 Argon)</title>
   <style type="text/css">
+    /* =========================================================================
+       ОРИГИНАЛЬНЫЙ АРХИВНЫЙ CSS TANKIONLINE.COM/RU/ 2010 ГОДА (orig_all.css)
+       ========================================================================= */
     body {
       font: 13px/16px Tahoma, Verdana, sans-serif;
       color: #c6bab3;
-      background: #100906 url(site_assets/images/bg.jpg) repeat-y 50% 0;
+      background: #100906 url('site_assets/images/bg.jpg') repeat-y 50% 0;
       margin: 0;
       min-width: 1000px;
     }
     .mini { font: 12px/16px Tahoma, Verdana, sans-serif; }
-    a {
-      text-decoration: underline;
-      color: #c93;
-    }
-    a:hover { text-decoration: none; color: #ffba42; }
+    a { text-decoration: underline; color: #c93; }
+    a:hover { text-decoration: none; }
     a:focus { outline: none; }
     img { border-style: none; }
 
     #main {
-      background: url(site_assets/images/bg-main_summer.jpg) no-repeat 50% 0;
+      background: url('site_assets/images/bg-main_summer.jpg') no-repeat 50% 0;
       width: 100%;
       overflow: hidden;
     }
     h1.logo {
       float: left;
-      background: url(site_assets/images/logo.png) no-repeat;
+      background: url('site_assets/images/logo.png') no-repeat;
       width: 208px;
       height: 264px;
       overflow: hidden;
@@ -42,7 +43,7 @@
     }
     #header {
       width: 717px;
-      height: 435px;
+      height: 425px;
       padding: 0 137px 0 146px;
       margin: 0 auto;
       overflow: hidden;
@@ -80,22 +81,22 @@
     }
     #menu li a {
       display: block;
-      background: url(site_assets/images/bg-menu2.jpg) no-repeat;
+      background: url('site_assets/images/bg-menu2.jpg') no-repeat;
       width: 141px;
       height: 25px;
       overflow: hidden;
       text-indent: -9999px;
     }
-    #menu li a.btn-about { background-position: 100% 0; }
-    #menu li a.btn-about:hover { background-position: 0 0; }
-    #menu li a.btn-begin { background-position: 100% -29px; }
-    #menu li a.btn-begin:hover { background-position: 0 -29px; }
+    #menu li a.btn-about   { background-position: 100% 0; }
+    #menu li a.btn-about:hover, #menu li.active a.btn-about { background-position: 0 0; }
+    #menu li a.btn-begin   { background-position: 100% -29px; }
+    #menu li a.btn-begin:hover, #menu li.active a.btn-begin { background-position: 0 -29px; }
     #menu li a.btn-article { background-position: 100% -58px; }
-    #menu li a.btn-article:hover { background-position: 0 -58px; }
-    #menu li a.btn-blog { background-position: 100% -87px; }
-    #menu li a.btn-blog:hover { background-position: 0 -87px; }
-    #menu li a.btn-forum { background-position: 100% -116px; }
-    #menu li a.btn-forum:hover { background-position: 0 -116px; }
+    #menu li a.btn-article:hover, #menu li.active a.btn-article { background-position: 0 -58px; }
+    #menu li a.btn-blog    { background-position: 100% -87px; }
+    #menu li a.btn-blog:hover, #menu li.active a.btn-blog { background-position: 0 -87px; }
+    #menu li a.btn-forum   { background-position: 100% -116px; }
+    #menu li a.btn-forum:hover, #menu li.active a.btn-forum { background-position: 0 -116px; }
 
     .header .info {
       float: right;
@@ -103,119 +104,57 @@
       margin: 80px 0 0;
     }
     .header .server {
-      background: url(site_assets/images/bg-server.jpg) no-repeat;
+      background: url('site_assets/images/bg-server.jpg') no-repeat;
       width: 205px;
       height: 89px;
       padding: 4px 0 0;
       margin: 0 auto;
-      overflow: visible;
-      position: relative;
+      overflow: hidden;
     }
     .header .server .btn {
       display: block;
-      background: url(site_assets/images/btn-begin.gif) no-repeat 0 0;
+      background: url('site_assets/images/btn-begin.gif') no-repeat;
       width: 195px;
       height: 57px;
       overflow: hidden;
       margin: 0 auto;
       text-indent: -9999px;
-      cursor: pointer;
     }
     .header .server .btn:hover {
-      background: url(site_assets/images/btn-begin.gif) no-repeat 0 -57px;
+      background: url('site_assets/images/btn-begin.gif') no-repeat 0 -57px;
     }
     .header .server .item {
       width: 195px;
       padding: 0 0 0 10px;
-      overflow: visible;
-    }
-    .header .server .title {
-      float: left;
-      background: url(site_assets/images/text-server.png) no-repeat;
-      width: 59px;
-      height: 12px;
-      margin: 8px 0 0;
-      text-indent: -9999px;
+      overflow: hidden;
     }
     .header .server .part {
       float: left;
-      width: 126px;
-      position: relative;
-    }
-    .header .server .part span {
-      float: left;
-      font: bold 11px Tahoma, Verdana, sans-serif;
-      color: #ccc;
-      width: 14px;
-      text-align: right;
-      margin-right: 4px;
-      margin-top: 5px;
+      width: 185px;
     }
     .header .server .part ul {
       float: left;
-      padding: 0 4px 0 0;
-      margin: 6px 0 0;
+      padding: 0 6px 0 0;
+      margin: 4px 0 0;
       list-style: none;
     }
     .header .server .part ul li {
       float: left;
-      padding: 0 0 0 2px;
+      padding: 0 0 0 1px;
     }
-    .srv-bar {
-      display: block;
-      width: 4px;
-      height: 11px;
-      background: #3b352e;
-      border: 1px solid #1a1410;
-    }
-    .srv-bar.active {
-      background: linear-gradient(180deg, #9ef748 0%, #38a814 100%);
-    }
+    .header .server .part ul li img { display: block; }
     .header .server .play {
       float: left;
-      font-size: 10px;
+      font-size: 11px;
+      font-weight: bold;
       line-height: 18px;
-      color: #ccc;
-      width: 72px;
+      color: #8ef56e;
       text-decoration: none;
       margin: 3px 0 0;
     }
 
-    #currentServer {
-      cursor: pointer;
-      display: block;
-      height: 24px;
-      background: url(site_assets/images/btn-ok.gif) no-repeat 105px 4px;
-    }
-    #serversList {
-      position: absolute;
-      top: 26px;
-      left: -62px;
-      width: 188px;
-      display: none;
-      background: #140d09 url(site_assets/images/bg.jpg) repeat-y 50% 0;
-      z-index: 50;
-      border: 1px solid #4d3e30;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.85);
-      padding: 4px 0;
-    }
-    #serversList a.srv-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 4px 10px;
-      color: #d6c8be;
-      text-decoration: none;
-      font-size: 11px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    #serversList a.srv-row:hover {
-      background-color: #291e16;
-      color: #65f732;
-    }
-
     .header .all {
-      background: url(site_assets/images/bg-players.jpg) no-repeat;
+      background: url('site_assets/images/bg-players.jpg') no-repeat;
       width: 209px;
       height: 72px;
       overflow: hidden;
@@ -232,39 +171,15 @@
       float: left;
       width: 184px;
       margin: 3px 0 0;
-    }
-    .header .all ul li strong {
-      float: left;
-      display: inline;
-      font-size: 8px;
-      overflow: hidden;
-      text-indent: -9999px;
-    }
-    .header .all ul li strong.text-all {
-      background: url(site_assets/images/text-players.png) no-repeat;
-      width: 95px;
-      height: 10px;
-      margin: 3px 0 0;
-    }
-    .header .all ul li strong.text-online {
-      background: url(site_assets/images/text-online.png) no-repeat;
-      width: 69px;
-      margin: 1px 0 0 26px;
-      height: 12px;
-    }
-    .header .all ul li strong.text-battle {
-      background: url(site_assets/images/text-battle.png) no-repeat;
-      width: 59px;
-      margin: 4px 0 0 36px;
-      height: 8px;
-    }
-    .header .all ul li p {
+      display: flex;
+      justify-content: space-between;
       font-size: 11px;
-      font-weight: bold;
       line-height: 14px;
-      color: #e2d8d0;
-      margin: 0;
-      text-align: right;
+      color: #c6bab3;
+    }
+    .header .all ul li b {
+      color: #fff;
+      font-weight: bold;
     }
 
     #header .holder {
@@ -273,7 +188,7 @@
       overflow: hidden;
     }
     #header .slogan {
-      background: url(site_assets/images/slogan.png) no-repeat;
+      background: url('site_assets/images/slogan.png') no-repeat;
       width: 504px;
       height: 31px;
       display: block;
@@ -286,13 +201,13 @@
       margin: 7px 0 0;
     }
     #header .box .t {
-      background: url(site_assets/images/bg-box-t.png) no-repeat;
+      background: url('site_assets/images/bg-box-t.png') no-repeat;
       width: 590px;
       height: 15px;
       overflow: hidden;
     }
     #header .box .c {
-      background: url(site_assets/images/bg-box-c.png) repeat;
+      background: url('site_assets/images/bg-box-c.png') repeat;
       width: 570px;
       padding: 0 10px;
     }
@@ -307,65 +222,19 @@
       margin: -7px 0 -2px;
       position: relative;
     }
-    #header .box .text p { margin: 0; }
+    #header .box .text p { margin: 0; font-size: 12px; line-height: 15px; color: #e2dcd7; }
     #header .box .b {
-      background: url(site_assets/images/bg-box-b.png) no-repeat;
+      background: url('site_assets/images/bg-box-b.png') no-repeat;
       width: 590px;
       height: 15px;
       overflow: hidden;
-    }
-
-    /* Олдскульная плашка честного дисклеймера Gemini 4 Argon */
-    .argon-disclaimer-banner {
-      width: 904px;
-      margin: 14px auto 0;
-      padding: 12px 18px;
-      background: linear-gradient(180deg, rgba(38, 27, 18, 0.96) 0%, rgba(21, 14, 9, 0.98) 100%);
-      border: 2px solid #65f732;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8), inset 0 0 12px rgba(101, 247, 50, 0.15);
-      color: #e7ddd6;
-      font-size: 12px;
-      line-height: 18px;
-      position: relative;
-      z-index: 5;
-    }
-    .argon-disclaimer-banner b.argon-tag {
-      color: #65f732;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-    .argon-quick-links {
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px dashed #4a3a2c;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .argon-quick-btn {
-      display: inline-block;
-      padding: 4px 11px;
-      background: linear-gradient(180deg, #3b6e22 0%, #1f4210 100%);
-      border: 1px solid #65f732;
-      color: #fff !important;
-      text-decoration: none !important;
-      font-weight: bold;
-      font-size: 11px;
-      border-radius: 2px;
-      text-shadow: 0 1px 1px #000;
-    }
-    .argon-quick-btn:hover {
-      background: linear-gradient(180deg, #52992f 0%, #2b5c16 100%);
-      color: #ffff99 !important;
     }
 
     #content {
       width: 948px;
       padding: 0 26px;
       min-height: 400px;
-      margin: 24px auto 0;
+      margin: 40px auto 0;
       overflow: hidden;
       z-index: 2;
       position: relative;
@@ -380,51 +249,31 @@
     }
     .links-box .item {
       float: left;
-      width: 260px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      width: 250px;
     }
     .links-box .one {
-      width: 340px;
+      width: 345px;
       padding: 0 0 0 5px;
     }
-    .award-badge {
-      width: 84px;
-      height: 84px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #3b2818 0%, #1b1109 75%);
-      border: 2px solid #c93;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-weight: bold;
-      color: #ffcc66;
-      font-size: 11px;
-      line-height: 13px;
-      flex-shrink: 0;
-      box-shadow: inset 0 0 10px rgba(255, 165, 0, 0.35), 0 2px 8px rgba(0,0,0,0.8);
+    .links-box .item .photo {
+      float: left;
+      width: 100px;
     }
-    .award-badge span {
-      font-size: 18px;
-      color: #fff;
-      display: block;
-    }
+    .links-box .one .photo { width: 135px; }
+    .links-box .item .photo img { display: block; }
 
     .screen-box {
       width: 100%;
       overflow: hidden;
-      margin: 26px 0 0;
+      margin: 30px 0 0;
     }
-    .section-title-old {
-      font: bold 13px Tahoma, Verdana, sans-serif;
-      color: #dfd7d0;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      margin: 0 0 8px 4px;
-      text-shadow: 0 1px 2px #000;
+    .screen-box h2 {
+      background: url('site_assets/images/text-screen.png') no-repeat;
+      width: 130px;
+      height: 10px;
+      margin: 0 0 0 4px;
+      overflow: hidden;
+      text-indent: -9999px;
     }
     .screen-box ul {
       width: 100%;
@@ -436,75 +285,98 @@
     .screen-box ul li {
       float: left;
       width: 189px;
-      height: 126px;
+      height: 134px;
       padding: 4px;
-      margin: 0 6px 8px 0;
-      background: #1b130e;
-      border: 1px solid #3d2f24;
+      margin: 0 4px 4px 0;
       position: relative;
     }
-    .screen-box ul li:hover {
-      border-color: #c93;
+    .screen-box ul li a {
+      display: block;
+      width: 189px;
+      height: 134px;
+      border: 1px solid #3f322a;
+      overflow: hidden;
+      position: relative;
+    }
+    .screen-box ul li a:hover {
+      border-color: #ff9d33;
     }
     .screen-box ul li img {
       display: block;
       width: 189px;
-      height: 108px;
+      height: 134px;
       object-fit: cover;
     }
-    .screen-box ul li .scr-cap {
-      display: block;
+    .screen-caption {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(16, 9, 6, 0.86);
+      color: #ff9d33;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 3px 6px;
       text-align: center;
-      font-size: 10px;
-      color: #c93;
-      line-height: 18px;
-      background: #120c08;
     }
 
     .video-box {
       width: 100%;
       overflow: hidden;
-      margin: 18px 0 0;
+      margin: 20px 0 0;
+    }
+    .video-box h2 {
+      background: url('site_assets/images/text-video.png') no-repeat;
+      width: 87px;
+      height: 11px;
+      margin: 0 0 2px 4px;
+      overflow: hidden;
+      text-indent: -9999px;
     }
     .video-box p { margin: 0 0 10px 4px; }
     .video-box .photo {
-      background: #140e0a;
-      border: 2px solid #3a2d22;
+      background: url('site_assets/images/bg-video.jpg') no-repeat;
       width: 586px;
-      padding: 6px;
-      height: 340px;
+      padding: 5px 6px;
+      height: 367px;
       overflow: hidden;
       position: relative;
     }
-    .video-preview-card {
-      width: 100%;
-      height: 100%;
-      background: url(tanki_battle_verification.png) center/cover no-repeat;
+    .video-showcase-link {
+      display: block;
+      width: 574px;
+      height: 356px;
       position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none !important;
+      text-decoration: none;
+      overflow: hidden;
     }
-    .video-preview-overlay {
-      background: rgba(12, 8, 5, 0.72);
-      border: 2px solid #65f732;
-      padding: 18px 28px;
-      text-align: center;
-      border-radius: 4px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.9);
-      transition: transform 0.15s ease;
+    .video-showcase-link img {
+      width: 574px;
+      height: 356px;
+      object-fit: cover;
+      display: block;
     }
-    .video-preview-card:hover .video-preview-overlay {
-      transform: scale(1.04);
-      background: rgba(20, 32, 12, 0.88);
+    .video-play-overlay {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      background: rgba(16, 9, 6, 0.88);
+      border: 1px solid #c93;
+      padding: 10px 14px;
+      color: #e6dad2;
+    }
+    .video-play-overlay strong {
+      color: #ff9d33;
+      font-size: 14px;
+      display: block;
+      margin-bottom: 4px;
     }
 
     .boxes {
       width: 100%;
       overflow: hidden;
-      margin: 28px 0 0;
+      margin: 30px 0 0;
     }
     .boxes .box {
       float: left;
@@ -512,29 +384,41 @@
     }
     .boxes .klan { width: 235px; }
     .boxes .important h2 {
-      background: url(site_assets/images/text-graphic.png) no-repeat;
-      width: 197px;
-      height: 11px;
-      margin: 0 0 0 3px;
-      overflow: hidden;
-      text-indent: -9999px;
+      font: bold 13px Tahoma, Verdana, sans-serif;
+      color: #ff9d33;
+      margin: 0 0 6px 3px;
+      text-transform: uppercase;
     }
     .boxes .klan h2 {
-      background: url(site_assets/images/text-klan.png) no-repeat;
-      width: 100%;
-      height: 11px;
+      font: bold 13px Tahoma, Verdana, sans-serif;
+      color: #ff9d33;
       margin: 0 0 8px 0;
-      overflow: hidden;
-      text-indent: -9999px;
+      text-transform: uppercase;
     }
     .boxes .important .photo {
-      background: url(site_assets/images/bg-graph.png) no-repeat;
+      background: url('site_assets/images/bg-graph.png') no-repeat;
       width: 296px;
-      height: 224px;
-      padding: 36px 0 0 39px;
+      height: 260px;
+      padding: 28px 20px 0 28px;
       overflow: hidden;
       margin: 8px 0 0 -10px;
+      box-sizing: border-box;
     }
+    .controls-mini-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 11px;
+      line-height: 16px;
+      color: #dfd5ce;
+    }
+    .controls-mini-list li {
+      margin-bottom: 6px;
+      border-bottom: 1px dotted #3d2e26;
+      padding-bottom: 4px;
+    }
+    .controls-mini-list b { color: #ff9d33; }
+
     .boxes .pic-list {
       width: 100%;
       padding: 0;
@@ -545,23 +429,23 @@
     .boxes .pic-list li {
       float: left;
       width: 100%;
-      line-height: 27px;
-      margin: 8px 0 0;
-      display: flex;
-      align-items: center;
+      line-height: 24px;
+      margin: 6px 0 0;
     }
-    .clan-flag-badge {
-      width: 31px;
-      height: 24px;
-      border: 1px solid #594636;
-      background: #231811;
-      margin-right: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
+    .boxes .pic-list li a {
+      display: block;
+      padding: 3px 8px;
+      background: #1b120d;
+      border: 1px solid #3c2b22;
+      color: #ff9d33;
+      text-decoration: none;
+      font-size: 12px;
       font-weight: bold;
-      color: #ffcc66;
+    }
+    .boxes .pic-list li a:hover {
+      background: #2b1d15;
+      border-color: #ff9d33;
+      color: #fff;
     }
 
     .sidebar {
@@ -569,49 +453,46 @@
       width: 333px;
     }
     .sidebar .ad {
-      background: url(site_assets/images/bg-pb.jpg) no-repeat;
+      background: url('site_assets/images/bg-pb.jpg') no-repeat;
       width: 307px;
       height: 80px;
       padding: 4px;
       margin: 0 0 10px 2px;
       overflow: hidden;
     }
-    .ad-banner-inner {
+    .sidebar .ad a.ad-banner-inner {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      justify-content: center;
       width: 299px;
       height: 72px;
-      padding: 0 12px;
+      padding: 0 14px;
       box-sizing: border-box;
-      text-decoration: none !important;
-      background: linear-gradient(90deg, rgba(24,18,12,0.92) 0%, rgba(45,68,24,0.85) 100%);
-      border: 1px solid #5c4838;
+      text-decoration: none;
+      background: linear-gradient(90deg, rgba(22, 14, 10, 0.92) 0%, rgba(45, 28, 18, 0.78) 100%);
     }
-    .ad-banner-inner:hover {
-      border-color: #65f732;
+    .sidebar .ad a.ad-banner-inner:hover {
+      background: linear-gradient(90deg, rgba(45, 28, 18, 0.95) 0%, rgba(75, 46, 26, 0.88) 100%);
     }
-    .ad-banner-title {
-      font: bold 14px Tahoma, sans-serif;
-      color: #fff;
-      display: block;
-      text-shadow: 0 1px 2px #000;
+    .sidebar .ad a.ad-banner-inner strong {
+      color: #ff9d33;
+      font-size: 14px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
     }
-    .ad-banner-sub {
+    .sidebar .ad a.ad-banner-inner span {
+      color: #d7cbc3;
       font-size: 11px;
-      color: #c93;
-      display: block;
-      margin-top: 2px;
     }
 
     .news-box {
       height: 1%;
       padding: 0 0 0 8px;
       overflow: hidden;
-      margin: 22px 0 0;
+      margin: 24px 0 0;
     }
     .news-box h2 {
-      background: url(site_assets/images/text-news.png) no-repeat;
+      background: url('site_assets/images/text-news.png') no-repeat;
       width: 61px;
       height: 10px;
       margin: 0;
@@ -621,16 +502,16 @@
     .news-box .item {
       width: 100%;
       overflow: hidden;
-      margin: 15px 0 0;
+      margin: 14px 0 0;
     }
     .news-box .item .date {
       display: block;
       font-style: normal;
       font-size: 10px;
-      color: #887c74;
-      margin-bottom: 3px;
+      color: #ff9d33;
+      font-weight: bold;
     }
-    .news-box .item p { margin: 0; }
+    .news-box .item p { margin: 3px 0 0; }
 
     .view-box {
       height: 1%;
@@ -639,7 +520,7 @@
       margin: 24px 0 0;
     }
     .view-box h2 {
-      background: url(site_assets/images/text-view.png) no-repeat;
+      background: url('site_assets/images/text-view.png') no-repeat;
       width: 55px;
       height: 11px;
       margin: 0;
@@ -653,8 +534,36 @@
     }
     .view-box .item p { margin: 4px 0 0; }
 
+    .sidebar .ico-list {
+      width: 100%;
+      padding: 12px 0 0 8px;
+      margin: 0;
+      list-style: none;
+      overflow: hidden;
+    }
+    .sidebar .ico-list li {
+      float: left;
+      padding: 0 2px 0 0;
+    }
+    .sidebar .ico-list li a {
+      display: block;
+      background: url('site_assets/images/icons2.png') no-repeat;
+      width: 35px;
+      height: 37px;
+      text-indent: -9999px;
+      overflow: hidden;
+    }
+    .sidebar .ico-list li a.ico3 { background-position: -70px 0; }
+    .sidebar .ico-list li a.ico3:hover { background-position: -70px 100%; }
+    .sidebar .ico-list li a.ico6 { background-position: -175px 0; }
+    .sidebar .ico-list li a.ico6:hover { background-position: -175px 100%; }
+    .sidebar .ico-list li a.ico5 { background-position: -140px 0; }
+    .sidebar .ico-list li a.ico5:hover { background-position: -140px 100%; }
+    .sidebar .ico-list li a.ico2 { background-position: -35px 0; }
+    .sidebar .ico-list li a.ico2:hover { background-position: -35px 100%; }
+
     #footer {
-      background: url(site_assets/images/bg-footer.gif) no-repeat 50% 0;
+      background: url('site_assets/images/bg-footer.gif') no-repeat 50% 0;
       width: 100%;
       overflow: hidden;
       margin: 10px 0 0;
@@ -662,117 +571,116 @@
       z-index: 1;
     }
     .footer {
-      background: url(site_assets/images/bg-footer.png) no-repeat;
+      background: url('site_assets/images/bg-footer.png') no-repeat;
       width: 1000px;
       margin: 0 auto;
       overflow: hidden;
     }
     .footer .holder {
-      background: url(site_assets/images/bg-footer.jpg) no-repeat 0 24px;
+      background: url('site_assets/images/bg-footer.jpg') no-repeat 0 24px;
       width: 1000px;
       position: relative;
-      height: 165px;
-      padding: 64px 0 0;
+      height: 150px;
+      padding: 70px 0 0;
       overflow: hidden;
     }
     .footer .copy {
       float: left;
-      width: 490px;
+      width: 460px;
       padding: 0 0 0 30px;
     }
     .footer p {
       color: #999;
-      margin: 8px 0 0;
-      font-size: 11px;
+      margin: 13px 0 0;
     }
     .footer .copy ul {
       width: 100%;
       padding: 0;
-      margin: 12px 0 0;
+      margin: 17px 0 0;
       overflow: hidden;
       list-style: none;
     }
     .footer .copy ul li {
       display: inline;
-      padding: 0 0 0 24px;
+      padding: 0 0 0 25px;
     }
     .footer .copy ul li:first-child { padding: 0; }
     .footer .item {
       float: left;
-      width: 430px;
+      width: 480px;
+    }
+    .footer .logotype {
+      display: block;
+      background: url('site_assets/images/logo-alternative.png') no-repeat;
+      width: 263px;
+      height: 33px;
+      text-indent: -9999px;
+      overflow: hidden;
     }
   </style>
 </head>
 <body>
   <div id="main">
+    <!-- ВЕРХНЯЯ ШАПКА 2010 ГОДА (ТОЧНАЯ ВЁРСТКА ORIG_2010.HTML) -->
     <div id="header">
       <div class="header">
         <ul class="icons">
-          <li><img src="site_assets/images/ico02.gif" alt="RU" title="Русская версия (2010)" /></li>
-          <li><a href="tanki_2d.html" title="Запустить игру"><img src="site_assets/images/ico03.gif" alt="Play" /></a></li>
+          <li><img src="site_assets/images/ico02.gif" alt="RU" /></li>
+          <li><a href="tanki_2d.html" title="Список битв"><img src="site_assets/images/ico01.gif" alt="EN" /></a></li>
+          <li><a href="tanki_2d.html#garage" title="3D Гараж"><img src="site_assets/images/ico03.gif" alt="CN" /></a></li>
         </ul>
+
+        <!-- Оригинальное спрайтовое меню bg-menu2.jpg (все кнопки ведут на реальные разделы игры!) -->
         <ul id="menu">
-          <li><a href="#about-block" class="btn-about" title="ОБ ИГРЕ">ОБ ИГРЕ</a></li>
-          <li><a href="tanki_2d.html" class="btn-begin" title="КАК НАЧАТЬ">КАК НАЧАТЬ</a></li>
-          <li><a href="tanki_2d.html#garage" class="btn-article" title="ГАРАЖ M3">СТАТЬИ</a></li>
-          <li><a href="tanki_2d.html#battles" class="btn-blog" title="СПИСОК 57 БИТВ">БЛОГ</a></li>
-          <li><a href="README.md" class="btn-forum" title="README И ОПИСАНИЕ">ФОРУМ</a></li>
+          <li class="active"><a href="#about-project" class="btn-about" title="ОБ ИГРЕ (Дисклеймер Gemini 4 Argon)">ОБ ИГРЕ</a></li>
+          <li><a href="tanki_2d.html" class="btn-begin" title="КАК НАЧАТЬ — Открыть Список 57 битв">КАК НАЧАТЬ</a></li>
+          <li><a href="tanki_2d.html#garage" class="btn-article" title="3D Гараж (garage.3ds)">СТАТЬИ</a></li>
+          <li><a href="tanki_2d.html#mobile" class="btn-blog" title="Мобильное управление (Тач)">БЛОГ</a></li>
+          <li><a href="README.md" class="btn-forum" title="README и документация проекта">ФОРУМ</a></li>
         </ul>
-        <h1 class="logo"><a href="tanki_2d.html" title="Танки Онлайн — Начать игру!">Танки Online</a></h1>
+
+        <h1 class="logo"><a href="tanki_2d.html" title="Запустить Танки Онлайн 2.5D">Танки Online</a></h1>
 
         <div class="info">
+          <!-- Оригинальный блок bg-server.jpg с кнопкой btn-begin.gif («НАЧАТЬ ИГРУ!») -->
           <div class="server">
-            <a href="tanki_2d.html" id="startButton" class="btn" title="Начать игру прямо в браузере!">Начать игру</a>
+            <a href="tanki_2d.html" id="startButton" class="btn" title="Открыть Список битв и начать игру!">Начать игру</a>
             <div class="item">
-              <strong class="title">Сервер</strong>
               <div class="part">
-                <div id="currentServer" onclick="toggleServersMenu(); return false;">
-                  <span id="srvNumLabel">1</span>
-                  <ul>
-                    <li><i class="srv-bar active"></i></li>
-                    <li><i class="srv-bar active"></i></li>
-                    <li><i class="srv-bar active"></i></li>
-                    <li><i class="srv-bar"></i></li>
-                  </ul>
-                  <a href="#" class="play players" id="srvPlayersLabel" onclick="return false;">511 игр.</a>
-                </div>
-                <div id="serversList">
-                  <a class="srv-row" href="tanki_2d.html"><span><b>Сервер 1</b> (Песочница CTF)</span><span>511</span></a>
-                  <a class="srv-row" href="tanki_2d.html#map=kungur"><span><b>Сервер 2</b> (Кунгур CTF)</span><span>410</span></a>
-                  <a class="srv-row" href="tanki_2d.html#map=silence"><span><b>Сервер 3</b> (Тишина CTF)</span><span>385</span></a>
-                  <a class="srv-row" href="tanki_2d.html#map=polygon"><span><b>Сервер 4</b> (Полигон CTF)</span><span>309</span></a>
-                  <a class="srv-row" href="tanki_2d.html#garage"><span><b>Сервер 5</b> (3D Гараж M3)</span><span>280</span></a>
-                  <a class="srv-row" href="tanki_2d.html#battles"><span><b>Сервер 6</b> (Все 57 карт)</span><span>273</span></a>
-                </div>
+                <ul>
+                  <li><img src="site_assets/images/item1-over.gif" alt="" /></li>
+                  <li><img src="site_assets/images/item1-over.gif" alt="" /></li>
+                  <li><img src="site_assets/images/item1-over.gif" alt="" /></li>
+                  <li><img src="site_assets/images/item1-over.gif" alt="" /></li>
+                </ul>
+                <a href="tanki_2d.html" class="play">57 карт • Local</a>
               </div>
             </div>
           </div>
+
+          <!-- Оригинальная плашка bg-players.jpg с честными цифрами контента сборки -->
           <div class="all">
             <ul>
-              <li>
-                <strong class="text-all">Всего игроков</strong>
-                <p id="statTotal">194 821</p>
-              </li>
-              <li>
-                <strong class="text-online">В онлайне</strong>
-                <p id="statOnline">1 783</p>
-              </li>
-              <li>
-                <strong class="text-battle">В битвах</strong>
-                <p id="statInBattles">1 600</p>
-              </li>
+              <li><span>Карт из TTT:</span><b>57 карт</b></li>
+              <li><span>Пушек / Корпусов:</span><b>9 / 7 (M3)</b></li>
+              <li><span>Красок / Бой:</span><b>15 / 4×4</b></li>
             </ul>
           </div>
         </div>
       </div>
 
-      <div class="holder">
+      <!-- Оригинальный слоган slogan.png и текстурная рамка bg-box-t/c/b.png с дисклеймером Gemini 4 Argon -->
+      <div class="holder" id="about-project">
         <strong class="slogan">Многопользовательский браузерный боевик</strong>
         <div class="box">
           <div class="t">&nbsp;</div>
           <div class="c">
             <div class="text">
-              <p>Игроки сражаются на онлайновых аренах, зарабатывая кристаллы и продвигаясь вверх по карьерной лестнице. В игре доступны классические корпуса и пушки M0–M3, десантируемые на поле боя и покупаемые в гараже припасы, все 57 карт, 3D-ангар и общий чат.</p>
+              <p>
+                <b>Проект сделан в Gemini 4 Argon по приколу</b> ради ностальгии по старым «Танкам Онлайн» 2010–2012 гг.
+                Мы не стараемся ничего нарушать: все 3D-модели (<code>.3ds</code>), карты (<code>.xml</code>), текстуры и звуки взяты из открытых источников (<i>Tank Testing Tool</i>).
+                <b>Если вы правообладатель — вы можете попросить нас удалить проект, и мы сразу его уберём.</b>
+              </p>
             </div>
           </div>
           <div class="b">&nbsp;</div>
@@ -780,254 +688,205 @@
       </div>
     </div>
 
-    <!-- ЧЕСТНЫЙ ДИСКЛЕЙМЕР GEMINI 4 ARGON (ПО ПРОСЬБЕ АВТОРА) -->
-    <div class="argon-disclaimer-banner" id="about-block">
-      <b class="argon-tag">⚡ О проекте (Честный дисклеймер):</b><br />
-      Этот проект сделан в <b>Gemini 4 Argon</b> чисто по приколу (<i>just for fun</i>), мы здесь <b>ничего от себя не придумывали</b> — просто бережно воссоздали старые добрые «Танки Онлайн» образца 2010–2012 годов (оригинальный сайт, звуки, раскадровки партиклов из <i>Tank Testing Tool</i>, 3D-гараж <code>garage.3ds</code> и все 57 карт).<br />
-      Мы <b>не стараемся ничего нарушать</b> и не преследуем коммерческих целей: все модели, текстуры и звуки взяты из открытых источников. <b>Если вы правообладатель</b> (<i>AlternativaPlatform / ООО «Танки Онлайн»</i>), то можете просто попросить нас удалить проект — мы без проблем удалим его по первому требованию.
-      <div class="argon-quick-links">
-        <a class="argon-quick-btn" href="tanki_2d.html">▶ В БОЙ (ПЕСОЧНИЦА CTF)</a>
-        <a class="argon-quick-btn" href="tanki_2d.html#map=kungur">🌉 МОСТ КУНГУРА CTF</a>
-        <a class="argon-quick-btn" href="tanki_2d.html#garage">🔧 ОТКРЫТЬ 3D ГАРАЖ (garage.3ds)</a>
-        <a class="argon-quick-btn" href="tanki_2d.html#battles">📋 СПИСОК ВСЕХ 57 БИТВ И КАРТ</a>
-        <a class="argon-quick-btn" href="README.md" style="background:#3a2b1c;border-color:#c93;">📖 ЧИТАТЬ README.MD</a>
-      </div>
-    </div>
-
+    <!-- ОСНОВНОЙ КОНТЕНТ САЙТА 2010 ГОДА -->
     <div id="content">
       <div class="content">
+        <!-- Награды КРИ Awards 2009 и Russian Flash Awards 2009 -->
         <div class="links-box">
           <div class="item one">
-            <div class="photo"><img src="site_assets/images/logo1.png" alt="КРИ Awards 2009" /></div>
+            <div class="photo">
+              <a href="tanki_2d.html"><img src="site_assets/images/logo1.png" alt="КРИ 2009" /></a>
+            </div>
             <div class="mini">
-              <p><b>КРИ Awards 2009</b><br />Победитель в номинациях:<br /><a href="tanki_2d.html">«Лучшая игра без издателя»</a><br /><a href="tanki_2d.html">«Лучшая технология»</a></p>
+              <p>КРИ Awards 2009<br />Победитель в номинациях:<br /><a href="tanki_2d.html">«Лучшая игра без издателя»</a><br /><a href="tanki_2d.html">«Лучшая технология»</a></p>
             </div>
           </div>
           <div class="item">
-            <div class="photo"><img src="site_assets/images/logo2.png" alt="Russian Flash Awards 2009" /></div>
+            <div class="photo">
+              <a href="tanki_2d.html#garage"><img src="site_assets/images/logo2.png" alt="RFA 2009" /></a>
+            </div>
             <div class="mini">
-              <p><b>Russian Flash Awards 2009</b><br />Победитель в номинации:<br /><a href="tanki_2d.html">«Техническая заслуга»</a></p>
+              <p>Russian Flash Awards 2009<br />Победитель в номинации<br /><a href="tanki_2d.html#garage">«Техническая заслуга»</a></p>
             </div>
           </div>
         </div>
 
+        <!-- СКРИНШОТЫ ИГРЫ (кликабельные — открывают соответствующий режим!) -->
         <div class="screen-box">
-          <h2 class="section-title-old">СКРИНШОТЫ ИГРЫ (НАЖМИТЕ ДЛЯ ЗАПУСКА РЕЖИМА)</h2>
+          <h2 style="padding-bottom:8px;">СКРИНШОТЫ ИГРЫ</h2>
           <ul>
             <li>
-              <a href="tanki_2d.html">
-                <img src="tanki_battle_verification.png" alt="Песочница CTF" />
-                <span class="scr-cap">Бой: Песочница CTF + Эффекты TTT</span>
+              <a href="tanki_2d.html" title="Открыть Список 57 битв">
+                <img src="tanki_battles_list_verification.png" alt="Список 57 битв" />
+                <span class="screen-caption">Список 57 битв (Лобби)</span>
               </a>
             </li>
             <li>
-              <a href="tanki_2d.html#garage">
+              <a href="tanki_2d.html#garage" title="Открыть 3D Гараж (garage.3ds)">
                 <img src="tanki_garage_verification.png" alt="3D Гараж 2010" />
-                <span class="scr-cap">Гараж 2010 (garage.3ds + Склад)</span>
+                <span class="screen-caption">3D Гараж (garage.3ds)</span>
               </a>
             </li>
             <li>
-              <a href="tanki_2d.html#battles">
-                <img src="tanki_battles_list_verification.png" alt="Список 57 карт" />
-                <span class="scr-cap">Список всех 57 битв (server.swf)</span>
+              <a href="tanki_2d.html#map=sandbox" title="Запустить бой на Песочнице CTF">
+                <img src="tanki_battle_verification.png" alt="Песочница CTF" />
+                <span class="screen-caption">Бой: Песочница CTF</span>
               </a>
             </li>
             <li>
-              <a href="tanki_2d.html#map=kungur">
+              <a href="tanki_2d.html#map=kungur" title="Запустить бой на Кунгуре CTF (2-уровневый мост)">
                 <img src="tanki_map_kungur_verification.png" alt="Кунгур CTF" />
-                <span class="scr-cap">Кунгур CTF (Двухуровневый мост)</span>
+                <span class="screen-caption">Кунгур CTF (Мост)</span>
               </a>
             </li>
             <li>
-              <a href="tanki_2d.html#map=silence">
+              <a href="tanki_2d.html#mobile" title="Запустить мобильный режим со стиками">
+                <img src="tanki_mobile_controls_verification.png" alt="Мобильное управление" />
+                <span class="screen-caption">Мобильное управление</span>
+              </a>
+            </li>
+            <li>
+              <a href="tanki_2d.html#map=silence" title="Запустить бой на Тишине CTF">
                 <img src="site_assets/images/scr_1.jpg" alt="Тишина CTF" />
-                <span class="scr-cap">Классический архив 2010 #1</span>
-              </a>
-            </li>
-            <li>
-              <a href="tanki_2d.html#map=polygon">
-                <img src="site_assets/images/scr_6.jpg" alt="Полигон" />
-                <span class="scr-cap">Классический архив 2010 #2</span>
+                <span class="screen-caption">Классика: Тишина CTF</span>
               </a>
             </li>
           </ul>
         </div>
 
+        <!-- ОРИГИНАЛЬНАЯ РАМКА ВИДЕО bg-video.jpg (ведет сразу в игру!) -->
         <div class="video-box">
-          <h2 class="section-title-old">ИНТЕРАКТИВНЫЙ ЗАПУСК КЛИЕНТА 2010–2012</h2>
-          <p>Все 7 корпусов, 9 пушек, 15 классических красок со светокартами, оригинальные звуки и 57 карт работают прямо в браузере без плагина Flash:</p>
-          <div class="photo" align="center">
-            <a class="video-preview-card" href="tanki_2d.html">
-              <div class="video-preview-overlay">
-                <div style="font-size:20px;font-weight:bold;color:#65f732;margin-bottom:6px;text-shadow:0 2px 4px #000;">▶ НАЧАТЬ ИГРУ В БРАУЗЕРЕ</div>
-                <div style="font-size:12px;color:#e5dcd4;">Кликните, чтобы войти на Сервер RU1 (Песочница CTF, Гараж M3 и 57 карт)</div>
+          <h2>ВИДЕО ИГРЫ</h2><br />
+          <p>Нажмите на экран ниже, чтобы сразу открыть <a href="tanki_2d.html">«Список 57 битв»</a> или <a href="tanki_2d.html#garage">«3D Гараж»</a> прямо в браузере:</p>
+          <div class="photo" align="center" valign="middle">
+            <a href="tanki_2d.html" class="video-showcase-link">
+              <img src="tanki_battle_verification.png" alt="Запустить Танки Онлайн 2.5D" />
+              <div class="video-play-overlay">
+                <strong>▶ НАЖМИТЕ, ЧТОБЫ НАЧАТЬ ИГРУ (ЗАГРУЗКА КАК В ТАНКАХ ОНЛАЙН + 57 КАРТ)</strong>
+                <span>Верхний интерфейс поверх игры без подложки • Оригинальные партиклы TTT • Мобильные тач-джойстики</span>
               </div>
             </a>
           </div>
         </div>
 
-        <div class="boxes">
+        <!-- НИЖНИЕ ДВА БЛОКА В ОРИГИНАЛЬНОЙ СЕТКЕ .boxes -->
+        <div class="boxes" id="controls-box">
           <div class="box important">
-            <h2>ГРАФИК ЗАГРУЗКИ СЕРВЕРОВ</h2>
+            <h2>УПРАВЛЕНИЕ (ПК + ТЕЛЕФОН)</h2>
             <div class="photo">
-              <div class="holder">
-                <canvas id="retroServerChart" width="256" height="160"></canvas>
-              </div>
+              <ul class="controls-mini-list">
+                <li><b>W, A, S, D / Стрелки:</b> ход и поворот танка</li>
+                <li><b>Мышь / Z, X, C + Пробел:</b> поворот башни и огонь</li>
+                <li><b>Клавиши 1 – 5:</b> Ремкомплект, Броня, Урон, Нитро, Мина</li>
+                <li><b>Shift / F / Tab:</b> прицел Шафта, сброс флага, таблица боя</li>
+                <li><b>G / M:</b> переход в 3D Гараж / Список 57 битв</li>
+                <li><b>📱 Тач-режим:</b> левый стик — корпус, правый стик — башня/огонь + кнопки <b>ОГОНЬ, ПРИЦЕЛ, ФЛАГ, СЧЁТ</b></li>
+              </ul>
             </div>
           </div>
 
           <div class="box klan">
-            <h2>КЛАНЫ</h2>
+            <h2>БЫСТРЫЙ ЗАПУСК КАРТ</h2>
             <ul class="pic-list">
-              <li><span class="clan-flag-badge">ЧН</span><p><a href="tanki_2d.html">Черные ножи</a></p></li>
-              <li><span class="clan-flag-badge">TD</span><p><a href="tanki_2d.html">42nd Tank Division (TD42)</a></p></li>
-              <li><span class="clan-flag-badge">WTF</span><p><a href="tanki_2d.html">WTF</a></p></li>
-              <li><span class="clan-flag-badge">ОТЦ</span><p><a href="tanki_2d.html">Отцы</a></p></li>
-              <li><span class="clan-flag-badge">ORK</span><p><a href="tanki_2d.html">Orkz</a></p></li>
-              <li><span class="clan-flag-badge">КЛХ</span><p><a href="tanki_2d.html">Колхоз</a></p></li>
+              <li><a href="tanki_2d.html">📋 Список всех 57 битв (Лобби)</a></li>
+              <li><a href="tanki_2d.html#garage">🔧 3D Гараж (Корпуса и Пушки)</a></li>
+              <li><a href="tanki_2d.html#map=sandbox">⚔ Песочница CTF (4×4)</a></li>
+              <li><a href="tanki_2d.html#map=kungur">🌉 Кунгур CTF (Двухуровневый мост)</a></li>
+              <li><a href="tanki_2d.html#map=silence">🏰 Тишина CTF (Классика)</a></li>
+              <li><a href="tanki_2d.html#map=polygon">🎯 Полигон CTF</a></li>
+              <li><a href="tanki_2d.html#mobile">📱 Играть с телефона (Тач)</a></li>
             </ul>
-            <br />
-            <a href="tanki_2d.html#battles">Все 57 карт и клановые битвы &raquo;</a>
           </div>
         </div>
       </div>
 
+      <!-- ПРАВАЯ КОЛОНКА (ОРИГИНАЛЬНЫЙ SIDEBAR С РАМКАМИ bg-pb.jpg И ЗАГОЛОВКАМИ text-news.png / text-view.png) -->
       <div class="sidebar">
         <div class="ad">
-          <a class="ad-banner-inner" href="tanki_2d.html">
-            <div>
-              <span class="ad-banner-title">КАК НАЧАТЬ ИГРАТЬ?</span>
-              <span class="ad-banner-sub">Один клик — и вы в бою на Песочнице CTF!</span>
-            </div>
-            <span style="font-size:26px;color:#65f732;">▶</span>
+          <a href="tanki_2d.html" class="ad-banner-inner">
+            <strong>⚔ НАЧАТЬ ИГРУ (СПИСОК БИТВ)</strong>
+            <span>Все 57 карт из Tank Testing Tool + загрузка своих .XML</span>
           </a>
         </div>
         <div class="ad">
-          <a class="ad-banner-inner" href="tanki_2d.html#garage">
-            <div>
-              <span class="ad-banner-title">ГАРАЖ 2010 (GARAGE.3DS)</span>
-              <span class="ad-banner-sub">Все пушки M3, корпуса M3 и 15 красок TTT!</span>
-            </div>
-            <span style="font-size:24px;color:#ffcc44;">🔧</span>
+          <a href="tanki_2d.html#garage" class="ad-banner-inner">
+            <strong>🔧 3D ГАРАЖ 2010 (GARAGE.3DS)</strong>
+            <span>7 корпусов M3, 9 пушек M3, 15 классических красок</span>
           </a>
         </div>
         <div class="ad">
-          <a class="ad-banner-inner" href="tanki_2d.html#battles">
-            <div>
-              <span class="ad-banner-title">ВСЕ 57 КАРТ ИЗ АРХИВА</span>
-              <span class="ad-banner-sub">Песочница, Кунгур, Тишина, Полигон, Мостик + .XML</span>
-            </div>
-            <span style="font-size:24px;color:#60a5fa;">🗺️</span>
+          <a href="tanki_2d.html#mobile" class="ad-banner-inner">
+            <strong>📱 МОБИЛЬНОЕ ТАЧ-УПРАВЛЕНИЕ</strong>
+            <span>Два виртуальных стика + кнопки боя для телефона</span>
           </a>
         </div>
 
         <div class="news-box">
           <h2>НОВОСТИ</h2>
           <div class="item">
-            <em class="date">20.10.2026 (Сборка Gemini 4 Argon)</em>
-            <p>Полностью восстановлены покадровые партиклы из <b>Tank Testing Tool</b> (взрывы Смоки, Грома, крит-молния, 3-слойный разогрев Рельсы, струи Огнемёта M1 и Фриза), 3D-комната гаража <code>garage.3ds</code> и честная двухуровневая физика мостов и пандусов на всех 57 картах!</p>
+            <em class="date">ДИСКЛЕЙМЕР • GEMINI 4 ARGON</em>
+            <p>
+              Проект сделан в <b>Gemini 4 Argon</b> по приколу. Ничего от себя не придумывали — воссоздали классический интерфейс,
+              загрузку с лампочками, звуки, 3D-гараж и физику из открытых архивов <i>Tank Testing Tool</i>.
+            </p>
           </div>
           <div class="item">
-            <em class="date">26.03.2010 (Архив tankionline.com)</em>
-            <p>До 29 марта абонемент на «битвы без припасов» можно купить вдвое дешевле! В гараже доступны все комплекты расходников и мины.</p>
+            <em class="date">ПРАВООБЛАДАТЕЛЯМ</em>
+            <p>
+              Мы не стараемся ничего нарушать, в проекте нет доната, серверов или коммерции.
+              <b>Если вы правообладатель — вы можете попросить нас удалить проект, и мы незамедлительно его удалим.</b>
+            </p>
           </div>
           <div class="item">
-            <em class="date">11.03.2010 (Архив tankionline.com)</em>
-            <p>Теперь возможна покупка кристаллов через терминалы QIWI, для чего нужно помнить лишь игровой ник. В нашей ретро-версии кнопка <b>[x2 Купить]</b> в верхней панели бесплатно начисляет +1000 кристаллов!</p>
-          </div>
-          <div class="item">
-            <em class="date">02.03.2010 (Архив tankionline.com)</em>
-            <p>«Повышенный опыт» – карьерный рост быстрее на четверть! Всем танкистам в ретро-сборке открыто звание Маршала и 21 319 кристаллов со старта.</p>
+            <em class="date">ЧТО ВНУТРИ СБОРКИ</em>
+            <p>
+              • Настоящее окно загрузки <code>LOADING...</code> с лампочками и карточками советов из <code>battles.swf</code>.<br />
+              • При входе открывается <b>Список битв</b> (57 карт), как в оригинале.<br />
+              • Верхний интерфейс парит поверх 3D-сцены без подложки.<br />
+              • Бесшовные звуковые петли привода башни, Огнемёта, Фриза и Изиды.
+            </p>
           </div>
         </div>
 
         <div class="view-box">
           <h2>ОБЗОРЫ</h2>
           <div class="item">
-            <a href="tanki_2d.html">Танчики онлайн, или «шуруп, забитый молотком…»</a>
-            <p>«Живой пример, от которого до сих пор пребываю в легком шоке: как вам полноценный 3D-экшен в браузере, сохранивший ту самую атмосферу 2010 года.»</p>
-          </div>
-          <div class="item">
-            <a href="tanki_2d.html#battles">Про Конференцию Разработчиков Игр (КРИ)</a>
-            <p>«Больше всего понравился проект Tanki Online. Просто арена с пандусами, домиками, деревцами и мостами. По ней ездят онлайн-танкисты и стреляют друг в друга, а сверху на парашютиках падают рулезы. Башенно-гусеничный Quake!»</p>
+            <a href="tanki_2d.html">Танчики онлайн, или «Башенно-гусеничный Quake»</a><br />
+            <p>
+              «Просто арена с пандусами, домиками, деревцами и мостами. По ней ездят танкисты и стреляют друг в друга,
+              а сверху на парашютиках падают рулезы. Оторваться невозможно!»
+            </p>
           </div>
         </div>
+
+        <br /><br />
+        <ul class="ico-list">
+          <li><a href="tanki_2d.html" class="ico3" title="Список битв">RSS</a></li>
+          <li><a href="tanki_2d.html#garage" class="ico6" title="Гараж">Вконтакте</a></li>
+          <li><a href="tanki_2d.html#mobile" class="ico5" title="Мобильный режим">Livejournal</a></li>
+          <li><a href="README.md" class="ico2" title="README">Я</a></li>
+        </ul>
       </div>
     </div>
 
+    <!-- ОРИГИНАЛЬНЫЙ ПОДВАЛ 2010 ГОДА (bg-footer.gif + bg-footer.png + bg-footer.jpg + logo-alternative.png) -->
     <div id="footer">
       <div class="footer">
         <div class="holder">
           <div class="copy">
-            <p><b>Фанатская ретро-реконструкция в Gemini 4 Argon (по приколу / некоммерческий проект).</b><br />
-            Все оригинальные названия, 3D-модели, текстуры и звуки принадлежат их правообладателям (ООО «Танки Онлайн» / AlternativaPlatform). По первому запросу правообладателя проект будет удалён.</p>
+            <p>Фанатский ретро-проект в <b>Gemini 4 Argon</b> (по приколу). Все модели из открытых источников.</p>
             <ul>
               <li><a href="tanki_2d.html">Запустить игру</a></li>
-              <li><a href="tanki_2d.html#garage">3D Гараж</a></li>
-              <li><a href="README.md">Описание и дисклеймер (README)</a></li>
+              <li><a href="README.md">Дисклеймер и описание (README)</a></li>
             </ul>
           </div>
           <div class="item">
-            <p style="margin-top:8px;"><b style="color:#d6c8be;">Открытые источники ассетов:</b><br />
-            Модели <code>.3ds</code> / <code>.tara</code>, спрайт-листы эффектов и карты взяты из публичного <i>Tank Testing Tool</i> и веб-архива 2010–2012 гг. Ничего своего не придумывали — только классика!</p>
+            <a href="tanki_2d.html" class="logotype">alternativaplatforma</a>
+            <p>Оригинальные ассеты 2010–2012 гг. принадлежат их законным правообладателям. По первому запросу правообладателя проект удаляется.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <script type="text/javascript">
-    function toggleServersMenu() {
-      var el = document.getElementById('serversList');
-      if (!el) return;
-      el.style.display = (el.style.display === 'block') ? 'none' : 'block';
-    }
-
-    // Отрисовка олдскульного графика загрузки серверов (вместо старого graphic.swf)
-    (function drawServerChart() {
-      var c = document.getElementById('retroServerChart');
-      if (!c || !c.getContext) return;
-      var ctx = c.getContext('2d');
-      ctx.fillStyle = '#120d09';
-      ctx.fillRect(0, 0, c.width, c.height);
-
-      ctx.strokeStyle = '#2d2219';
-      ctx.lineWidth = 1;
-      for (var y = 20; y < c.height; y += 28) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(c.width, y); ctx.stroke();
-      }
-      for (var x = 32; x < c.width; x += 36) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, c.height); ctx.stroke();
-      }
-
-      var pts = [42, 48, 56, 75, 92, 108, 118, 126, 134, 129, 138, 144];
-      ctx.beginPath();
-      ctx.moveTo(10, c.height - 15);
-      for (var i = 0; i < pts.length; i++) {
-        var px = 10 + i * 21;
-        var py = c.height - pts[i];
-        ctx.lineTo(px, py);
-      }
-      ctx.lineTo(10 + (pts.length - 1) * 21, c.height - 15);
-      ctx.closePath();
-      ctx.fillStyle = 'rgba(101, 247, 50, 0.22)';
-      ctx.fill();
-
-      ctx.beginPath();
-      for (var j = 0; j < pts.length; j++) {
-        var gx = 10 + j * 21;
-        var gy = c.height - pts[j];
-        if (j === 0) ctx.moveTo(gx, gy);
-        else ctx.lineTo(gx, gy);
-      }
-      ctx.strokeStyle = '#65f732';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      ctx.fillStyle = '#c6bab3';
-      ctx.font = 'bold 11px Tahoma';
-      ctx.fillText('ОНЛАЙН RU1–RU6: 1 783 ТАНКИСТА', 12, 18);
-    })();
-  </script>
 </body>
 </html>

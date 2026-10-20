@@ -21,22 +21,26 @@
   }
 
   /* =========================================================
-     ВЕРХНЯЯ ТЕКСТУРИРОВАННАЯ ПАНЕЛЬ ТАНКОВ ОНЛАЙН (ТОЧНО ПО РЕФАМ 1, 2, 3, 4)
+     ВЕРХНИЙ ИНТЕРФЕЙС ПОВЕРХ ИГРЫ (БЕЗ ПОДЛОЖКИ / ФОНОВОЙ ПОЛОСЫ!)
      ========================================================= */
   #top-hud {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 36px;
-    background-color: #3e4541;
-    background-image: var(--ui-bg-tile);
-    background-repeat: repeat;
-    border-bottom: 2px solid #161917;
-    border-top: 1px solid #757d78;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     display: flex;
     align-items: center;
-    padding: 0 4px 0 46px;
+    padding: 4px 6px 0 48px;
     z-index: 60;
     gap: 4px;
-    position: relative;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.85);
+    pointer-events: none;
+  }
+  #top-hud > * {
+    pointer-events: auto;
   }
 
   /* Выступающий слева щиток со званием (42x42, выступает вниз на 6px как на рефах 1, 2, 3, 4) */
@@ -214,17 +218,18 @@
      (Рамка ViewportBorder + припасы слева снизу + счёт флагов и таймер справа снизу!)
      ========================================================= */
   #webgl-container {
-    flex: 1;
+    width: 100vw;
+    height: 100vh;
     position: relative;
     background: #78a8c8;
     overflow: hidden;
-    border: 5px solid transparent;
-    border-image: var(--ui-viewport-9slice) 6 fill repeat;
+    border: none;
   }
   canvas#webgl-canvas {
     width: 100%;
     height: 100%;
     display: block;
+    touch-action: none;
   }
   canvas#overlay-canvas {
     position: absolute;
@@ -271,7 +276,7 @@
 
   #ctf-banner {
     position: absolute;
-    top: 12px;
+    top: 42px;
     left: 50%;
     transform: translateX(-50%);
     background-color: rgba(9, 38, 5, 0.92);
@@ -286,10 +291,10 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.85);
   }
 
-  /* Верхний левый бейдж текущей карты в бою */
+  /* Верхний левый бейдж текущей карты в бою (сразу под плавающей верхней панелью!) */
   .battle-map-corner-pill {
     position: absolute;
-    top: 8px;
+    top: 44px;
     left: 10px;
     background: rgba(8, 30, 5, 0.78);
     border: 1px solid #3ce615;
@@ -306,10 +311,10 @@
     color: #a3ff7d;
   }
 
-  /* Килл-лог в правом верхнем углу экрана боя (как в оригинальном ТО) */
+  /* Килл-лог в правом верхнем углу экрана боя (под плавающей верхней панелью) */
   #kill-log {
     position: absolute;
-    top: 8px;
+    top: 40px;
     right: 10px;
     display: flex;
     flex-direction: column;
@@ -446,7 +451,7 @@
      ========================================================= */
   .to-fullscreen-overlay {
     position: fixed;
-    top: 36px;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
@@ -457,7 +462,7 @@
     display: none;
     flex-direction: column;
     z-index: 50;
-    padding: 5px 6px 6px 6px;
+    padding: 40px 6px 6px 6px;
     gap: 5px;
   }
 
@@ -1158,11 +1163,245 @@
   .tab-table { width: 100%; border-collapse: collapse; font-size: 11px; }
   .tab-table th { text-align: left; color: #d1fae5; padding: 4px 6px; border-bottom: 1px solid rgba(255,255,255,0.2); }
   .tab-table td { padding: 4px 6px; color: #ffffff; }
+
+  /* =========================================================
+     МОБИЛЬНОЕ СЕНСОРНОЕ УПРАВЛЕНИЕ (ДВА ДЖОЙСТИКА + КНОПКИ БОЯ)
+     ========================================================= */
+  #mobile-touch-controls {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 28;
+    display: none;
+  }
+  #mobile-touch-controls.active {
+    display: block;
+  }
+  .mobile-joystick-zone {
+    position: absolute;
+    bottom: 62px;
+    width: 146px;
+    height: 146px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(20, 35, 16, 0.35) 0%, rgba(12, 22, 10, 0.65) 100%);
+    border: 2px solid rgba(134, 239, 109, 0.55);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.65), inset 0 0 14px rgba(84, 245, 36, 0.2);
+    pointer-events: auto;
+    touch-action: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #mobile-joy-move { left: 22px; }
+  #mobile-joy-aim  { right: 22px; border-color: rgba(251, 191, 36, 0.65); }
+  .mobile-joystick-label {
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 800;
+    color: #d9f99d;
+    text-shadow: 0 1px 3px #000;
+    pointer-events: none;
+    letter-spacing: 0.4px;
+  }
+  .mobile-joystick-knob {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #86ef6d 0%, #2f6f1e 75%, #193e10 100%);
+    border: 2px solid #ecfccb;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+    pointer-events: none;
+    transform: translate(0px, 0px);
+    transition: transform 0.03s linear;
+  }
+  #mobile-joy-aim .mobile-joystick-knob {
+    background: radial-gradient(circle at 35% 35%, #fde047 0%, #d97706 75%, #78350f 100%);
+    border-color: #fef08a;
+  }
+  .mobile-action-cluster {
+    position: absolute;
+    right: 184px;
+    bottom: 68px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: auto;
+    touch-action: none;
+  }
+  .mobile-action-btn {
+    min-width: 96px;
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 2px solid rgba(190, 242, 100, 0.75);
+    background: linear-gradient(180deg, rgba(44, 72, 34, 0.88) 0%, rgba(21, 38, 17, 0.92) 100%);
+    color: #ecfccb;
+    font-family: 'Tahoma', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    text-shadow: 0 1px 2px #000;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    touch-action: none;
+  }
+  .mobile-action-btn.fire-btn {
+    height: 50px;
+    border-color: #fca5a5;
+    background: linear-gradient(180deg, rgba(185, 28, 28, 0.92) 0%, rgba(127, 29, 29, 0.96) 100%);
+    color: #fef2f2;
+    font-size: 13px;
+  }
+  .mobile-action-btn:active, .mobile-action-btn.pressed {
+    transform: scale(0.95);
+    filter: brightness(1.22);
+  }
+  @media (max-width: 900px) {
+    #top-hud .xp-bar-text { font-size: 10px; padding: 0 6px; }
+    .mobile-joystick-zone { width: 126px; height: 126px; bottom: 56px; }
+    .mobile-action-cluster { right: 158px; bottom: 58px; }
+  }
+
+  /* =========================================================
+     ОРИГИНАЛЬНОЕ ОКНО ЗАГРУЗКИ ТАНКОВ ОНЛАЙН (LoaderWindow + ColdLoad + Лампочки ProgressBar)
+     ========================================================= */
+  #to-preloader-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 250;
+    background-color: #242a26;
+    background-image: var(--ui-bg-tile);
+    background-repeat: repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+  }
+  .to-loader-window {
+    width: 566px;
+    max-width: 95vw;
+    padding: 56px 22px 22px 22px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 24px 65px rgba(0, 0, 0, 0.92);
+    position: relative;
+  }
+  .to-loader-art-box {
+    width: 522px;
+    max-width: 100%;
+    height: 190px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #141a16;
+    border: 1px solid rgba(0,0,0,0.85);
+    position: relative;
+  }
+  .to-loader-art-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+  }
+  .to-loader-status-row {
+    width: 522px;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 700;
+    color: #d9f99d;
+    text-shadow: 0 1px 2px #000;
+    padding: 0 2px;
+  }
+  .to-loader-lamps-bar {
+    width: 522px;
+    max-width: 100%;
+    height: 26px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+  }
+  .to-loader-lamp {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+  }
+  .to-loader-tube-wrap {
+    width: 522px;
+    max-width: 100%;
+    height: 28px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .to-loader-tube-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .to-loader-tube-fill-clip {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 5px;
+    bottom: 5px;
+    overflow: hidden;
+    border-radius: 8px;
+    z-index: 1;
+    background: #101712;
+  }
+  .to-loader-tube-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(180deg, #a3ff4d 0%, #44c800 55%, #1c5c00 100%);
+    background-size: 100% 100%;
+    transition: width 0.08s linear;
+  }
 </style>
 </head>
 <body>
 
-<!-- ВЕРХНЯЯ ПАНЕЛЬ ТАНКОВ ОНЛАЙН (ТОЧНО ПО РЕФАМ №1, №2, №3, №4: БЕЗ КАСТОМНЫХ СЧЁТЧИКОВ ФЛАГОВ В ШАПКЕ!) -->
+<!-- ОРИГИНАЛЬНОЕ ОКНО ЗАГРУЗКИ ТАНКОВ ОНЛАЙН (ПРЕДЗАГРУЗКА ВСЕХ ТЕКСТУР, КАРТОЧЕК ГАРАЖА И СПРАЙТОВ ЭФФЕКТОВ) -->
+<div id="to-preloader-screen">
+  <div class="to-loader-window" id="to-loader-window-box">
+    <div class="to-loader-art-box">
+      <img id="to-loader-art-img" src="" alt="Загрузка Танков Онлайн">
+    </div>
+    <div class="to-loader-status-row">
+      <span id="to-loader-stage-text">Загрузка ресурсов библиотеки и текстур...</span>
+      <span id="to-loader-pct-text">0%</span>
+    </div>
+    <div class="to-loader-lamps-bar" id="to-loader-lamps-row"></div>
+    <div class="to-loader-tube-wrap">
+      <div class="to-loader-tube-fill-clip">
+        <div class="to-loader-tube-fill" id="to-loader-tube-fill"></div>
+      </div>
+      <img class="to-loader-tube-bg" id="to-loader-tube-bg-img" src="" alt="">
+    </div>
+  </div>
+</div>
+
+<!-- ВЕРХНЯЯ ПАНЕЛЬ ТАНКОВ ОНЛАЙН (ПОВЕРХ ИГРЫ БЕЗ ПОДЛОЖКИ И БЕЗ ФЕЙКОВЫХ КНОПОК ДОНАТА/ВЫХОДА) -->
 <div id="top-hud">
   <!-- Выступающий щиток со званием -->
   <div class="rank-shield-float" title="Звание танкиста">
@@ -1176,22 +1415,18 @@
       <span>113102 / 125000 &nbsp; Маршал Танкист_ТО</span>
       <span class="score-right">
         <img id="ui-arrow-up-icon" src="" alt="">
-        <span>Рейтинг: <b id="ui-score-xp">113102</b></span>
+        <span>Опыт: <b id="ui-score-xp">113102</b></span>
       </span>
     </div>
   </div>
 
-  <!-- Окошко кристаллов + классическая красная кнопка [x2 Купить] как на Рефах 2 и 4 -->
-  <div class="crystals-box" title="Кристаллы">
+  <!-- Окошко кристаллов (зарабатываются в бою за фраги и флаги) -->
+  <div class="crystals-box" title="Кристаллы (начисляются за уничтожение танков и доставку флагов)">
     <span id="player-crystals">21 319</span>
     <img class="crystal-icon-img" id="ui-crystal-icon" src="" alt="💎">
   </div>
-  <button class="to-swf-btn btn-red" id="btn-buy-crystals" title="Пополнить кристаллы (+1000 💎)" style="padding:0 7px; gap:3px;">
-    <span style="color:#fde047;font-weight:900;">x2</span>
-    <span>Купить</span>
-  </button>
 
-  <!-- Кнопки навигации (Битвы / Гараж + квадратные иконки как на Рефах 1, 2, 3, 4) -->
+  <!-- Кнопки навигации (Битвы / Гараж / Тач-управление / Звук / Полный экран / Справка) -->
   <div class="top-nav-buttons">
     <button class="to-swf-btn" id="btn-open-battles" title="Список всех 57 карт Танков Онлайн (M)">
       <img id="ui-icon-battles" src="" alt="">
@@ -1200,6 +1435,9 @@
     <button class="to-swf-btn" id="btn-open-garage" title="Гараж (G)">
       <img id="ui-icon-garage" src="" alt="">
       <span>Гараж</span>
+    </button>
+    <button class="to-swf-btn" id="btn-mobile-toggle" title="Включить / выключить сенсорные джойстики для телефона и планшета">
+      <span>📱 Тач</span>
     </button>
     <div class="volume-control" title="Громкость звука (выстрелы + эмбиент + двигатель)">
       <img id="btn-sound-toggle" src="" alt="🔊" style="width:15px;height:15px;cursor:pointer;">
@@ -1211,8 +1449,9 @@
     <button class="to-swf-btn icon-only" id="btn-help-diagram" title="Справка по управлению (?)">
       <img id="ui-icon-help" src="" alt="?">
     </button>
-    <button class="to-swf-btn icon-only btn-red" id="btn-nav-battle" title="Вернуться в бой / Закрыть окно (ESC)">
-      <img id="ui-icon-close" src="" alt="✖">
+    <button class="to-swf-btn" id="btn-nav-battle" title="Вернуться в бой (ESC)" style="display:none;">
+      <img id="ui-icon-close" src="" alt="" style="display:none;">
+      <span>⚔ В бой</span>
     </button>
     <!-- Скрытые вспомогательные элементы -->
     <button class="hidden-compat-hud" id="btn-load-xml-map"></button>
@@ -1222,7 +1461,7 @@
   </div>
 </div>
 
-<!-- ИГРОВОЙ ХОЛСТ БОЯ (РАМКА VIEWPORT_9SLICE + ИНВЕНТАРЬ СЛЕВА СНИЗУ + СЧЁТ CTF И ТАЙМЕР СПРАВА СНИЗУ!) -->
+<!-- ИГРОВОЙ ХОЛСТ БОЯ (ВО ВЕСЬ ЭКРАН ПОД ВЕРХНЕЙ ПАНЕЛЬЮ + ИНВЕНТАРЬ + МОБИЛЬНОЕ УПРАВЛЕНИЕ) -->
 <div id="webgl-container">
   <canvas id="webgl-canvas"></canvas>
   <canvas id="overlay-canvas"></canvas>
@@ -1242,6 +1481,24 @@
     <span id="current-map-title">Песочница CTF</span>
   </div>
   <div id="kill-log"></div>
+
+  <!-- Сенсорное мобильное управление (левый джойстик — ход корпуса, правый джойстик — башня и огонь + кнопки) -->
+  <div id="mobile-touch-controls">
+    <div class="mobile-joystick-zone" id="mobile-joy-move">
+      <div class="mobile-joystick-label">ХОД ТАНКА</div>
+      <div class="mobile-joystick-knob" id="mobile-knob-move"></div>
+    </div>
+    <div class="mobile-action-cluster">
+      <button type="button" class="mobile-action-btn fire-btn" id="mobile-btn-fire">🔥 ОГОНЬ</button>
+      <button type="button" class="mobile-action-btn" id="mobile-btn-scope">🎯 ПРИЦЕЛ</button>
+      <button type="button" class="mobile-action-btn" id="mobile-btn-flag">🚩 ФЛАГ</button>
+      <button type="button" class="mobile-action-btn" id="mobile-btn-tab">📊 СЧЁТ</button>
+    </div>
+    <div class="mobile-joystick-zone" id="mobile-joy-aim">
+      <div class="mobile-joystick-label">БАШНЯ / ОГОНЬ</div>
+      <div class="mobile-joystick-knob" id="mobile-knob-aim"></div>
+    </div>
+  </div>
 
   <!-- Нижний левый угол: 5 иконок припасов InventoryIcon из battles.swf -->
   <div id="bottom-left-inventory">
@@ -1393,11 +1650,11 @@
           </div>
         </div>
 
-        <!-- Строка ссылки на битву и загрузки .XML как на Рефе №3 -->
+        <!-- Кнопка загрузки пользовательской .XML карты из Tank Testing Tool (без фейковой ссылки на сервер) -->
         <div class="battle-link-copy-row">
-          <input type="text" class="to-input-field" id="battle-share-link" value="#/server=RU1&battle=sandbox_ctf" readonly>
-          <button class="to-swf-btn" id="btn-copy-battle-link">Копировать</button>
-          <button class="to-swf-btn" id="btn-battles-load-xml" title="Открыть свой .xml файл карты из Tank Testing Tool">📂 .XML</button>
+          <button class="to-swf-btn" id="btn-battles-load-xml" style="width:100%;" title="Открыть свой .xml файл карты из Tank Testing Tool">📂 Загрузить свою .XML карту из Tank Testing Tool</button>
+          <input type="hidden" id="battle-share-link" value="">
+          <button id="btn-copy-battle-link" style="display:none;"></button>
         </div>
 
         <div class="battle-teams-split">
@@ -1487,8 +1744,8 @@
               </div>
             </div>
             <div class="info-bottom-actions">
-              <button class="to-swf-btn info-Bottom-btn" id="btn-garage-upgrade">Улучшить</button>
-              <button class="to-swf-btn info-Bottom-btn" id="btn-garage-equip">Установить</button>
+              <button id="btn-garage-upgrade" style="display:none;"></button>
+              <button class="to-swf-btn info-Bottom-btn" id="btn-garage-equip" style="min-width:160px;">Установить</button>
               <button id="btn-close-garage" style="display:none;"></button>
             </div>
           </div>
@@ -1620,6 +1877,152 @@
     ['eff_health', 'eff_armor', 'eff_power', 'eff_nitro', 'rank_sm_1', 'rank_sm_2', 'rank_sm_3', 'rank_sm_4', 'rank_sm_5', 'rank_sm_6', 'rank_sm_7'].forEach(getSwfImage);
   }
 
+  // ==========================================
+  // 0.1. ОРИГИНАЛЬНОЕ ОКНО ЗАГРУЗКИ ТАНКОВ ОНЛАЙН (ПРЕДЗАГРУЗКА ВСЕХ КАРТИНОК И ТЕКСТУР ДО ОТКРЫТИЯ СПИСКА БИТВ!)
+  // ==========================================
+  const preloaderScreen = document.getElementById('to-preloader-screen');
+  const loaderWinBox = document.getElementById('to-loader-window-box');
+  const loaderArtImg = document.getElementById('to-loader-art-img');
+  const loaderStageText = document.getElementById('to-loader-stage-text');
+  const loaderPctText = document.getElementById('to-loader-pct-text');
+  const loaderLampsRow = document.getElementById('to-loader-lamps-row');
+  const loaderTubeFill = document.getElementById('to-loader-tube-fill');
+  const loaderTubeBgImg = document.getElementById('to-loader-tube-bg-img');
+  const LAMP_COUNT = 18;
+  const lampEls = [];
+
+  if (typeof TANKI_SWF_UI !== 'undefined') {
+    if (loaderWinBox && TANKI_SWF_UI.loader_window_big) {
+      loaderWinBox.style.backgroundImage = `url("${TANKI_SWF_UI.loader_window_big}")`;
+    }
+    if (loaderLampsRow && TANKI_SWF_UI.loader_bar_bg) {
+      loaderLampsRow.style.backgroundImage = `url("${TANKI_SWF_UI.loader_bar_bg}")`;
+    }
+    if (loaderTubeBgImg && TANKI_SWF_UI.loader_tube_bg) {
+      loaderTubeBgImg.src = TANKI_SWF_UI.loader_tube_bg;
+    }
+    if (loaderTubeFill && TANKI_SWF_UI.loader_tube_fuel) {
+      loaderTubeFill.style.backgroundImage = `url("${TANKI_SWF_UI.loader_tube_fuel}")`;
+    }
+    if (loaderLampsRow) {
+      loaderLampsRow.innerHTML = '';
+      for (let i = 0; i < LAMP_COUNT; i++) {
+        const lImg = document.createElement('img');
+        lImg.className = 'to-loader-lamp';
+        lImg.src = TANKI_SWF_UI.loader_lamp_off || '';
+        loaderLampsRow.appendChild(lImg);
+        lampEls.push(lImg);
+      }
+    }
+  }
+
+  let currentColdLoadIdx = 1;
+  function setColdLoadArtwork(idx) {
+    if (typeof TANKI_SWF_UI === 'undefined' || !loaderArtImg) return;
+    const key = `coldload_${((idx - 1) % 8) + 1}`;
+    if (TANKI_SWF_UI[key]) loaderArtImg.src = TANKI_SWF_UI[key];
+  }
+  setColdLoadArtwork(1);
+
+  function updatePreloaderUI(pct01, stageLabel) {
+    const clamped = Math.max(0, Math.min(1, pct01));
+    const pctInt = Math.round(clamped * 100);
+    if (loaderPctText) loaderPctText.textContent = `${pctInt}%`;
+    if (stageLabel && loaderStageText) loaderStageText.textContent = stageLabel;
+    if (loaderTubeFill) loaderTubeFill.style.width = `${pctInt}%`;
+    if (typeof TANKI_SWF_UI !== 'undefined' && lampEls.length > 0) {
+      const litCount = Math.round(clamped * LAMP_COUNT);
+      for (let i = 0; i < lampEls.length; i++) {
+        lampEls[i].src = (i < litCount ? TANKI_SWF_UI.loader_lamp_on : TANKI_SWF_UI.loader_lamp_off) || '';
+      }
+    }
+  }
+
+  function collectAllGameImageUris() {
+    const uris = [];
+    const seen = new Set();
+    const pushUri = (u) => {
+      if (typeof u === 'string' && u.startsWith('data:image/') && !seen.has(u)) {
+        seen.add(u);
+        uris.push(u);
+      }
+    };
+    if (typeof TANKI_SWF_UI !== 'undefined') {
+      Object.values(TANKI_SWF_UI).forEach(pushUri);
+    }
+    if (typeof TANKI_TEXTURES !== 'undefined') {
+      const walk = (obj) => {
+        if (!obj) return;
+        if (typeof obj === 'string') { pushUri(obj); return; }
+        if (typeof obj === 'object') Object.values(obj).forEach(walk);
+      };
+      walk(TANKI_TEXTURES);
+    }
+    if (typeof TANKI_BUILT_IN_MAPS !== 'undefined') {
+      Object.values(TANKI_BUILT_IN_MAPS).forEach(m => { if (m && m.preview) pushUri(m.preview); });
+    }
+    if (typeof TANKI_TARA_TEXTURES !== 'undefined') {
+      Object.values(TANKI_TARA_TEXTURES).forEach(pushUri);
+    }
+    return uris;
+  }
+
+  function runTankiAssetPreloader(stagePrefix, minDurationMs, onComplete) {
+    if (!preloaderScreen) { if (onComplete) onComplete(); return; }
+    // Если открыт специальный хэш #loader — оставляем экран загрузки открытым на 68% для демонстрации/проверки!
+    if (window.location.hash === '#loader') {
+      preloaderScreen.style.display = 'flex';
+      setColdLoadArtwork(1);
+      updatePreloaderUI(0.68, 'Загрузка ресурсов: 3D-модели корпусов, пушек, звуков и 57 карт...');
+      return;
+    }
+
+    preloaderScreen.style.display = 'flex';
+    currentColdLoadIdx = (currentColdLoadIdx % 8) + 1;
+    setColdLoadArtwork(currentColdLoadIdx);
+    updatePreloaderUI(0.04, `${stagePrefix} (инициализация)...`);
+
+    const allUris = collectAllGameImageUris();
+    const total = Math.max(1, allUris.length);
+    let loadedCount = 0;
+    const startTime = performance.now();
+
+    allUris.forEach(u => {
+      const im = new Image();
+      const doneOne = () => { loadedCount++; };
+      im.onload = doneOne;
+      im.onerror = doneOne;
+      im.src = u;
+    });
+
+    function tickLoader() {
+      const elapsed = performance.now() - startTime;
+      const timeRatio = Math.min(1, elapsed / Math.max(120, minDurationMs));
+      const imgRatio = loadedCount / total;
+      const combined = Math.min(1, timeRatio * 0.65 + imgRatio * 0.35);
+
+      if (combined < 0.35) {
+        updatePreloaderUI(combined, `${stagePrefix}: загрузка интерфейса и превью Гаража (${loadedCount}/${total})...`);
+      } else if (combined < 0.75) {
+        setColdLoadArtwork(currentColdLoadIdx + 1);
+        updatePreloaderUI(combined, `${stagePrefix}: декодирование текстур карт .tara и спрайтов эффектов...`);
+      } else {
+        updatePreloaderUI(combined, `${stagePrefix}: подготовка 3D сцены и списка 57 битв...`);
+      }
+
+      if (timeRatio >= 1 && imgRatio >= 0.98) {
+        updatePreloaderUI(1.0, 'Готово! Вход в Танки Онлайн...');
+        setTimeout(() => {
+          preloaderScreen.style.display = 'none';
+          if (onComplete) onComplete();
+        }, 80);
+      } else {
+        requestAnimationFrame(tickLoader);
+      }
+    }
+    requestAnimationFrame(tickLoader);
+  }
+
   // Кнопки полного экрана и схемы управления [?] в верхней панели
   const btnFull = document.getElementById('btn-fullscreen');
   if (btnFull) {
@@ -1638,7 +2041,7 @@
   }
 
   // ==========================================
-  // 1. АУДИОСИСТЕМА TANK TESTING TOOL: ВЫСТРЕЛЫ + ФОНОВЫЙ ЭМБИЕНТ КАРТЫ + ЗВУК ДВИГАТЕЛЯ И БАШНИ!
+  // 1. АУДИОСИСТЕМА TANK TESTING TOOL: БЕЗ ЗАЦИКЛИВАНИЯ БАШНИ, ОГНЕМЁТА, ФРИЗА И ИЗИДЫ!
   // ==========================================
   let soundEnabled = true;
   let masterVolume = 0.25;
@@ -1649,13 +2052,15 @@
   const lastSoundTime = {};
   let activeSoundCount = 0;
 
-  // Непрерывные петли эмбиента (fon.mp3) и двигателя танка (engineidle.mp3 / move.mp3)
+  // Непрерывные петли эмбиента (fon.mp3), двигателя (engine_idle / engine_move) и управляемые петли башни/огнемёта/фриза/изиды
   let ambientSourceNode = null;
   let ambientGainNode = null;
   let engineIdleNode = null;
   let engineIdleGain = null;
   let engineMoveNode = null;
   let engineMoveGain = null;
+  const continuousLoops = {}; // { turret_rot, firebird_shot, freeze_shot, isida_damage, isida_heal }
+  const CONTINUOUS_LOOP_KEYS = new Set(['turret_rot', 'firebird_shot', 'freeze_shot', 'isida_damage', 'isida_heal']);
   let loopsStarted = false;
 
   function initAudioCtx() {
@@ -1743,17 +2148,51 @@
         engineMoveGain.connect(compressorNode);
         engineMoveNode.start(0);
       }
+
+      // 3) Управляемые петли для привода башни, Огнемёта, Фриза и Изиды (звучат ТОЛЬКО пока зажата клавиша!)
+      for (const loopKey of CONTINUOUS_LOOP_KEYS) {
+        const lBuf = await getAudioBuffer(loopKey);
+        if (lBuf && audioCtx) {
+          const src = audioCtx.createBufferSource();
+          src.buffer = lBuf;
+          src.loop = true;
+          const g = audioCtx.createGain();
+          g.gain.value = 0.0;
+          src.connect(g);
+          g.connect(compressorNode);
+          src.start(0);
+          continuousLoops[loopKey] = { source: src, gain: g };
+        }
+      }
     } catch (e) {}
   }
 
-  // Плавная модуляция звука двигателя и башни игрока в каждом кадре
+  // Плавная модуляция звука двигателя, привода башни и струйных пушек игрока в каждом кадре
   function updateEngineAudioTick(dt) {
     if (!audioCtx || !soundEnabled || !playerTank) return;
     const inOverlay = document.getElementById('garage-screen').style.display === 'flex' ||
-                      document.getElementById('battles-screen').style.display === 'flex';
+                      document.getElementById('battles-screen').style.display === 'flex' ||
+                      (preloaderScreen && preloaderScreen.style.display !== 'none');
     if (ambientGainNode) {
-      ambientGainNode.gain.value = inOverlay ? 0.10 : 0.30;
+      ambientGainNode.gain.value = inOverlay ? 0.08 : 0.28;
     }
+
+    // Мгновенно гасим или включаем непрерывные петли башни, Огнемёта, Фриза и Изиды
+    const fadeStep = Math.min(1, 25 * dt);
+    for (const loopKey of CONTINUOUS_LOOP_KEYS) {
+      const entry = continuousLoops[loopKey];
+      if (!entry || !entry.gain) continue;
+      let targetG = 0.0;
+      if (!inOverlay && !playerTank.isDead) {
+        if (loopKey === 'turret_rot') {
+          targetG = (playerTank.turretRotatingTimer > 0) ? 0.16 : 0.0;
+        } else {
+          targetG = (playerTank.weaponSprayTimer > 0 && playerTank.weaponSprayKey === loopKey) ? 0.30 : 0.0;
+        }
+      }
+      entry.gain.gain.value = lerp(entry.gain.gain.value, targetG, fadeStep);
+    }
+
     if (!engineIdleGain || !engineMoveGain) return;
     if (inOverlay || playerTank.isDead) {
       engineIdleGain.gain.value = 0.0;
@@ -1769,12 +2208,13 @@
     }
   }
 
-  // Проигрывание звука с учётом позиции источника (боты вдали звучат тихо, без наложения!)
+  // Проигрывание одиночных звуков выстрелов/взрывов (непрерывные петли обрабатываются через continuousLoops без наслоения!)
   function playTankiSound(soundKey, baseVol = 0.5, sourceTank = null) {
     if (!soundEnabled || masterVolume <= 0.001) return;
+    if (CONTINUOUS_LOOP_KEYS.has(soundKey)) return;
 
     const now = performance.now();
-    const minCooldown = (soundKey.includes('firebird') || soundKey.includes('freeze') || soundKey.includes('isida') || soundKey === 'turret_rot') ? 380 : 140;
+    const minCooldown = 140;
     if (lastSoundTime[soundKey] && now - lastSoundTime[soundKey] < minCooldown) return;
     if (activeSoundCount >= 5 && sourceTank && !sourceTank.isPlayer) return;
 
@@ -1808,7 +2248,7 @@
     });
   }
 
-  ['ambient_fon', 'engine_idle', 'engine_move', 'turret_rot', 'smoky_shot', 'smoky_exp', 'smoky_crit', 'twins_shot', 'railgun', 'railgun_shot', 'thunder_shot', 'thunder_exp', 'ricochet_shot', 'ricochet_bounce', 'ricochet_explosion', 'shaft_shot', 'mine_place', 'mine_boom', 'explosion', 'bonus', 'flag_taken', 'flag_captured', 'flag_returned'].forEach(s => {
+  ['ambient_fon', 'engine_idle', 'engine_move', 'turret_rot', 'firebird_shot', 'freeze_shot', 'isida_damage', 'isida_heal', 'smoky_shot', 'smoky_exp', 'smoky_crit', 'twins_shot', 'railgun', 'railgun_shot', 'thunder_shot', 'thunder_exp', 'ricochet_shot', 'ricochet_bounce', 'ricochet_explosion', 'shaft_shot', 'mine_place', 'mine_boom', 'explosion', 'bonus', 'flag_taken', 'flag_captured', 'flag_returned'].forEach(s => {
     setTimeout(() => getAudioBuffer(s), 180);
   });
 
@@ -3513,6 +3953,8 @@
 
       let moveIntent = 0;
       let turnIntent = 0;
+      this.turretRotatingTimer = Math.max(0, (this.turretRotatingTimer || 0) - dt);
+      this.weaponSprayTimer = Math.max(0, (this.weaponSprayTimer || 0) - dt);
 
       if (this.isPlayer) {
         const garageOpen = document.getElementById('garage-screen').style.display === 'flex';
@@ -3523,9 +3965,18 @@
           if (keys['KeyA'] || keys['ArrowLeft']) turnIntent += 1;
           if (keys['KeyD'] || keys['ArrowRight']) turnIntent -= 1;
 
-          // Классическое управление башней Танков Онлайн: Z / X — поворот башни, C — центрирование, либо наведение мышью
+          const mts = window.mobileTouchState;
+          if (mts && mts.enabled) {
+            if (Math.abs(mts.moveY) > 0.08) moveIntent = clamp(-mts.moveY, -1, 1);
+            if (Math.abs(mts.moveX) > 0.08) turnIntent = clamp(-mts.moveX, -1, 1);
+          }
+
+          // Классическое управление башней Танков Онлайн: Z / X — поворот башни, C — центрирование, правый стик на телефоне, либо наведение мышью
           const prevTurret = this.turretAngle;
-          if (keys['KeyZ'] || keys['Comma']) {
+          if (mts && mts.enabled && mts.aimActive) {
+            this.turretAngle = rotateTowards(this.turretAngle, mts.aimAngle, 5.2 * dt);
+            this.keyboardTurretMode = true;
+          } else if (keys['KeyZ'] || keys['Comma']) {
             this.turretAngle += 2.6 * dt;
             this.keyboardTurretMode = true;
           } else if (keys['KeyX'] || keys['Period']) {
@@ -3544,17 +3995,20 @@
               this.turretAngle = rotateTowards(this.turretAngle, targetAngle, 4.4 * dt);
             }
           }
-          if (Math.abs(normalizeAngle(this.turretAngle - prevTurret)) > 0.015) {
-            playTankiSound('turret_rot', 0.16, this);
+          if (Math.abs(normalizeAngle(this.turretAngle - prevTurret)) > 0.004) {
+            this.turretRotatingTimer = 0.08;
           }
 
-          // Оптический прицел Шафта при зажатии Shift
+          // Оптический прицел Шафта при зажатии Shift или кнопки «Прицел» на телефоне
           const scopeEl = document.getElementById('shaft-scope-overlay');
           if (scopeEl) {
-            scopeEl.style.display = (this.turretId === 'shaft' && (keys['ShiftLeft'] || keys['ShiftRight'])) ? 'flex' : 'none';
+            const scopeActive = this.turretId === 'shaft' && (keys['ShiftLeft'] || keys['ShiftRight'] || (mts && mts.scopeToggled));
+            scopeEl.style.display = scopeActive ? 'flex' : 'none';
           }
 
-          if (isMouseDown || keys['Space']) this.fire();
+          if (isMouseDown || keys['Space'] || (mts && (mts.fireHeld || mts.aimAutoFire))) {
+            this.fire();
+          }
         }
       } else {
         this.updateSmartBotAI(dt);
@@ -3758,7 +4212,10 @@
         if (this.energy < 2) return;
         this.energy = Math.max(0, this.energy - t.drain * dtGlobal);
         const isFlame = t.type === 'flame';
-        playTankiSound(isFlame ? 'firebird_shot' : 'freeze_shot', 0.35, this);
+        if (this.isPlayer) {
+          this.weaponSprayTimer = 0.09;
+          this.weaponSprayKey = isFlame ? 'firebird_shot' : 'freeze_shot';
+        }
         spawnSprayParticle(this, isFlame ? 'fire' : 'freeze', t.dps * (this.supplies.damage > 0 ? 2 : 1));
 
       } else if (t.type === 'ricochet') {
@@ -4203,7 +4660,10 @@
         const dmg = tData.dps * (shooter.supplies.damage > 0 ? 2 : 1) * dt;
         bestTarget.takeDamage(dmg, shooter, 'isida');
       }
-      playTankiSound(isAlly ? 'isida_heal' : 'isida_damage', 0.32, shooter);
+      if (shooter.isPlayer) {
+        shooter.weaponSprayTimer = 0.09;
+        shooter.weaponSprayKey = isAlly ? 'isida_heal' : 'isida_damage';
+      }
 
       const start = new THREE.Vector3(shooter.x + dirX * 2.1, (shooter.y || 0) + 1.35, shooter.z + dirZ * 2.1);
       const end = new THREE.Vector3(bestTarget.x, (bestTarget.y || 0) + 1.25, bestTarget.z);
@@ -4492,6 +4952,21 @@
       updateGarageCameraPos();
     }
   });
+  garageCanvas.addEventListener('touchstart', e => {
+    if (e.touches && e.touches.length > 0) {
+      isDraggingGarage = true;
+      garageDragPrevX = e.touches[0].clientX;
+    }
+  }, { passive: true });
+  window.addEventListener('touchend', () => { isDraggingGarage = false; }, { passive: true });
+  window.addEventListener('touchmove', e => {
+    if (isDraggingGarage && e.touches && e.touches.length > 0) {
+      const dx = e.touches[0].clientX - garageDragPrevX;
+      garageDragPrevX = e.touches[0].clientX;
+      garageOrbitAngle = clamp(garageOrbitAngle - dx * 0.008, -1.05, 1.05);
+      updateGarageCameraPos();
+    }
+  }, { passive: true });
 
   function rebuildGaragePreviewTank() {
     while (garageTankGroup.children.length > 0) {
@@ -4531,7 +5006,13 @@
     document.getElementById('btn-open-garage').classList.toggle('active-green', isVisible);
     document.getElementById('btn-open-battles').classList.toggle('active-green', isBattlesVisible);
     const nb = document.getElementById('btn-nav-battle');
-    if (nb) nb.classList.toggle('active-green', !isVisible && !isBattlesVisible);
+    if (nb) {
+      nb.style.display = (isVisible || isBattlesVisible) ? 'inline-flex' : 'none';
+    }
+    const mobWrap = document.getElementById('mobile-touch-controls');
+    if (mobWrap && window.mobileTouchState) {
+      mobWrap.classList.toggle('active', !!(window.mobileTouchState.enabled && !isVisible && !isBattlesVisible));
+    }
     if (!isVisible) return;
     const w = garageWrap.clientWidth || 420;
     const h = garageWrap.clientHeight || 220;
@@ -4742,6 +5223,171 @@
     if (e.button === 0) isMouseDown = false;
   });
 
+  // ==========================================
+  // СЕНСОРНОЕ МОБИЛЬНОЕ УПРАВЛЕНИЕ (ДВА ВИРТУАЛЬНЫХ СТИКА + КНОПКИ БОЯ)
+  // ==========================================
+  const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth <= 960) || window.location.hash.includes('mobile');
+  window.mobileTouchState = {
+    enabled: isTouchDevice,
+    moveX: 0,
+    moveY: 0,
+    aimActive: false,
+    aimAngle: 0,
+    aimAutoFire: false,
+    fireHeld: false,
+    scopeToggled: false
+  };
+
+  function syncMobileControlsUI() {
+    const mts = window.mobileTouchState;
+    const btnMob = document.getElementById('btn-mobile-toggle');
+    if (btnMob) btnMob.classList.toggle('active-green', !!(mts && mts.enabled));
+    const mobWrap = document.getElementById('mobile-touch-controls');
+    const isOverlayOpen = document.getElementById('garage-screen').style.display === 'flex' ||
+                          document.getElementById('battles-screen').style.display === 'flex';
+    if (mobWrap) mobWrap.classList.toggle('active', !!(mts && mts.enabled && !isOverlayOpen));
+  }
+
+  const btnMobileToggle = document.getElementById('btn-mobile-toggle');
+  if (btnMobileToggle) {
+    btnMobileToggle.onclick = () => {
+      window.mobileTouchState.enabled = !window.mobileTouchState.enabled;
+      if (!window.mobileTouchState.enabled) {
+        window.mobileTouchState.moveX = 0;
+        window.mobileTouchState.moveY = 0;
+        window.mobileTouchState.aimActive = false;
+        window.mobileTouchState.aimAutoFire = false;
+        window.mobileTouchState.fireHeld = false;
+      }
+      syncMobileControlsUI();
+    };
+  }
+
+  function bindVirtualJoystick(zoneId, knobId, onMoveCallback, onReleaseCallback) {
+    const zone = document.getElementById(zoneId);
+    const knob = document.getElementById(knobId);
+    if (!zone || !knob) return;
+    let activePointerId = null;
+    const maxRadius = 44;
+
+    function updateFromClientXY(clientX, clientY) {
+      const rect = zone.getBoundingClientRect();
+      const cx = rect.left + rect.width * 0.5;
+      const cy = rect.top + rect.height * 0.5;
+      let dx = clientX - cx;
+      let dy = clientY - cy;
+      const dist = Math.hypot(dx, dy);
+      const clampedDist = Math.min(maxRadius, dist);
+      const ang = Math.atan2(dy, dx);
+      const kx = Math.cos(ang) * clampedDist;
+      const ky = Math.sin(ang) * clampedDist;
+      knob.style.transform = `translate(${kx.toFixed(1)}px, ${ky.toFixed(1)}px)`;
+      onMoveCallback(kx / maxRadius, ky / maxRadius, clampedDist / maxRadius);
+    }
+
+    function resetKnob() {
+      activePointerId = null;
+      knob.style.transform = 'translate(0px, 0px)';
+      onReleaseCallback();
+    }
+
+    zone.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      activePointerId = e.pointerId;
+      if (zone.setPointerCapture) {
+        try { zone.setPointerCapture(e.pointerId); } catch (_) {}
+      }
+      updateFromClientXY(e.clientX, e.clientY);
+    });
+    zone.addEventListener('pointermove', e => {
+      if (activePointerId !== e.pointerId) return;
+      e.preventDefault();
+      updateFromClientXY(e.clientX, e.clientY);
+    });
+    zone.addEventListener('pointerup', e => {
+      if (activePointerId !== e.pointerId) return;
+      resetKnob();
+    });
+    zone.addEventListener('pointercancel', e => {
+      if (activePointerId !== e.pointerId) return;
+      resetKnob();
+    });
+  }
+
+  bindVirtualJoystick(
+    'mobile-joy-move',
+    'mobile-knob-move',
+    (nx, ny) => {
+      window.mobileTouchState.moveX = nx;
+      window.mobileTouchState.moveY = ny;
+    },
+    () => {
+      window.mobileTouchState.moveX = 0;
+      window.mobileTouchState.moveY = 0;
+    }
+  );
+
+  bindVirtualJoystick(
+    'mobile-joy-aim',
+    'mobile-knob-aim',
+    (nx, ny, mag) => {
+      if (mag > 0.14) {
+        window.mobileTouchState.aimActive = true;
+        // Экранное направление (nx вправо, ny вниз) переводим в угол башни (-X = sin, -Z = cos)
+        window.mobileTouchState.aimAngle = Math.atan2(-nx, -ny);
+        window.mobileTouchState.aimAutoFire = (mag > 0.78);
+      } else {
+        window.mobileTouchState.aimAutoFire = false;
+      }
+    },
+    () => {
+      window.mobileTouchState.aimActive = false;
+      window.mobileTouchState.aimAutoFire = false;
+    }
+  );
+
+  const mobBtnFire = document.getElementById('mobile-btn-fire');
+  if (mobBtnFire) {
+    const setFire = (val) => {
+      window.mobileTouchState.fireHeld = val;
+      mobBtnFire.classList.toggle('pressed', val);
+    };
+    mobBtnFire.addEventListener('pointerdown', e => { e.preventDefault(); setFire(true); });
+    mobBtnFire.addEventListener('pointerup', () => setFire(false));
+    mobBtnFire.addEventListener('pointercancel', () => setFire(false));
+    mobBtnFire.addEventListener('pointerleave', () => setFire(false));
+  }
+
+  const mobBtnScope = document.getElementById('mobile-btn-scope');
+  if (mobBtnScope) {
+    mobBtnScope.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      window.mobileTouchState.scopeToggled = !window.mobileTouchState.scopeToggled;
+      mobBtnScope.classList.toggle('pressed', window.mobileTouchState.scopeToggled);
+    });
+  }
+
+  const mobBtnFlag = document.getElementById('mobile-btn-flag');
+  if (mobBtnFlag) {
+    mobBtnFlag.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      if (playerTank && !playerTank.isDead) dropCarriedFlag(playerTank, true);
+    });
+  }
+
+  const mobBtnTab = document.getElementById('mobile-btn-tab');
+  if (mobBtnTab) {
+    mobBtnTab.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      const ts = document.getElementById('tab-screen');
+      const nextOpen = ts.style.display !== 'flex';
+      ts.style.display = nextOpen ? 'flex' : 'none';
+      if (nextOpen) updateTabTable();
+    });
+  }
+
+  syncMobileControlsUI();
+
   document.getElementById('btn-sup-1').onclick = () => useSupply('repair');
   document.getElementById('btn-sup-2').onclick = () => useSupply('armor');
   document.getElementById('btn-sup-3').onclick = () => useSupply('damage');
@@ -4907,11 +5553,10 @@
       tr.dataset.mapId = id;
       if (id === selectedBattleMapId) tr.classList.add('selected-battle-row');
 
-      // Формат строки в точности как на Рефе №3: 3 колонки!
-      // 1-я: «Песочница CTF», 2-я: плашки [ 4 | 4 ] для CTF, 3-я: «8 🟢» или «16 🟢» справа!
-      const rCnt = 3 + (idx % 5);
-      const bCnt = 3 + ((idx + 2) % 5);
-      const maxP = m.maxPlayers || (mode === 'CTF' ? 16 : 20);
+      // Честный состав локального боя: 4 на 4 (8 танков с ботами)
+      const rCnt = 4;
+      const bCnt = 4;
+      const maxP = 8;
       const midCol = mode === 'CTF'
         ? `<span class="battle-team-pills"><span class="pill-red">${rCnt}</span><span class="pill-blue">${bCnt}</span></span>`
         : '';
@@ -4977,13 +5622,23 @@
     }
   }
 
-  function launchSelectedBattleMap(team = 'blue') {
+  function launchSelectedBattleMap(team = 'blue', withLoader = true) {
     if (!selectedBattleMapId) return;
-    loadBuiltInMap(selectedBattleMapId);
-    if (playerTank) playerTank.team = team;
-    setBattlesOpen(false);
-    setGarageOpen(false);
-    resetMatchRound();
+    const mInfo = (typeof TANKI_BUILT_IN_MAPS !== 'undefined' && TANKI_BUILT_IN_MAPS[selectedBattleMapId])
+      ? TANKI_BUILT_IN_MAPS[selectedBattleMapId]
+      : { nameRu: selectedBattleMapId };
+    const doEnter = () => {
+      loadBuiltInMap(selectedBattleMapId);
+      if (playerTank) playerTank.team = team;
+      setBattlesOpen(false);
+      setGarageOpen(false);
+      resetMatchRound();
+    };
+    if (withLoader && typeof runTankiAssetPreloader === 'function') {
+      runTankiAssetPreloader(`Загрузка карты «${mInfo.nameRu || selectedBattleMapId}»`, 360, doEnter);
+    } else {
+      doEnter();
+    }
   }
 
   document.getElementById('btn-join-battle-blue').onclick = () => launchSelectedBattleMap('blue');
@@ -5892,36 +6547,46 @@
   dropBoxes[1].mesh.position.y = dropBoxes[1].altitude;
   scene.remove(dropBoxes[1].paraMesh);
 
-  if (window.location.hash === '#garage') {
-    setGarageOpen(true);
-  } else if (window.location.hash === '#battles') {
-    setBattlesOpen(true);
-  } else if (window.location.hash.startsWith('#map=')) {
-    const mId = window.location.hash.slice(5);
-    if (TANKI_BUILT_IN_MAPS && TANKI_BUILT_IN_MAPS[mId]) {
-      selectedBattleMapId = mId;
-      launchSelectedBattleMap('blue');
-      if (mId === 'kungur' && playerTank) {
-        // Демонстрация 2-уровневой физики моста Кунгура: игрок на мосту (X=82.5, Z=-2.0, Y=9.0м), бот проезжает прямо под мостом (Y=0.0м)
-        playerTank.x = 82.5;
-        playerTank.z = -2.0;
-        playerTank.y = getTerrainHeight(82.5, -2.0, 9.0);
-        playerTank.hullAngle = 0.0;
-        playerTank.turretAngle = -0.45;
-        playerTank.supplies.damage = 18.0;
-        if (tanks[1]) {
-          tanks[1].x = 75.5;
-          tanks[1].z = -5.0;
-          tanks[1].y = getTerrainHeight(75.5, -5.0, 0.0);
-          tanks[1].hullAngle = 1.57;
-          tanks[1].turretAngle = 1.2;
+  function applyStartupHashRoute() {
+    const h = window.location.hash || '';
+    if (h === '#garage') {
+      setGarageOpen(true);
+    } else if (h === '#battle' || h === '#mobile') {
+      setBattlesOpen(false);
+      setGarageOpen(false);
+    } else if (h.startsWith('#map=')) {
+      const mId = h.slice(5);
+      if (TANKI_BUILT_IN_MAPS && TANKI_BUILT_IN_MAPS[mId]) {
+        selectedBattleMapId = mId;
+        launchSelectedBattleMap('blue', false);
+        if (mId === 'kungur' && playerTank) {
+          // Демонстрация 2-уровневой физики моста Кунгура: игрок на мосту (X=82.5, Z=-2.0, Y=9.0м), бот проезжает прямо под мостом (Y=0.0м)
+          playerTank.x = 82.5;
+          playerTank.z = -2.0;
+          playerTank.y = getTerrainHeight(82.5, -2.0, 9.0);
+          playerTank.hullAngle = 0.0;
+          playerTank.turretAngle = -0.45;
+          playerTank.supplies.damage = 18.0;
+          if (tanks[1]) {
+            tanks[1].x = 75.5;
+            tanks[1].z = -5.0;
+            tanks[1].y = getTerrainHeight(75.5, -5.0, 0.0);
+            tanks[1].hullAngle = 1.57;
+            tanks[1].turretAngle = 1.2;
+          }
+          camera.position.x = playerTank.x;
+          camera.position.y = playerTank.y + camDist * Math.sin(camPitch);
+          camera.position.z = playerTank.z + camDist * Math.cos(camPitch);
         }
-        camera.position.x = playerTank.x;
-        camera.position.y = playerTank.y + camDist * Math.sin(camPitch);
-        camera.position.z = playerTank.z + camDist * Math.cos(camPitch);
       }
+    } else if (h !== '#loader') {
+      // По умолчанию при входе в Танки Онлайн открывается Список битв (Лобби), а не сразу бой!
+      setBattlesOpen(true);
     }
   }
+
+  applyStartupHashRoute();
+  runTankiAssetPreloader('Загрузка Танки Онлайн 2.5D', 380);
 
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
