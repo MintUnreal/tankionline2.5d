@@ -1397,6 +1397,9 @@
       <img id="ui-icon-garage" src="" alt="">
       <span>Гараж</span>
     </button>
+    <button class="to-swf-btn" id="btn-camera-mode" title="Переключить вид: 2D Сверху (с подземным рентгеном X-Ray) ⇄ Классический 3D вид Танков Онлайн (клавиша V)">
+      <span id="camera-mode-label">🎥 2D / 3D [V]</span>
+    </button>
     <button class="to-swf-btn" id="btn-mobile-toggle" title="Включить / выключить сенсорные джойстики для телефона и планшета">
       <span>📱 Тач</span>
     </button>
@@ -1440,6 +1443,9 @@
   <div id="ctf-banner"></div>
   <div class="battle-map-corner-pill" id="btn-current-map-badge" title="Нажмите, чтобы выбрать любую из 57 карт Танков Онлайн">
     <span id="current-map-title">Песочница CTF</span>
+  </div>
+  <div class="battle-map-corner-pill" id="xray-underground-badge" style="top:8px; left:134px; display:none; border-color:#38ff6a; color:#65f732; background:rgba(8,28,14,0.88); box-shadow:0 0 10px rgba(56,255,106,0.45);">
+    <span>🚇 ПОДЗЕМЕЛЬЕ / ПОД МОСТОМ (X-RAY ПРОСВЕТ АКТИВЕН)</span>
   </div>
   <div id="kill-log"></div>
 
@@ -1488,6 +1494,26 @@
       <img id="img-sup-5" src="" alt="Мина">
       <span class="counter" id="cnt-sup-5">10</span>
     </div>
+  </div>
+
+  <!-- Панель быстрого переключения вооружения и спавна танков из Tank Testing Tool (Новая Графика 3D) -->
+  <div id="ttt-quick-bar" style="position:absolute; bottom:8px; left:50%; transform:translateX(-50%); z-index:26; display:flex; align-items:center; gap:5px; padding:4px 8px; background:rgba(9,22,12,0.86); border:1px solid #4ade80; border-radius:4px; box-shadow:0 2px 10px rgba(0,0,0,0.75); font:11px Tahoma,sans-serif; color:#d9f99d; user-select:none; white-space:nowrap;">
+    <span style="color:#65f732; font-weight:700; margin-right:2px;" title="Tank Testing Tool (Новая Графика 3D)">⚙ TTT 3D:</span>
+    <button type="button" class="to-swf-btn" id="ttt-prev-hull" style="min-width:20px; height:20px; padding:0 4px;" title="Предыдущий корпус (клавиша [)">◀</button>
+    <span id="ttt-lbl-hull" style="min-width:74px; text-align:center; font-weight:700; color:#fff;" title="Корпус M3 (клавиши [ / ])">Хорнет M3</span>
+    <button type="button" class="to-swf-btn" id="ttt-next-hull" style="min-width:20px; height:20px; padding:0 4px;" title="Следующий корпус (клавиша ])">▶</button>
+
+    <span style="color:#4b5563;">|</span>
+    <button type="button" class="to-swf-btn" id="ttt-prev-turret" style="min-width:20px; height:20px; padding:0 4px;" title="Предыдущая пушка (клавиша -)">◀</button>
+    <span id="ttt-lbl-turret" style="min-width:78px; text-align:center; font-weight:700; color:#fef08a;" title="Пушка M3 (клавиши - / =)">Рельса M3</span>
+    <button type="button" class="to-swf-btn" id="ttt-next-turret" style="min-width:20px; height:20px; padding:0 4px;" title="Следующая пушка (клавиша =)">▶</button>
+
+    <span style="color:#4b5563;">|</span>
+    <button type="button" class="to-swf-btn" id="ttt-next-paint" style="height:20px; padding:0 6px;" title="Сменить краску танка (клавиша P)">🎨 <span id="ttt-lbl-paint">Зелёный</span> [P]</button>
+    <button type="button" class="to-swf-btn" id="ttt-spawn-dummy" style="height:20px; padding:0 6px;" title="Создать танк-мишень перед собой как в Tank Testing Tool (клавиша Insert)">+ Танк [Ins]</button>
+    <button type="button" class="to-swf-btn" id="ttt-flip-tank" style="height:20px; padding:0 6px;" title="Подбросить с переворотом / Поставить перевёрнутый танк на гусеницы (клавиша R)">🔄 Переворот [R]</button>
+    <button type="button" class="to-swf-btn" id="ttt-toggle-ai" style="height:20px; padding:0 6px;" title="Переключить режим ботов: Активный бой / Неподвижные мишени TTT (клавиша B)">🤖 <span id="ttt-lbl-ai">ИИ: Бой</span> [B]</button>
+    <button type="button" class="to-swf-btn" id="ttt-self-destruct" style="height:20px; padding:0 6px;" title="Самоуничтожение / Респавн танка (клавиша Delete)">💥 [Del]</button>
   </div>
 
   <!-- Нижний правый угол: CTFScoreIndicator и Таймер из battles.swf -->
@@ -2310,28 +2336,29 @@
   });
 
   // ==========================================
-  // 2. ХАРАКТЕРИСТИКИ КОРПУСОВ, ПУШЕК, КРАСОК И ПРИПАСОВ (СТАРЫЕ МОДИФИКАЦИИ M0–M3 ИЗ TTT)
+  // 2. ТОЧНЫЕ ФИЗИЧЕСКИЕ ХАРАКТЕРИСТИКИ КОРПУСОВ M3 И ПУШЕК M3 ИЗ TANK TESTING TOOL / BATTLES.SWF
+  //    (Скорость в м/с, поворот в рад/с и град/с, реальная масса в кг, тяга гусениц power, отдача kickback, удар impactForce)
   // ==========================================
   const HULL_DATA = {
-    wasp:     { name: 'Васп',     hp: 150, speed: 12.4, turn: 3.5, mass: 1.0, prices: [10, 150, 450, 1500], desc: 'Лёгкий скоростной корпус (оригинальная модель из Tank Testing Tool). Идеален для стремительного захвата и увоза вражеского флага.' },
-    hornet:   { name: 'Хорнет',   hp: 180, speed: 11.2, turn: 3.1, mass: 1.25, prices: [20, 250, 750, 2300], desc: 'Классический разведчик Хорнет из ранних Танков Онлайн. Отличная динамика, управляемость в заносе и низкий силуэт.' },
-    hunter:   { name: 'Хантер',   hp: 230, speed: 9.2,  turn: 2.6, mass: 1.7, prices: [15, 200, 600, 1800], desc: 'Универсальный средний корпус с оптимальным сочетанием брони, скорости и проходимости по пандусам.' },
-    viking:   { name: 'Викинг',   hp: 280, speed: 8.2,  turn: 2.3, mass: 2.2, prices: [40, 450, 1350, 4000], desc: 'Широкий бронированный средний корпус. Превосходно держит отдачу Грома, Рельсы и Рикошета.' },
-    dictator: { name: 'Диктатор', hp: 310, speed: 7.5,  turn: 2.1, mass: 2.5, prices: [30, 350, 1000, 3000], desc: 'Высокий средний корпус классической эры ТО. Позволяет простреливать укрытия на возвышенностях.' },
-    titan:    { name: 'Титан',    hp: 370, speed: 6.3,  turn: 1.7, mass: 3.0, prices: [25, 300, 900, 2700], desc: 'Тяжёлый штурмовой корпус для удержания ключевых точек карты и прикрытия флагоносца.' },
-    mamoth:   { name: 'Мамонт',   hp: 440, speed: 5.3,  turn: 1.4, mass: 3.8, prices: [50, 550, 1650, 5000], desc: 'Сверхтяжёлая крепость на гусеницах. Колоссальный запас брони для обороны флага.' }
+    wasp:     { name: 'Васп',     hp: 150, speed: 14.8, garageSpeed: 12.0, turn: 2.70, turnDeg: 155.0, mass: 1000, power: 7200,  prices: [10, 150, 450, 1500], desc: 'Лёгкий скоростной корпус M3 (Tank Testing Tool: 12.0 м/с, 155 град/с, масса 1000 кг). Мгновенный разгон, легко встаёт на дыбы и переворачивается от Рельсы!' },
+    hornet:   { name: 'Хорнет',   hp: 180, speed: 13.8, garageSpeed: 11.0, turn: 2.27, turnDeg: 130.0, mass: 1250, power: 8400,  prices: [20, 250, 750, 2300], desc: 'Классический разведчик Хорнет M3 (11.0 м/с, 130 град/с, масса 1250 кг). Стремительный разгон, фирменный управляемый занос и прыжки с мостов.' },
+    hunter:   { name: 'Хантер',   hp: 230, speed: 11.6, garageSpeed: 9.5,  turn: 2.01, turnDeg: 115.0, mass: 1600, power: 9800,  prices: [15, 200, 600, 1800], desc: 'Универсальный средний корпус Хантер M3 (9.5 м/с, 115 град/с, масса 1600 кг). Сбалансированная 10-лучевая подвеска и высокая приёмистость.' },
+    viking:   { name: 'Викинг',   hp: 300, speed: 11.0, garageSpeed: 9.0,  turn: 1.88, turnDeg: 108.0, mass: 2100, power: 12200, prices: [40, 450, 1350, 4000], desc: 'Широкий низкопрофильный корпус Викинг M3 (9.0 м/с, 108 град/с, масса 2100 кг). Отличная тяга на подъёмах и высокая устойчивость.' },
+    dictator: { name: 'Диктатор', hp: 280, speed: 10.4, garageSpeed: 8.5,  turn: 1.78, turnDeg: 102.0, mass: 1900, power: 10800, prices: [30, 350, 1000, 3000], desc: 'Высокий средний корпус Диктатор M3 (8.5 м/с, 102 град/с, масса 1900 кг). Позволяет простреливать укрытия на возвышенностях.' },
+    titan:    { name: 'Титан',    hp: 370, speed: 8.4,  garageSpeed: 6.8,  turn: 1.40, turnDeg: 80.0,  mass: 2700, power: 13500, prices: [25, 300, 900, 2700], desc: 'Тяжёлый штурмовой корпус Титан M3 (6.8 м/с, 80 град/с, масса 2700 кг). Мощный таранный импульс и уверенный подъём в гору.' },
+    mamoth:   { name: 'Мамонт',   hp: 440, speed: 7.4,  garageSpeed: 6.0,  turn: 1.13, turnDeg: 65.0,  mass: 3300, power: 15800, prices: [50, 550, 1650, 5000], desc: 'Сверхтяжёлая крепость Мамонт M3 (6.0 м/с, 65 град/с, масса 3300 кг). Легко сдвигает и переворачивает лёгкие танки.' }
   };
 
   const TURRET_DATA = {
-    smoky:    { name: 'Смоки',    type: 'bullet',   reload: 1.35, dmg: 38, crit: 0.22, critMult: 2.5, speed: 52, recoil: 3.2, prices: [10, 120, 450, 1400], desc: 'Классическая пушка Смоки (текстура Tank Testing Tool) с высоким шансом критического выстрела.' },
-    firebird: { name: 'Огнемёт',  type: 'flame',    energyMax: 100, drain: 28, dps: 95, burnDps: 20, range: 13.5, prices: [15, 160, 550, 1700], desc: 'Орудие ближнего боя: выжигает броню и поджигает танки противника в конусе поражения.' },
-    twins:    { name: 'Твинс',    type: 'twins',    reload: 0.42, dmg: 17, speed: 34, recoil: 1.1, prices: [20, 220, 700, 2100], desc: 'Двуствольная скорострельная плазменная пушка, непрерывно сбивающая прицел противнику.' },
-    railgun:  { name: 'Рельса',   type: 'railgun',  chargeTime: 1.05, reload: 3.60, dmg: 145, recoil: 8.5, prices: [35, 380, 1150, 3400], desc: 'Легендарная электромагнитная пушка Рельса. Пробивает танки навылет, но блокируется стенами.' },
-    isida:    { name: 'Изида',    type: 'beam',     energyMax: 100, drain: 26, dps: 88, heal: 80, range: 12.5, prices: [30, 320, 980, 2900], desc: 'Генератор нанороботов: ремонтирует союзные танки и разрушает броню врагов на ближней дистанции.' },
-    thunder:  { name: 'Гром',     type: 'thunder',  reload: 2.35, dmg: 88, splash: 7.5, speed: 44, recoil: 5.2, prices: [45, 480, 1450, 4300], desc: 'Орудие среднего калибра с разрывными снарядами, поражающими группу врагов в радиусе взрыва.' },
-    freeze:   { name: 'Фриз',     type: 'freeze',   energyMax: 100, drain: 28, dps: 90, slow: 0.45, range: 13.5, prices: [40, 440, 1300, 3900], desc: 'Криогенная пушка Фриз: замораживает ходовую часть и башню вражеского танка.' },
-    ricochet: { name: 'Рикошет',  type: 'ricochet', reload: 0.56, energyMax: 100, drain: 15, dmg: 38, speed: 33, bounces: 4, recoil: 2.2, prices: [45, 490, 1480, 4400], desc: 'Плазменная пушка Рикошет: сгустки плазмы многократно отскакивают от бетонных стен и скал.' },
-    shaft:    { name: 'Шафт',     type: 'shaft',    reload: 3.40, dmg: 165, recoil: 9.5, prices: [55, 580, 1750, 5200], desc: 'Тяжёлое снайперское орудие Шафт с сокрушительным разовым уроном и оптическим прицелом (Shift).' }
+    smoky:    { name: 'Смоки',    type: 'bullet',   reload: 1.30, dmg: 38, crit: 0.22, critMult: 2.3, speed: 62, recoil: 1950, impact: 2450, turnSpeed: 1.47, turnDeg: 84.0,  turnAccel: 1.62, autoAimUp: 0.21, autoAimDown: 0.16, prices: [10, 120, 450, 1400], desc: 'Классическая пушка Смоки M3 (84 град/с, высокий физический удар снаряда impactForce и отдача kickback).' },
+    firebird: { name: 'Огнемёт',  type: 'flame',    energyMax: 100, drain: 25, dps: 95, burnDps: 20, range: 15.5, recoil: 0, impact: 0, turnSpeed: 1.75, turnDeg: 100.0, turnAccel: 1.92, autoAimUp: 0.20, autoAimDown: 0.16, prices: [15, 160, 550, 1700], desc: 'Орудие ближнего боя Огнемёт M3 (100 град/с): выжигает броню и поджигает танки в конусе поражения.' },
+    twins:    { name: 'Твинс',    type: 'twins',    reload: 0.38, dmg: 16, speed: 40, recoil: 860, impact: 1480, turnSpeed: 1.40, turnDeg: 80.0,  turnAccel: 1.55, autoAimUp: 0.19, autoAimDown: 0.16, prices: [20, 220, 700, 2100], desc: 'Двуствольная плазменная пушка Твинс M3 (80 град/с): шквал плазмы физически толкает и сбивает прицел врагу.' },
+    railgun:  { name: 'Рельса',   type: 'railgun',  chargeTime: 1.00, reload: 3.50, dmg: 145, recoil: 4850, impact: 5650, weakeningCoeff: 0.8, turnSpeed: 1.01, turnDeg: 58.0,  turnAccel: 1.10, autoAimUp: 0.19, autoAimDown: 0.14, prices: [35, 380, 1150, 3400], desc: 'Электромагнитная пушка Рельса M3 (58 град/с, мощнейшая отдача kickback и удар impactForce — переворачивает Васпов и Хорнетов!).' },
+    isida:    { name: 'Изида',    type: 'beam',     energyMax: 100, drain: 25, dps: 88, heal: 80, range: 14.0, recoil: 0, impact: 0, turnSpeed: 1.68, turnDeg: 96.0,  turnAccel: 1.85, autoAimUp: 0.22, autoAimDown: 0.18, prices: [30, 320, 980, 2900], desc: 'Генератор нанороботов Изида M3 (96 град/с): ремонтирует союзников и разрушает броню врагов.' },
+    thunder:  { name: 'Гром',     type: 'thunder',  reload: 2.30, dmg: 88, splash: 10.0, speed: 52, recoil: 3650, impact: 4250, turnSpeed: 1.19, turnDeg: 68.0,  turnAccel: 1.30, autoAimUp: 0.21, autoAimDown: 0.16, prices: [45, 480, 1450, 4300], desc: 'Орудие Гром M3 (68 град/с): мощная взрывная волна и отдача, позволяющая переворачивать танк обратно на гусеницы!' },
+    freeze:   { name: 'Фриз',     type: 'freeze',   energyMax: 100, drain: 26, dps: 90, slow: 0.40, range: 15.5, recoil: 0, impact: 0, turnSpeed: 1.61, turnDeg: 92.0,  turnAccel: 1.78, autoAimUp: 0.20, autoAimDown: 0.16, prices: [40, 440, 1300, 3900], desc: 'Криогенная пушка Фриз M3 (92 град/с): замораживает ходовую часть и привод башни врага.' },
+    ricochet: { name: 'Рикошет',  type: 'ricochet', reload: 0.52, energyMax: 100, drain: 14, dmg: 38, speed: 38, bounces: 4, recoil: 1680, impact: 2380, turnSpeed: 1.33, turnDeg: 76.0,  turnAccel: 1.48, autoAimUp: 0.18, autoAimDown: 0.14, prices: [45, 490, 1480, 4400], desc: 'Плазменная пушка Рикошет M3 (76 град/с): упругие плазменные шары с мощным опрокидывающим импульсом.' },
+    shaft:    { name: 'Шафт',     type: 'shaft',    reload: 3.20, dmg: 165, recoil: 5250, impact: 6100, turnSpeed: 0.84, turnDeg: 48.0,  turnAccel: 0.95, autoAimUp: 0.19, autoAimDown: 0.14, prices: [55, 580, 1750, 5200], desc: 'Тяжёлое снайперское орудие Шафт M3 (48 град/с) с колоссальным импульсом отдачи и удара (Shift — прицел).' }
   };
 
   // 15 оригинальных красок из Tank Testing Tool с банками краски и бесшовными текстурами!
@@ -2373,25 +2400,95 @@
 
   const aspect = container.clientWidth / Math.max(1, container.clientHeight);
   let viewSize = 44;
-  const camera = new THREE.OrthographicCamera(
+  const orthoCamera = new THREE.OrthographicCamera(
     -viewSize * aspect / 2, viewSize * aspect / 2,
     viewSize / 2, -viewSize / 2,
-    0.1, 280
+    0.1, 320
   );
+  const perspCamera = new THREE.PerspectiveCamera(62, aspect, 0.25, 420);
+
+  // По умолчанию включён полноценный 3D режим как в Tank Testing Tool с новой графикой!
+  let is3DCameraMode = (window.location.hash !== '#2d' && window.location.hash !== '#underground');
+  let cam3DArcLevel = 0.36; // Высота дуги камеры FollowCameraController (Q/E, PgUp/PgDn, Колесо мыши)
+  let cam3DYaw = 0;         // Плавный угол следования камеры за башней (пружинный демпфер Alternativa3D)
+  let cam3DYawVel = 0;
+  let cam3DSmoothY = 0;
+  let cam3DPitchRecoil = 0; // ProjectileHitCameraModifier: импульс отдачи камеры при выстреле
+  let cam3DBackRecoil = 0;
+  let tttBotAiEnabled = true;
+  let camera = is3DCameraMode ? perspCamera : orthoCamera;
+
   const camDist = 56;
   const camPitch = THREE.MathUtils.degToRad(64);
-  camera.position.set(0, camDist * Math.sin(camPitch), camDist * Math.cos(camPitch));
-  camera.lookAt(0, 0, 0);
+  orthoCamera.position.set(0, camDist * Math.sin(camPitch), camDist * Math.cos(camPitch));
+  orthoCamera.lookAt(0, 0, 0);
+  perspCamera.position.set(0, 8, 14);
+  perspCamera.lookAt(0, 1.5, 0);
+
+  function syncCameraModeUI() {
+    camera = is3DCameraMode ? perspCamera : orthoCamera;
+    const btnCam = document.getElementById('btn-camera-mode');
+    const lblCam = document.getElementById('camera-mode-label');
+    if (btnCam) btnCam.classList.toggle('active-green', is3DCameraMode);
+    if (lblCam) lblCam.textContent = is3DCameraMode ? '🎥 Вид: 3D [V]' : '🎥 Вид: 2D [V]';
+  }
+  syncCameraModeUI();
+
+  function snapFollowCamera3D() {
+    if (typeof playerTank === 'undefined' || !playerTank) return;
+    cam3DYaw = playerTank.turretAngle;
+    cam3DYawVel = 0;
+    const pY = (playerTank.y !== undefined) ? playerTank.y : getTerrainHeight(playerTank.x, playerTank.z);
+    cam3DSmoothY = pY;
+    const bDist = 6.2 + cam3DArcLevel * 6.8 + cam3DArcLevel * cam3DArcLevel * 2.5;
+    const bHeight = 1.85 + cam3DArcLevel * 4.2 + cam3DArcLevel * cam3DArcLevel * 6.4;
+    perspCamera.position.set(
+      playerTank.x + Math.sin(cam3DYaw) * bDist,
+      pY + bHeight,
+      playerTank.z + Math.cos(cam3DYaw) * bDist
+    );
+    const lookX = playerTank.x - Math.sin(cam3DYaw) * 7.5;
+    const lookY = pY + 1.45 - cam3DArcLevel * 2.4;
+    const lookZ = playerTank.z - Math.cos(cam3DYaw) * 7.5;
+    perspCamera.lookAt(lookX, lookY, lookZ);
+  }
+
+  function toggleCameraDimensionMode(forceMode = undefined) {
+    is3DCameraMode = (forceMode !== undefined) ? !!forceMode : !is3DCameraMode;
+    syncCameraModeUI();
+    if (typeof playerTank !== 'undefined' && playerTank) {
+      if (is3DCameraMode) {
+        playerTank.keyboardTurretMode = true;
+        snapFollowCamera3D();
+        if (typeof showCtfBanner === 'function') {
+          showCtfBanner('🎥 Режим 3D (Tank Testing Tool): W/A/S/D — ход, Z/X/C — башня, Q/E/Колесо — высота камеры, [ / ] и - / = — смена танка, V — 2D вид', '#65f732');
+        }
+      } else {
+        if (typeof showCtfBanner === 'function') {
+          showCtfBanner('🎥 Режим 2D Сверху (Тактический вид + рентген X-Ray сквозь мосты и подземелья): V — вернуться в 3D TTT', '#38bdf8');
+        }
+      }
+    }
+  }
+
+  const btnCamModeEl = document.getElementById('btn-camera-mode');
+  if (btnCamModeEl) {
+    btnCamModeEl.onclick = () => toggleCameraDimensionMode();
+  }
 
   canvas.addEventListener('wheel', e => {
     e.preventDefault();
+    if (is3DCameraMode) {
+      cam3DArcLevel = Math.max(0.06, Math.min(1.0, cam3DArcLevel + (e.deltaY > 0 ? 0.07 : -0.07)));
+      return;
+    }
     viewSize = Math.max(24, Math.min(88, viewSize + (e.deltaY > 0 ? 4 : -4)));
     const asp = container.clientWidth / Math.max(1, container.clientHeight);
-    camera.left = -viewSize * asp / 2;
-    camera.right = viewSize * asp / 2;
-    camera.top = viewSize / 2;
-    camera.bottom = -viewSize / 2;
-    camera.updateProjectionMatrix();
+    orthoCamera.left = -viewSize * asp / 2;
+    orthoCamera.right = viewSize * asp / 2;
+    orthoCamera.top = viewSize / 2;
+    orthoCamera.bottom = -viewSize / 2;
+    orthoCamera.updateProjectionMatrix();
   }, { passive: false });
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -2459,6 +2556,8 @@
   const walls = [];
   const mapRamps = [];
   const walkableSurfaces = [];
+  const mapPropRecords = []; // 3D AABB + сфера всех пропов карты для Frustum Culling, 3D Occlusion Culling и X-Ray просвечивания!
+  const mapOccluders = [];   // Крупные непрозрачные 3D OBB/AABB окклюдеры (здания, стены, башни) для 3D Occlusion Culling
   let dropPoints = [];
   let BLUE_SPAWNS = [];
   let RED_SPAWNS = [];
@@ -2466,6 +2565,13 @@
   let currentMapId = 'sandbox';
   let currentMapNameRu = 'Песочница';
   let defaultGroundY = 0;
+  // Границы триггеров смерти карты (MIN_ALLOWED_Z и внешние границы пропасти из TankModel.as в battles.swf)
+  let mapKillMinY = -12.0;
+  let mapAbyssY = -45.0;
+  let mapKillMinX = -160.0, mapKillMaxX = 160.0;
+  let mapKillMinZ = -160.0, mapKillMaxZ = 160.0;
+  let culledPropsCount = 0;
+  let occludedPropsCount = 0;
 
   // Пространственный хэш 3D поверхностей (шаг ячейки 4м) — хранит ВСЕ этажи (землю под мостом + полотно моста сверху!)
   const SURF_CELL = 4.0;
@@ -2507,17 +2613,17 @@
     if (Math.abs(D) < 1e-7) return false;
     const s = dY12 * dX + dX21 * dY;
     const t = (y2 - y0) * dX + (x0 - x2) * dY;
-    const tol = Math.abs(D) * 0.04;
+    const tol = Math.abs(D) * 0.045;
     if (D < 0) return s <= tol && t <= tol && s + t >= D - tol;
     return s >= -tol && t >= -tol && s + t <= D + tol;
   }
 
   function evalSurfaceHeightAt(surf, x, z) {
-    if (x < surf.wxMin - 0.25 || x > surf.wxMax + 0.25 || z < surf.wzMin - 0.25 || z > surf.wzMax + 0.25) {
+    if (x < surf.wxMin - 0.28 || x > surf.wxMax + 0.28 || z < surf.wzMin - 0.28 || z > surf.wzMax + 0.28) {
       return null;
     }
     if (surf.type === 'aabb') {
-      if (x >= surf.wxMin && x <= surf.wxMax && z >= surf.wzMin && z <= surf.wzMax) return surf.h;
+      if (x >= surf.wxMin - 0.12 && x <= surf.wxMax + 0.12 && z >= surf.wzMin - 0.12 && z <= surf.wzMax + 0.12) return surf.h;
       return null;
     }
     if (surf.type === 'riseProp') {
@@ -2530,11 +2636,26 @@
       }
       return null;
     }
+    if (surf.type === 'tri3d') {
+      const x0 = surf.x0, z0 = surf.z0;
+      const x1 = surf.x1, z1 = surf.z1;
+      const x2 = surf.x2, z2 = surf.z2;
+      const denom = (z1 - z2) * (x0 - x2) + (x2 - x1) * (z0 - z2);
+      if (Math.abs(denom) < 1e-7) return null;
+      const w0 = ((z1 - z2) * (x - x2) + (x2 - x1) * (z - z2)) / denom;
+      const w1 = ((z2 - z0) * (x - x2) + (x0 - x2) * (z - z2)) / denom;
+      const w2 = 1.0 - w0 - w1;
+      if (w0 >= -0.048 && w1 >= -0.048 && w2 >= -0.048) {
+        const yVal = w0 * surf.y0 + w1 * surf.y1 + w2 * surf.y2;
+        return Math.max(surf.minY, Math.min(surf.maxY, yVal));
+      }
+      return null;
+    }
     const dx = x - surf.px, dz = z - surf.pz;
     const s = (dx * surf.vz - dz * surf.vx) / surf.det;
     const t = (surf.ux * dz - surf.uz * dx) / surf.det;
     if (surf.type === 'plane' || surf.type === 'boxTop') {
-      if (Math.abs(s) <= surf.halfW + 0.16 && Math.abs(t) <= surf.halfL + 0.16) {
+      if (Math.abs(s) <= surf.halfW + 0.18 && Math.abs(t) <= surf.halfL + 0.18) {
         const cs = Math.max(-surf.halfW, Math.min(surf.halfW, s));
         const ct = Math.max(-surf.halfL, Math.min(surf.halfL, t));
         return Math.max(surf.minY, Math.min(surf.maxY, surf.py + cs * surf.uy + ct * surf.vy));
@@ -2550,32 +2671,111 @@
     return null;
   }
 
-  // Многоуровневая функция высоты рельефа:
-  // Если передан refY (высота танка), выбирается самая высокая поверхность, не превышающая refY + 1.45м.
-  // Благодаря этому танк ПОД мостом (y=0) остаётся на земле (y=0), а танк НА мосту (y=9) едет по мосту (y=9)!
-  function getTerrainHeight(x, z, refY = undefined) {
+  function queryRawSurfaceHeight(x, z, maxAllowedY) {
     const ix = Math.floor(x / SURF_CELL);
     const iz = Math.floor(z / SURF_CELL);
     const key = (ix << 16) ^ (iz & 0xffff);
     const bucket = surfaceBuckets.get(key);
+    if (!bucket || bucket.length === 0) return null;
 
-    if (!bucket || bucket.length === 0) return defaultGroundY;
-
-    const maxAllowedY = (refY !== undefined && refY !== null) ? (refY + 1.45) : Infinity;
     let bestH = -9999;
-
+    let lowestActualH = Infinity;
     for (let i = 0; i < bucket.length; i++) {
       const surf = bucket[i];
-      if (surf.minY > maxAllowedY) continue;
-      if (surf.maxY <= bestH) continue;
       const h = evalSurfaceHeightAt(surf, x, z);
-      if (h !== null && h <= maxAllowedY && h > bestH) {
-        bestH = h;
+      if (h !== null) {
+        if (h < lowestActualH) lowestActualH = h;
+        if (h <= maxAllowedY && h > bestH) {
+          bestH = h;
+        }
       }
     }
-
     if (bestH > -9000) return bestH;
-    return defaultGroundY;
+    if (lowestActualH <= maxAllowedY + 0.35) return lowestActualH;
+    return null;
+  }
+
+  // Многоуровневая функция высоты рельефа с поддержкой пропастей / триггеров смерти (MIN_ALLOWED_Z из battles.swf):
+  // Если передан refY (высота танка), выбирается самая высокая поверхность, не превышающая refY + 1.48м.
+  // Если же под точкой (x, z) вообще нет никакой поверхности (танк съехал с края обрыва, моста или космической платформы в пропасть!),
+  // возвращается mapAbyssY, чтобы танк честно наклонился через край и упал вниз в триггер смерти!
+  function getTerrainHeight(x, z, refY = undefined) {
+    const maxAllowedY = (refY !== undefined && refY !== null) ? (refY + 1.48) : Infinity;
+    const hDirect = queryRawSurfaceHeight(x, z, maxAllowedY);
+    if (hDirect !== null) return hDirect;
+
+    // Проверка микро-швов между соседними треугольниками/плитами (0.28м)
+    const seamOffsets = [[0.28, 0], [-0.28, 0], [0, 0.28], [0, -0.28]];
+    for (let i = 0; i < 4; i++) {
+      const hs = queryRawSurfaceHeight(x + seamOffsets[i][0], z + seamOffsets[i][1], maxAllowedY);
+      if (hs !== null) return hs;
+    }
+
+    // Если refY не передан (статическая расстановка объектов при загрузке), возвращаем ближайшую поверхность или defaultGroundY
+    if (refY === undefined || refY === null) {
+      const hAny = queryRawSurfaceHeight(x, z, Infinity);
+      return hAny !== null ? hAny : defaultGroundY;
+    }
+
+    // Под точкой (x, z) нет пола — это пропасть / край карты!
+    return mapAbyssY;
+  }
+
+  // Возвращает высоту поверхности (y) и точную 3D единичную нормаль (nx, ny, nz) для лучей подвески SuspensionRay и OBB корпуса
+  function getTerrainSurfaceInfo(x, z, refY = undefined) {
+    const h0 = getTerrainHeight(x, z, refY);
+    if (h0 <= mapKillMinY - 4.0) {
+      return { y: h0, nx: 0, ny: 1, nz: 0 };
+    }
+    const eps = 0.24;
+    const hx = getTerrainHeight(x + eps, z, h0);
+    const hz = getTerrainHeight(x, z + eps, h0);
+    const dhdx = (Math.abs(hx - h0) <= 0.65) ? (hx - h0) / eps : 0;
+    const dhdz = (Math.abs(hz - h0) <= 0.65) ? (hz - h0) / eps : 0;
+    const invLen = 1.0 / Math.hypot(dhdx, 1.0, dhdz);
+    return {
+      y: h0,
+      nx: -dhdx * invLen,
+      ny: invLen,
+      nz: -dhdz * invLen
+    };
+  }
+
+  // Определение потолка / перекрытия моста / крыши туннеля прямо НАД точкой (x, y, z)
+  function getCeilingHeightAbove(x, z, refY = 0) {
+    const ix = Math.floor(x / SURF_CELL);
+    const iz = Math.floor(z / SURF_CELL);
+    const key = (ix << 16) ^ (iz & 0xffff);
+    const bucket = surfaceBuckets.get(key);
+    let lowestCeiling = Infinity;
+    let hasLowerFloor = false;
+    const minCeilingY = refY + 2.15;
+    const maxCeilingY = refY + 14.5;
+
+    if (bucket) {
+      for (let i = 0; i < bucket.length; i++) {
+        const surf = bucket[i];
+        const h = evalSurfaceHeightAt(surf, x, z);
+        if (h !== null) {
+          if (Math.abs(h - refY) <= 1.25) hasLowerFloor = true;
+          if (h > minCeilingY && h <= maxCeilingY && h < lowestCeiling) {
+            lowestCeiling = h;
+          }
+        }
+      }
+    }
+    for (let i = 0; i < walls.length; i++) {
+      const w = walls[i];
+      if (w.bottomY >= refY + 1.65 && w.topY > minCeilingY && w.bottomY <= maxCeilingY) {
+        if (Math.abs(x - w.x) <= w.w * 0.5 + 0.3 && Math.abs(z - w.z) <= w.d * 0.5 + 0.3) {
+          if (w.bottomY < lowestCeiling) {
+            lowestCeiling = w.bottomY;
+            hasLowerFloor = true;
+          }
+        }
+      }
+    }
+    return (hasLowerFloor && lowestCeiling < Infinity) ? lowestCeiling : null;
   }
 
   // Кэш геометрий и материалов всех 22 библиотек .tara (с поддержкой SHA1-алиасов)
@@ -2703,11 +2903,14 @@
     walls.length = 0;
     mapRamps.length = 0;
     walkableSurfaces.length = 0;
+    mapPropRecords.length = 0;
+    mapOccluders.length = 0;
     surfaceBuckets = new Map();
     defaultGroundY = 0;
 
     let propPlacedCount = 0;
     const tileHeights = [];
+    const hasXmlCollision = (entry.cp && entry.cp.length > 0) || (entry.ct && entry.ct.length > 0) || (entry.cb && entry.cb.length > 0);
 
     const placeSingleProp = (libName, grpName, propName, texName, ax, ay, az, rotZ) => {
       const tx = ax * 0.01;
@@ -2727,17 +2930,30 @@
       }
       if (!pinfo) return;
 
-      // 1) Спрайтовые деревья и кусты
+      // 1) Спрайтовые деревья и кусты (также участвуют в Frustum и Occlusion Culling!)
       if (pinfo.sprite) {
         const spMat = getTaraSpriteMaterial(pinfo.sprite.tex);
         const sp = new THREE.Sprite(spMat);
         sp.center.set(0.5, 0.05);
-        if (propName.toLowerCase().includes('tree')) sp.scale.set(6.8, 8.2, 1);
-        else if (propName === 'Bush 1') sp.scale.set(3.8, 3.2, 1);
-        else sp.scale.set(3.4, 2.8, 1);
+        let sw = 3.4, sh = 2.8;
+        if (propName.toLowerCase().includes('tree')) { sw = 6.8; sh = 8.2; }
+        else if (propName === 'Bush 1') { sw = 3.8; sh = 3.2; }
+        sp.scale.set(sw, sh, 1);
         sp.position.set(tx, ty, tz);
         mapRootGroup.add(sp);
         propPlacedCount++;
+
+        const wxMin = tx - sw * 0.5, wxMax = tx + sw * 0.5;
+        const wzMin = tz - sw * 0.5, wzMax = tz + sw * 0.5;
+        const wyMin = ty, wyMax = ty + sh;
+        mapPropRecords.push({
+          mesh: sp,
+          isSprite: true,
+          wxMin, wxMax, wzMin, wzMax, wyMin, wyMax,
+          cx: tx, cy: ty + sh * 0.5, cz: tz,
+          radius: Math.hypot(sw * 0.5, sh * 0.5, sw * 0.5),
+          curOpacity: 1.0
+        });
         return;
       }
 
@@ -2759,6 +2975,7 @@
 
         const mat = getTaraMaterial(texKey);
         const mesh = new THREE.Mesh(geo, mat);
+        mesh.userData.baseMat = mat;
         mesh.position.set(tx, ty, tz);
         mesh.rotation.y = rotY;
         mesh.receiveShadow = true;
@@ -2770,10 +2987,8 @@
         mapRootGroup.add(mesh);
         propPlacedCount++;
 
-        // Используем bbox тайлов только как резервный вариант, если у карты вообще нет XML-коллизий (<collision-plane>/<collision-triangle>)
-        const hasXmlCollision = (entry.cp && entry.cp.length > 0) || (entry.ct && entry.ct.length > 0);
         const bb = meshData.bbox;
-        if (!hasXmlCollision && bb && (isGroundTile || Math.abs(bb[3] - bb[2]) < 0.85)) {
+        if (bb) {
           const cosR = Math.cos(rotY), sinR = Math.sin(rotY);
           const c1x = tx + bb[0] * cosR + bb[4] * sinR;
           const c1z = tz - bb[0] * sinR + bb[4] * cosR;
@@ -2783,18 +2998,64 @@
           const c3z = tz - bb[0] * sinR + bb[5] * cosR;
           const c4x = tx + bb[1] * cosR + bb[5] * sinR;
           const c4z = tz - bb[1] * sinR + bb[5] * cosR;
-          const topH = ty + bb[3];
-          addWalkableSurface({
-            type: 'aabb',
-            wxMin: Math.min(c1x, c2x, c3x, c4x),
-            wxMax: Math.max(c1x, c2x, c3x, c4x),
-            wzMin: Math.min(c1z, c2z, c3z, c4z),
-            wzMax: Math.max(c1z, c2z, c3z, c4z),
-            h: topH,
-            minY: topH,
-            maxY: topH
+          const wxMin = Math.min(c1x, c2x, c3x, c4x);
+          const wxMax = Math.max(c1x, c2x, c3x, c4x);
+          const wzMin = Math.min(c1z, c2z, c3z, c4z);
+          const wzMax = Math.max(c1z, c2z, c3z, c4z);
+          const wyMin = ty + bb[2];
+          const wyMax = ty + bb[3];
+          const cx = (wxMin + wxMax) * 0.5;
+          const cy = (wyMin + wyMax) * 0.5;
+          const cz = (wzMin + wzMax) * 0.5;
+          const radius = 0.5 * Math.hypot(wxMax - wxMin, wyMax - wyMin, wzMax - wzMin);
+
+          // Записываем проп в список для Frustum Culling, 3D Occlusion Culling и динамического X-Ray просвечивания!
+          mapPropRecords.push({
+            mesh,
+            isSprite: false,
+            isGroundTile,
+            wxMin, wxMax, wzMin, wzMax,
+            wyMin, wyMax,
+            cx, cy, cz, radius,
+            curOpacity: 1.0
           });
-          tileHeights.push(topH);
+
+          // Если у карты нет XML-коллизий, создаём 3D поверхности и OBB стены напрямую из геометрии 3DS мешей пропов!
+          if (!hasXmlCollision) {
+            if (isGroundTile || Math.abs(bb[3] - bb[2]) < 0.85) {
+              addWalkableSurface({
+                type: 'aabb',
+                wxMin, wxMax, wzMin, wzMax,
+                h: wyMax,
+                minY: wyMax,
+                maxY: wyMax
+              });
+              tileHeights.push(wyMax);
+            } else {
+              const halfU = Math.max(0.35, (bb[1] - bb[0]) * 0.5);
+              const halfV = Math.max(0.35, (bb[5] - bb[4]) * 0.5);
+              walls.push({
+                x: cx,
+                z: cz,
+                w: Math.max(0.7, wxMax - wxMin),
+                d: Math.max(0.7, wzMax - wzMin),
+                ux: cosR, uz: -sinR, vx: sinR, vz: cosR,
+                halfU, halfV,
+                bottomY: wyMin,
+                topY: wyMax,
+                isSlopedBox: false
+              });
+              if (wxMax - wxMin >= 1.2 && wzMax - wzMin >= 1.2) {
+                addWalkableSurface({
+                  type: 'aabb',
+                  wxMin, wxMax, wzMin, wzMax,
+                  h: wyMax,
+                  minY: wyMax,
+                  maxY: wyMax
+                });
+              }
+            }
+          }
         }
       }
     };
@@ -2818,7 +3079,7 @@
       }
     }
 
-    // 3) Обрабатываем <collision-plane> (ВСЕ горизонтальные полы, мосты, пологие заезды на мосты, пандусы и стены)
+    // 3) Обрабатываем <collision-plane> (ВСЕ горизонтальные полы, мосты, пологие заезды на мосты, пандусы и ВСЕ вертикальные стены/парапеты!)
     if (entry.cp) {
       for (let i = 0; i < entry.cp.length; i++) {
         const cp = entry.cp[i];
@@ -2848,8 +3109,8 @@
         const wyMin = py + Math.min(c0[2], c1[2], c2[2], c3[2]);
         const wyMax = py + Math.max(c0[2], c1[2], c2[2], c3[2]);
 
-        // Все верхние поверхности (nz >= 0.48) — и горизонтальные плиты, и пологие заезды мостов (nz ~ 0.96), и крутые пандусы!
-        if (nz >= 0.48 && Math.abs(det) > 0.15) {
+        // Все верхние поверхности (nz >= 0.45) — и горизонтальные плиты, и пологие заезды мостов (nz ~ 0.96), и крутые пандусы!
+        if (nz >= 0.45 && Math.abs(det) > 0.12) {
           const pSurf = {
             type: 'plane',
             isPlane: true,
@@ -2867,70 +3128,128 @@
           } else {
             tileHeights.push(py);
           }
-        } else if (Math.abs(nz) < 0.42 && w >= 1.5 && l >= 1.5) {
-          // Вертикальная опорная стена, башня или внешняя скала (с поддержкой OBB поворота!)
-          let hu = Math.hypot(ux, uz);
-          let hv = Math.hypot(vx, vz);
-          let oux = hu > 0.1 ? ux / hu : 1, ouz = hu > 0.1 ? uz / hu : 0;
-          let ovx = -ouz, ovz = oux;
-          let halfU = hu > 0.1 ? w * 0.5 * hu : 0.35;
-          let halfV = hv > 0.1 ? l * 0.5 * hv : 0.35;
+        } else if (Math.abs(nz) < 0.45 && w >= 0.20 && l >= 0.20 && (wyMax - wyMin) >= 0.30) {
+          // Вертикальная или крутая опорная стена, башня, парапет моста, колонна или скала (с точной 3D OBB ориентацией!)
+          const hu = Math.hypot(ux, uz);
+          const hv = Math.hypot(vx, vz);
+          let oux, ouz, ovx, ovz, halfU, halfV;
+          if (hu >= hv && hu > 0.08) {
+            oux = ux / hu; ouz = uz / hu;
+            ovx = -ouz;    ovz = oux;
+            halfU = Math.max(0.22, w * 0.5 * hu);
+            halfV = Math.max(0.22, l * 0.5 * hv);
+          } else if (hv > 0.08) {
+            oux = vx / hv; ouz = vz / hv;
+            ovx = -ouz;    ovz = oux;
+            halfU = Math.max(0.22, l * 0.5 * hv);
+            halfV = Math.max(0.22, w * 0.5 * hu);
+          } else {
+            oux = 1; ouz = 0; ovx = 0; ovz = 1;
+            halfU = Math.max(0.22, (wxMax - wxMin) * 0.5);
+            halfV = Math.max(0.22, (wzMax - wzMin) * 0.5);
+          }
           walls.push({
             x: px,
             z: pz,
-            w: Math.max(0.7, wxMax - wxMin),
-            d: Math.max(0.7, wzMax - wzMin),
+            w: Math.max(0.45, wxMax - wxMin),
+            d: Math.max(0.45, wzMax - wzMin),
             ux: oux, uz: ouz, vx: ovx, vz: ovz,
-            halfU: Math.max(0.35, halfU),
-            halfV: Math.max(0.35, halfV),
+            halfU, halfV,
             bottomY: wyMin,
-            topY: wyMax
+            topY: wyMax,
+            isSlopedBox: false
           });
         }
       }
     }
 
-    // 4) Обрабатываем <collision-triangle> (критично для мостов и пандусов Кунгура, Мостика, Полигона, Тишины!)
+    // 4) Обрабатываем <collision-triangle> (с полными 3D координатами вершин v0, v1, v2 для пандусов, мостов, горок и крутых скал!)
     if (entry.ct) {
       for (let i = 0; i < entry.ct.length; i++) {
         const ct = entry.ct[i];
-        const v0x = ct[0] * 0.01, v0y = ct[1] * 0.01;
-        const v1x = ct[3] * 0.01, v1y = ct[4] * 0.01;
-        const v2x = ct[6] * 0.01, v2y = ct[7] * 0.01;
+        const v0x = ct[0] * 0.01, v0y = ct[1] * 0.01, v0z = (ct[2] || 0) * 0.01;
+        const v1x = ct[3] * 0.01, v1y = ct[4] * 0.01, v1z = (ct[5] || 0) * 0.01;
+        const v2x = ct[6] * 0.01, v2y = ct[7] * 0.01, v2z = (ct[8] || 0) * 0.01;
         const ax = ct[9] * 0.01, ay = ct[10] * 0.01, az = ct[11] * 0.01;
         const rx = ct[12], ry = ct[13], rz = ct[14];
         const px = ax, py = az, pz = -ay;
 
-        const n = rotZYX(0, 0, 1, rx, ry, rz);
-        if (n[2] < 0.45) continue;
+        const p0 = rotZYX(v0x, v0y, v0z, rx, ry, rz);
+        const p1 = rotZYX(v1x, v1y, v1z, rx, ry, rz);
+        const p2 = rotZYX(v2x, v2y, v2z, rx, ry, rz);
 
-        const u3 = rotZYX(1, 0, 0, rx, ry, rz);
-        const v3 = rotZYX(0, 1, 0, rx, ry, rz);
-        const ux = u3[0], uy = u3[2], uz = -u3[1];
-        const vx = v3[0], vy = v3[2], vz = -v3[1];
-        const det = ux * vz - uz * vx;
-        if (Math.abs(det) < 0.15) continue;
+        // В мировых координатах Three.js: X = px + p[0], Y = py + p[2], Z = pz - p[1]
+        const x0 = px + p0[0], y0 = py + p0[2], z0 = pz - p0[1];
+        const x1 = px + p1[0], y1 = py + p1[2], z1 = pz - p1[1];
+        const x2 = px + p2[0], y2 = py + p2[2], z2 = pz - p2[1];
 
-        const p0 = rotZYX(v0x, v0y, 0, rx, ry, rz);
-        const p1 = rotZYX(v1x, v1y, 0, rx, ry, rz);
-        const p2 = rotZYX(v2x, v2y, 0, rx, ry, rz);
+        // Векторное произведение для нормали треугольника в 3D
+        const e1x = x1 - x0, e1y = y1 - y0, e1z = z1 - z0;
+        const e2x = x2 - x0, e2y = y2 - y0, e2z = z2 - z0;
+        const nx = e1y * e2z - e1z * e2y;
+        const ny = e1z * e2x - e1x * e2z;
+        const nz = e1x * e2y - e1y * e2x;
+        const nLen = Math.hypot(nx, ny, nz);
+        if (nLen < 1e-5) continue;
+        const upY = Math.abs(ny) / nLen;
 
-        const wxMin = px + Math.min(p0[0], p1[0], p2[0]);
-        const wxMax = px + Math.max(p0[0], p1[0], p2[0]);
-        const wzMin = pz + Math.min(-p0[1], -p1[1], -p2[1]);
-        const wzMax = pz + Math.max(-p0[1], -p1[1], -p2[1]);
-        const wyMin = py + Math.min(p0[2], p1[2], p2[2]);
-        const wyMax = py + Math.max(p0[2], p1[2], p2[2]);
+        const wxMin = Math.min(x0, x1, x2);
+        const wxMax = Math.max(x0, x1, x2);
+        const wzMin = Math.min(z0, z1, z2);
+        const wzMax = Math.max(z0, z1, z2);
+        const wyMin = Math.min(y0, y1, y2);
+        const wyMax = Math.max(y0, y1, y2);
 
-        const tSurf = {
-          type: 'tri',
-          px, py, pz,
-          ux, uy, uz, vx, vy, vz, det,
-          s0: v0x, t0: v0y, s1: v1x, t1: v1y, s2: v2x, t2: v2y,
-          wxMin, wxMax, wzMin, wzMax,
-          minY: wyMin, maxY: wyMax
-        };
-        addWalkableSurface(tSurf);
+        if (upY >= 0.44) {
+          const tSurf = {
+            type: 'tri3d',
+            x0, y0, z0,
+            x1, y1, z1,
+            x2, y2, z2,
+            px: (x0 + x1 + x2) / 3,
+            py: (y0 + y1 + y2) / 3,
+            pz: (z0 + z1 + z2) / 3,
+            wxMin, wxMax, wzMin, wzMax,
+            minY: wyMin, maxY: wyMax
+          };
+          addWalkableSurface(tSurf);
+          if (upY < 0.995 && wyMax - wyMin > 0.35) {
+            mapRamps.push({
+              isPlane: false,
+              tx: tSurf.px,
+              tz: tSurf.pz,
+              cos: 1,
+              sin: 0
+            });
+          } else {
+            tileHeights.push(tSurf.py);
+          }
+        } else if (wyMax - wyMin >= 0.55) {
+          // Крутая/вертикальная треугольная грань (боковина пандуса, скала или откос) — регистрируем как OBB стену!
+          const horizNx = nx / nLen, horizNz = nz / nLen;
+          const hNormLen = Math.hypot(horizNx, horizNz);
+          const ovx = hNormLen > 0.1 ? horizNx / hNormLen : 0;
+          const ovz = hNormLen > 0.1 ? horizNz / hNormLen : 1;
+          const oux = ovz, ouz = -ovx;
+          const cx = (x0 + x1 + x2) / 3;
+          const cz = (z0 + z1 + z2) / 3;
+          const u0 = (x0 - cx) * oux + (z0 - cz) * ouz;
+          const u1 = (x1 - cx) * oux + (z1 - cz) * ouz;
+          const u2 = (x2 - cx) * oux + (z2 - cz) * ouz;
+          const halfU = Math.max(0.28, (Math.max(u0, u1, u2) - Math.min(u0, u1, u2)) * 0.5);
+          walls.push({
+            x: cx,
+            z: cz,
+            w: Math.max(0.5, wxMax - wxMin),
+            d: Math.max(0.5, wzMax - wzMin),
+            ux: oux, uz: ouz, vx: ovx, vz: ovz,
+            halfU,
+            halfV: 0.26,
+            bottomY: wyMin,
+            topY: wyMax,
+            isSlopedBox: true
+          });
+        }
       }
     }
 
@@ -2939,7 +3258,7 @@
       defaultGroundY = tileHeights[Math.floor(tileHeights.length * 0.15)];
     }
 
-    // 5) Обрабатываем <collision-box> (и как 3D OBB коллайдеры с учётом высоты bottomY..topY, И как верхние площадки мостов!)
+    // 5) Обрабатываем <collision-box> (ВСЕ 3D OBB боксы: здания, стены, парапеты, наклонные рампы и верхние площадки мостов!)
     if (entry.cb) {
       for (let i = 0; i < entry.cb.length; i++) {
         const cb = entry.cb[i];
@@ -2956,57 +3275,119 @@
         const bottomY = py - halfExtentY;
         const topY = py + halfExtentY;
 
-        // Верхняя грань каждого достаточно широкого бокса (например, полотна мостов Кунгура, Мостика, Тишины) является проезжаемой поверхностью!
-        if (Math.abs(w3[2]) >= 0.48 && sx >= 1.2 && sy >= 1.2) {
-          const ux = u3[0], uy = u3[2], uz = -u3[1];
-          const vx = v3[0], vy = v3[2], vz = -v3[1];
-          const det = ux * vz - uz * vx;
-          if (Math.abs(det) > 0.15) {
-            const topSign = w3[2] >= 0 ? 1 : -1;
-            const topPx = px + w3[0] * topSign * sz * 0.5;
-            const topPy = py + w3[2] * topSign * sz * 0.5;
-            const topPz = pz - w3[1] * topSign * sz * 0.5;
-            const extX = Math.abs(ux) * sx * 0.5 + Math.abs(vx) * sy * 0.5;
-            const extZ = Math.abs(uz) * sx * 0.5 + Math.abs(vz) * sy * 0.5;
-            const extY = Math.abs(uy) * sx * 0.5 + Math.abs(vy) * sy * 0.5;
-            addWalkableSurface({
-              type: 'boxTop',
-              px: topPx, py: topPy, pz: topPz,
-              ux, uy, uz, vx, vy, vz, det,
-              halfW: sx * 0.5,
-              halfL: sy * 0.5,
-              wxMin: topPx - extX, wxMax: topPx + extX,
-              wzMin: topPz - extZ, wzMax: topPz + extZ,
-              minY: topPy - extY, maxY: topPy + extY
-            });
+        const ux = u3[0], uy = u3[2], uz = -u3[1];
+        const vx = v3[0], vy = v3[2], vz = -v3[1];
+        const wx = w3[0], wy = w3[2], wz = -w3[1];
+        const det = ux * vz - uz * vx;
+
+        // Верхняя грань каждого достаточно широкого бокса (полотна мостов, крыши зданий, пандусы) является проезжаемой поверхностью!
+        if (Math.abs(wy) >= 0.45 && sx >= 0.95 && sy >= 0.95 && Math.abs(det) > 0.12) {
+          const topSign = wy >= 0 ? 1 : -1;
+          const topPx = px + wx * topSign * sz * 0.5;
+          const topPy = py + wy * topSign * sz * 0.5;
+          const topPz = pz + wz * topSign * sz * 0.5;
+          const extX = Math.abs(ux) * sx * 0.5 + Math.abs(vx) * sy * 0.5;
+          const extZ = Math.abs(uz) * sx * 0.5 + Math.abs(vz) * sy * 0.5;
+          const extY = Math.abs(uy) * sx * 0.5 + Math.abs(vy) * sy * 0.5;
+          addWalkableSurface({
+            type: 'boxTop',
+            px: topPx, py: topPy, pz: topPz,
+            ux, uy, uz, vx, vy, vz, det,
+            halfW: sx * 0.5,
+            halfL: sy * 0.5,
+            wxMin: topPx - extX, wxMax: topPx + extX,
+            wzMin: topPz - extZ, wzMax: topPz + extZ,
+            minY: topPy - extY, maxY: topPy + extY
+          });
+          if (Math.abs(wy) >= 0.98) {
+            tileHeights.push(topPy);
           }
         }
 
-        // Добавляем 3D OBB коллайдер стены только для горизонтально стоящих боксов (не наклонных пандусов!)
-        // Танк НА мосту (y >= topY - 0.65) едет поверх него и НЕ упирается в него;
-        // Танк ПОД мостом (y + 1.70 <= bottomY) свободно проезжает под ним!
-        if (Math.abs(w3[2]) >= 0.96 || (sx < 1.2 && sy < 1.2)) {
+        // Регистрируем КАЖДЫЙ <collision-box> как 3D OBB коллайдер (и прямые здания/парапеты, и боковины наклонных рамп!)
+        const hu = Math.hypot(ux, uz);
+        const hv = Math.hypot(vx, vz);
+        let oux, ouz, ovx, ovz, halfU, halfV;
+        if (hu > 0.12 && hv > 0.12) {
+          oux = ux / hu; ouz = uz / hu;
+          ovx = -ouz;    ovz = oux;
+          halfU = Math.max(0.20, sx * 0.5 * hu);
+          halfV = Math.max(0.20, sy * 0.5 * hv);
+        } else {
           const cosZ = Math.cos(rz), sinZ = Math.sin(rz);
-          const oux = cosZ, ouz = -sinZ;
-          const ovx = sinZ, ovz = cosZ;
-          const halfU = sx * 0.5;
-          const halfV = sy * 0.5;
-          const aabbW = Math.abs(cosZ) * sx + Math.abs(sinZ) * sy;
-          const aabbD = Math.abs(sinZ) * sx + Math.abs(cosZ) * sy;
-
-          walls.push({
-            x: px,
-            z: pz,
-            w: aabbW,
-            d: aabbD,
-            ux: oux, uz: ouz, vx: ovx, vz: ovz,
-            halfU, halfV,
-            bottomY,
-            topY
-          });
+          oux = cosZ; ouz = -sinZ;
+          ovx = sinZ; ovz = cosZ;
+          halfU = Math.max(0.20, sx * 0.5);
+          halfV = Math.max(0.20, sy * 0.5);
         }
+        const aabbW = Math.abs(oux) * halfU * 2 + Math.abs(ovx) * halfV * 2;
+        const aabbD = Math.abs(ouz) * halfU * 2 + Math.abs(ovz) * halfV * 2;
+
+        walls.push({
+          x: px,
+          z: pz,
+          py,
+          w: Math.max(0.4, aabbW),
+          d: Math.max(0.4, aabbD),
+          ux: oux, uz: ouz, vx: ovx, vz: ovz,
+          halfU, halfV,
+          bottomY,
+          topY,
+          isSlopedBox: Math.abs(wy) < 0.94
+        });
       }
     }
+
+    // 5.5) Вычисляем границы триггеров смерти карты (MIN_ALLOWED_Z / пропасть вокруг островов и платформ, как в TankModel.as из battles.swf)
+    let minMapX = Infinity, maxMapX = -Infinity;
+    let minMapZ = Infinity, maxMapZ = -Infinity;
+    let minFloorY = Infinity, maxFloorY = -Infinity;
+    for (let i = 0; i < walkableSurfaces.length; i++) {
+      const s = walkableSurfaces[i];
+      if (s.wxMin < minMapX) minMapX = s.wxMin;
+      if (s.wxMax > maxMapX) maxMapX = s.wxMax;
+      if (s.wzMin < minMapZ) minMapZ = s.wzMin;
+      if (s.wzMax > maxMapZ) maxMapZ = s.wzMax;
+      if (s.minY < minFloorY) minFloorY = s.minY;
+      if (s.maxY > maxFloorY) maxFloorY = s.maxY;
+    }
+    if (minFloorY === Infinity) {
+      minFloorY = defaultGroundY;
+      maxFloorY = defaultGroundY;
+      minMapX = -80; maxMapX = 80;
+      minMapZ = -80; maxMapZ = 80;
+    }
+    // Если танк падает ниже самой нижней площадки карты на 8.5м (MIN_ALLOWED_Z) или улетает за пределы пропасти — срабатывает триггер смерти!
+    mapKillMinY = minFloorY - 8.5;
+    mapAbyssY   = minFloorY - 42.0;
+    mapKillMinX = minMapX - 18.0;
+    mapKillMaxX = maxMapX + 18.0;
+    mapKillMinZ = minMapZ - 18.0;
+    mapKillMaxZ = maxMapZ + 18.0;
+
+    // 5.6) Формируем список крупных 3D окклюдеров (mapOccluders) из высоких сплошных стен и зданий для 3D Occlusion Culling!
+    for (let i = 0; i < walls.length; i++) {
+      const w = walls[i];
+      if (w.isSlopedBox) continue;
+      const height = w.topY - w.bottomY;
+      const maxSpan = Math.max(w.halfU * 2, w.halfV * 2);
+      const minSpan = Math.min(w.halfU * 2, w.halfV * 2);
+      // В качестве окклюдеров берём крупные непрозрачные стены и здания (высота >= 2.8м и ширина >= 3.6м)
+      if (height >= 2.8 && maxSpan >= 3.6 && minSpan >= 0.45) {
+        mapOccluders.push({
+          x: w.x,
+          z: w.z,
+          ux: w.ux, uz: w.uz, vx: w.vx, vz: w.vz,
+          halfU: w.halfU * 0.94,
+          halfV: w.halfV * 0.94,
+          bottomY: w.bottomY + 0.10,
+          topY: w.topY - 0.15,
+          areaScore: maxSpan * height
+        });
+      }
+    }
+    mapOccluders.sort((a, b) => b.areaScore - a.areaScore);
+    if (mapOccluders.length > 64) mapOccluders.length = 64;
 
     // 6) Устанавливаем ТОЧНЫЕ координаты флагов CTF из XML карты (<ctf-flags>) с учётом этажа флага
     if (entry.flags && entry.flags.blue && entry.flags.red) {
@@ -3354,7 +3735,10 @@
       } else {
         if (fl.state === 'dropped') {
           fl.dropTimer -= dt;
-          if (fl.dropTimer <= 0) returnFlagToBase(fl, null);
+          const flagFloorY = getTerrainHeight(fl.x, fl.z, 0);
+          if (fl.dropTimer <= 0 || flagFloorY < mapKillMinY || fl.x < mapKillMinX || fl.x > mapKillMaxX || fl.z < mapKillMinZ || fl.z > mapKillMaxZ) {
+            returnFlagToBase(fl, null);
+          }
         }
         fl.mesh.position.set(fl.x, getTerrainHeight(fl.x, fl.z) + 0.1, fl.z);
         fl.mesh.rotation.y += 1.2 * dt;
@@ -3464,27 +3848,165 @@
     return { x: fb.x, y: getTerrainHeight(fb.x, fb.z, fb.y), z: fb.z, angle: fb.angle || 0 };
   }
 
-  // 3-круговой ориентированный коллайдер корпуса танка (нос, центр, корма радиусом 1.05м = ширина гусениц 2.1м!)
-  // Обеспечивает плавное скольжение вдоль стен под углом, выравнивание корпуса при притирке к стене и свободный заезд на пандусы!
-  function resolveWallPenetration(tank, radius = 1.08) {
-    const tankY = (tank.y !== undefined) ? tank.y : getTerrainHeight(tank.x, tank.z);
-    const fwdX = -Math.sin(tank.hullAngle || 0);
-    const fwdZ = -Math.cos(tank.hullAngle || 0);
-    const hullOffsets = [-0.82, 0.0, 0.82];
-    const rCircle = Math.min(radius, 1.08);
+  // ==========================================
+  // 6.5. ПОЛНЫЙ 6-DOF 3D ФИЗИЧЕСКИЙ ДВИЖОК ALTERNATIVAPHYSICS ИЗ BATTLES.SWF / TANK TESTING TOOL
+  //      (Body + Tank + 2 Track × 5 SuspensionRay + анизотропное трение + 3D OBB столкновения и переворот танков вверх гусеницами!)
+  // ==========================================
+  const _physV1 = new THREE.Vector3();
+  const _physV2 = new THREE.Vector3();
+  const _physV3 = new THREE.Vector3();
+  const _physLocal = new THREE.Vector3();
+  const _physWorld = new THREE.Vector3();
+  const _physInvQuat = new THREE.Quaternion();
+  const _suspRight = new THREE.Vector3();
+  const _suspUp = new THREE.Vector3();
+  const _suspFwd = new THREE.Vector3();
+  const _stepQuat = new THREE.Quaternion();
+  const _cullFrustum = new THREE.Frustum();
+  const _cullProjScreenMatrix = new THREE.Matrix4();
+  const _cullSphere = new THREE.Sphere();
+  const _activeOccluders = [];
+
+  // Полноценный 3D OBB солвер контакта корпуса и башни танка со стенами, трамплинами, мостами и землёй (позволяет танку ложиться на бок 90° и переворачиваться на крышу/башню 180°!)
+  function resolveTankChassisAndWalls3D(tank, subDt = 0.004) {
+    if (!tank || !tank.bodyPos || !tank.quat) return;
+
+    const hL = tank.hullHalfL || 1.65;
+    const hW = tank.hullHalfW || 1.10;
+    const hH = tank.hullHalfH || 0.55;
+
+    // 1) Контакты вершин 3D корпуса и башни с рельефом земли, пандусами, мостами и потолками туннелей
+    // Когда танк стоит на гусеницах, нижние точки на y = -hH + 0.14 держат днище от пробоя, а 10 лучей подвески (rayOptimalLength = 0.25) держат корпус мягко выше.
+    // Когда танк перевернулся на бок (90°) или вверх гусеницами на крышу/башню (180°), точки крыши и башни опираются на землю!
+    const sinTur = Math.sin(tank.turretDir || 0);
+    const cosTur = Math.cos(tank.turretDir || 0);
+    const mX = (tank.mountPos && tank.mountPos[0]) || 0;
+    const mY = (tank.mountPos && tank.mountPos[1]) || 0.52;
+    const mZ = (tank.mountPos && tank.mountPos[2]) || 0;
+    const muzLen = Math.min(2.1, (tank.muzzleLocal && Math.abs(tank.muzzleLocal[2])) || 1.85);
+
+    const hullContactPts = [
+      // 4 нижних угла корпуса (защита днища при жёстком приземлении)
+      [-hW * 0.92, -hH + 0.14, -hL * 0.92],
+      [ hW * 0.92, -hH + 0.14, -hL * 0.92],
+      [-hW * 0.92, -hH + 0.14,  hL * 0.92],
+      [ hW * 0.92, -hH + 0.14,  hL * 0.92],
+      // 4 верхних угла корпуса (опора при перевороте на бок или вверх гусеницами)
+      [-hW * 0.94,  hH * 0.92, -hL * 0.90],
+      [ hW * 0.94,  hH * 0.92, -hL * 0.90],
+      [-hW * 0.94,  hH * 0.92,  hL * 0.90],
+      [ hW * 0.94,  hH * 0.92,  hL * 0.90],
+      // 2 боковые точки по центру бортов (опора при лежании ровно на боку 90°)
+      [-hW * 1.02,  0.05, 0.0],
+      [ hW * 1.02,  0.05, 0.0],
+      // Купол башни и казённик/ствол пушки (опора, когда танк лежит вверх гусеницами на башне!)
+      [mX, mY + 0.62, mZ],
+      [mX - sinTur * (muzLen * 0.65), mY + 0.44, mZ - cosTur * (muzLen * 0.65)],
+      [mX + sinTur * 0.72, mY + 0.54, mZ + cosTur * 0.72]
+    ];
+
+    for (let p = 0; p < hullContactPts.length; p++) {
+      const lp = hullContactPts[p];
+      _physLocal.set(lp[0], lp[1], lp[2]).applyQuaternion(tank.quat);
+      const wx = tank.bodyPos.x + _physLocal.x;
+      const wy = tank.bodyPos.y + _physLocal.y;
+      const wz = tank.bodyPos.z + _physLocal.z;
+
+      const groundInfo = getTerrainSurfaceInfo(wx, wz, tank.bodyPos.y);
+      const floorY = groundInfo.y;
+      // Если под точкой пропасть (floorY <= mapKillMinY - 4), земля не держит точку — танк свободно падает в пропасть!
+      if (floorY > mapKillMinY - 4.0 && wy < floorY) {
+        const pen = floorY - wy;
+        const nx = groundInfo.nx, ny = groundInfo.ny, nz = groundInfo.nz;
+        // Выталкиваем центр масс вдоль нормали поверхности и передаём 3D угловой момент (чтобы танк кувыркался и ложился на грань!)
+        tank.bodyPos.x += nx * pen * 0.55;
+        tank.bodyPos.y += ny * pen * 0.68;
+        tank.bodyPos.z += nz * pen * 0.55;
+
+        // Скорость точки контакта: v_pt = vel + omega x r
+        const vxPt = tank.vel.x + (tank.omega.y * _physLocal.z - tank.omega.z * _physLocal.y);
+        const vyPt = tank.vel.y + (tank.omega.z * _physLocal.x - tank.omega.x * _physLocal.z);
+        const vzPt = tank.vel.z + (tank.omega.x * _physLocal.y - tank.omega.y * _physLocal.x);
+        const vDotN = vxPt * nx + vyPt * ny + vzPt * nz;
+
+        if (vDotN < 0) {
+          // Эффективная обратная масса в точке контакта вдоль нормали: 1/M + (r x n) · I^-1 (r x n)
+          const rxnX = _physLocal.y * nz - _physLocal.z * ny;
+          const rxnY = _physLocal.z * nx - _physLocal.x * nz;
+          const rxnZ = _physLocal.x * ny - _physLocal.y * nx;
+          _physV1.set(rxnX, rxnY, rxnZ);
+          tank.multiplyByWorldInvInertia(_physV1, _physV2);
+          const angularTerm = rxnX * _physV2.x + rxnY * _physV2.y + rxnZ * _physV2.z;
+          const effMass = 1.0 / Math.max(1e-5, tank.invMass + angularTerm);
+
+          const restitution = (-vDotN > 3.2) ? 0.14 : 0.02;
+          const jn = -(1.0 + restitution) * vDotN * effMass;
+          tank.applyRelPosWorldImpulse(_physLocal.x, _physLocal.y, _physLocal.z, nx * jn, ny * jn, nz * jn);
+
+          // Касательное трение корпуса/крыши о землю (когда танк скользит на крыше или боку)
+          const vtX = vxPt - vDotN * nx;
+          const vtY = vyPt - vDotN * ny;
+          const vtZ = vzPt - vDotN * nz;
+          const vtLen = Math.hypot(vtX, vtY, vtZ);
+          if (vtLen > 0.04) {
+            const mu = (p >= 4) ? 0.52 : 0.25; // Крыша и борта тормозят о грунт сильнее, чем скользящее днище
+            const jt = Math.min(mu * jn, vtLen * effMass * 0.65);
+            tank.applyRelPosWorldImpulse(
+              _physLocal.x, _physLocal.y, _physLocal.z,
+              -(vtX / vtLen) * jt, -(vtY / vtLen) * jt, -(vtZ / vtLen) * jt
+            );
+          }
+        }
+      }
+
+      // Проверка удара о потолок туннеля / нижнюю плиту моста
+      const ceilH = getCeilingHeightAbove(wx, wz, tank.bodyPos.y - 0.5);
+      if (ceilH !== null && wy > ceilH - 0.05) {
+        const penC = (wy - (ceilH - 0.05));
+        tank.bodyPos.y -= penC * 0.75;
+        if (tank.vel.y > 0) tank.vel.y = -tank.vel.y * 0.2;
+      }
+    }
+
+    // 2) Точные 3D OBB столкновения прямоугольного корпуса танка (Tank.setupCollisionPrimitives из battles.swf) со стенами, углами зданий и боковинами пандусов
+    _physV1.set(0, 0, -1).applyQuaternion(tank.quat); // forward в мире
+    const fwdX = _physV1.x, fwdY = _physV1.y, fwdZ = _physV1.z;
+    _physV2.set(1, 0, 0).applyQuaternion(tank.quat);  // right в мире
+    const rgtX = _physV2.x, rgtY = _physV2.y, rgtZ = _physV2.z;
+
+    const tankFootY = tank.bodyPos.y - hH;
+    // Проверяем 3 сферы вдоль продольной оси корпуса + 4 угловые сферы бамперов (чтобы геометрия прямоугольного корпуса точно соответствовала модели танка!)
+    const rCenter = Math.min(hW * 0.90, 1.05);
+    const rCorner = Math.min(hW * 0.42, 0.48);
+    const fOff = hL * 0.68;
+    const sOff = hW * 0.56;
+    const hullSpheres = [
+      [0,        0,  -hL * 0.54, rCenter],
+      [0,        0,   0.0,       rCenter],
+      [0,        0,   hL * 0.54, rCenter],
+      [-sOff,    0,  -fOff,      rCorner],
+      [ sOff,    0,  -fOff,      rCorner],
+      [-sOff,    0,   fOff,      rCorner],
+      [ sOff,    0,   fOff,      rCorner]
+    ];
 
     for (let i = 0; i < walls.length; i++) {
       const w = walls[i];
-      if (w.bottomY >= tankY + 1.70) continue; // Полотно моста или арка НАД башней танка!
+      if (w.bottomY >= tank.bodyPos.y + 1.25) continue;
+      if (w.topY <= tankFootY + 0.58) continue;
 
-      const bdx = tank.x - w.x;
-      const bdz = tank.z - w.z;
-      if (Math.abs(bdx) > w.w * 0.5 + 2.3 || Math.abs(bdz) > w.d * 0.5 + 2.3) continue;
+      const bdx = tank.bodyPos.x - w.x;
+      const bdz = tank.bodyPos.z - w.z;
+      if (Math.abs(bdx) > w.w * 0.5 + hL + 0.8 || Math.abs(bdz) > w.d * 0.5 + hL + 0.8) continue;
 
-      for (let c = 0; c < hullOffsets.length; c++) {
-        const off = hullOffsets[c];
-        const cx = tank.x + fwdX * off;
-        const cz = tank.z + fwdZ * off;
+      for (let c = 0; c < hullSpheres.length; c++) {
+        const sp = hullSpheres[c];
+        const lx = sp[0], lz = sp[2], rad = sp[3];
+        const rx = rgtX * lx - fwdX * lz;
+        const ry = rgtY * lx - fwdY * lz;
+        const rz = rgtZ * lx - fwdZ * lz;
+        const cx = tank.bodyPos.x + rx;
+        const cz = tank.bodyPos.z + rz;
         const dx = cx - w.x;
         const dz = cz - w.z;
 
@@ -3500,9 +4022,9 @@
           const du = localU - clU;
           const dv = localV - clV;
           const distSq = du * du + dv * dv;
-          if (distSq < rCircle * rCircle && distSq > 1e-8) {
+          if (distSq < rad * rad && distSq > 1e-8) {
             const dist = Math.sqrt(distSq);
-            const push = (rCircle - dist) + 0.015;
+            const push = (rad - dist) + 0.008;
             const nu = du / dist, nv = dv / dist;
             pushX = (nu * w.ux + nv * w.vx) * push;
             pushZ = (nu * w.uz + nv * w.vz) * push;
@@ -3513,9 +4035,9 @@
           closeZ = Math.max(w.z - w.d / 2, Math.min(cz, w.z + w.d / 2));
           const ex = cx - closeX, ez = cz - closeZ;
           const distSq = ex * ex + ez * ez;
-          if (distSq < rCircle * rCircle && distSq > 1e-8) {
+          if (distSq < rad * rad && distSq > 1e-8) {
             const dist = Math.sqrt(distSq);
-            const push = (rCircle - dist) + 0.015;
+            const push = (rad - dist) + 0.008;
             pushX = (ex / dist) * push;
             pushZ = (ez / dist) * push;
             hit = true;
@@ -3523,29 +4045,354 @@
         }
 
         if (hit) {
-          // Проверяем высоту рельефа прямо в точке контакта (чтобы верхний край пандуса/платформы никогда не блокировал заезд!)
-          const contactFloorY = Math.max(tankY, getTerrainHeight(closeX, closeZ, tankY));
-          if (w.topY <= contactFloorY + 0.68) continue;
-
-          tank.x += pushX;
-          tank.z += pushZ;
-
-          // Мягкий доворот корпуса вдоль стены при касании носом или кормой, плюс гашение только нормальной скорости
-          if (off !== 0 && tank.hullAngle !== undefined) {
-            const torque = (fwdX * pushZ - fwdZ * pushX) * (off > 0 ? 1 : -1);
-            tank.hullAngle += clamp(torque * 0.28, -0.05, 0.05);
+          const surfAtClose = getTerrainHeight(closeX, closeZ, tankFootY);
+          const contactFloorY = Math.max(tankFootY, surfAtClose);
+          // Если в точке контакта верхняя грань препятствия ниже ступеньки 0.65м ИЛИ это пологий заезд на пандус (surfAtClose > tankFootY + 0.06), танк плавно заезжает наверх!
+          if (w.topY <= contactFloorY + 0.65) continue;
+          if (w.isSlopedBox && surfAtClose >= tankFootY - 0.15 && surfAtClose <= tankFootY + 1.35) {
+            const highStep = queryRawSurfaceHeight(closeX, closeZ, Infinity);
+            if (highStep !== null && highStep <= tankFootY + 0.72) continue;
           }
-          if (tank.speed) {
-            const pLen = Math.hypot(pushX, pushZ);
-            if (pLen > 1e-5) {
-              const nx = pushX / pLen, nz = pushZ / pLen;
-              const vDotN = (fwdX * nx + fwdZ * nz) * tank.speed;
-              if (vDotN < 0) {
-                tank.speed *= Math.max(0.35, 1 - Math.abs(fwdX * nx + fwdZ * nz) * 0.45);
+
+          tank.bodyPos.x += pushX;
+          tank.bodyPos.z += pushZ;
+
+          const pLen = Math.hypot(pushX, pushZ);
+          if (pLen > 1e-5) {
+            const nx = pushX / pLen, nz = pushZ / pLen;
+            const vxPt = tank.vel.x + (tank.omega.y * rz - tank.omega.z * ry);
+            const vzPt = tank.vel.z + (tank.omega.x * ry - tank.omega.y * rx);
+            const vDotN = vxPt * nx + vzPt * nz;
+            if (vDotN < 0) {
+              const jWall = -(1.05) * vDotN / Math.max(1e-4, tank.invMass * 1.45);
+              tank.applyRelPosWorldImpulse(rx, ry - 0.12, rz, nx * jWall, 0, nz * jWall);
+            }
+          }
+        }
+      }
+    }
+
+    tank.syncLegacyCoords();
+  }
+
+  function resolveWallPenetration(tank, radius = 1.08) {
+    if (tank && tank.bodyPos && tank.quat) {
+      resolveTankChassisAndWalls3D(tank, 0.004);
+      return;
+    }
+  }
+
+  // Полноценная 3D физика столкновений корпусов танков между собой (AlternativaPhysics Body vs Body):
+  // учитывает реальную массу в кг (Мамонт 3300 кг легко таранит и переворачивает Васпа 1000 кг!),
+  // разность высот центров масс (таран под днище подбрасывает и опрокидывает лёгкий танк!) и 3D импульс вращения.
+  function resolveTankToTankCollisions3D() {
+    const offsets = [-0.82, 0.0, 0.82];
+    const rSphere = 0.98;
+    const minDist = rSphere * 2;
+
+    for (let i = 0; i < tanks.length; i++) {
+      const A = tanks[i];
+      if (A.isDead || !A.bodyPos) continue;
+      for (let j = i + 1; j < tanks.length; j++) {
+        const B = tanks[j];
+        if (B.isDead || !B.bodyPos) continue;
+        if (Math.abs(A.bodyPos.y - B.bodyPos.y) > 2.25) continue;
+        if (Math.hypot(A.bodyPos.x - B.bodyPos.x, A.bodyPos.z - B.bodyPos.z) > 4.8) continue;
+
+        _physV1.set(0, 0, -1).applyQuaternion(A.quat);
+        const fwdAx = _physV1.x, fwdAy = _physV1.y, fwdAz = _physV1.z;
+        _physV2.set(0, 0, -1).applyQuaternion(B.quat);
+        const fwdBx = _physV2.x, fwdBy = _physV2.y, fwdBz = _physV2.z;
+
+        const invA = A.invMass || (1 / 1500);
+        const invB = B.invMass || (1 / 1500);
+        const invSum = invA + invB;
+
+        for (let ca = 0; ca < offsets.length; ca++) {
+          const oa = offsets[ca];
+          const rax = fwdAx * oa, ray = fwdAy * oa, raz = fwdAz * oa;
+          const ax = A.bodyPos.x + rax, ay = A.bodyPos.y + ray, az = A.bodyPos.z + raz;
+
+          for (let cb = 0; cb < offsets.length; cb++) {
+            const ob = offsets[cb];
+            const rbx = fwdBx * ob, rby = fwdBy * ob, rbz = fwdBz * ob;
+            const bx = B.bodyPos.x + rbx, by = B.bodyPos.y + rby, bz = B.bodyPos.z + rbz;
+
+            const dx = ax - bx, dy = (ay - by) * 0.65, dz = az - bz;
+            const dSq = dx * dx + dy * dy + dz * dz;
+            if (dSq < minDist * minDist && dSq > 1e-6) {
+              const d = Math.sqrt(dSq);
+              const overlap = (minDist - d) * 0.68;
+              const nx = dx / d, ny = clamp(dy / d, -0.45, 0.45), nz = dz / d;
+
+              const shareA = invA / invSum;
+              const shareB = invB / invSum;
+              A.bodyPos.x += nx * overlap * shareA;
+              A.bodyPos.y += Math.max(0, ny * overlap * shareA * 0.5);
+              A.bodyPos.z += nz * overlap * shareA;
+              B.bodyPos.x -= nx * overlap * shareB;
+              B.bodyPos.y += Math.max(0, -ny * overlap * shareB * 0.5);
+              B.bodyPos.z -= nz * overlap * shareB;
+
+              const vAx = A.vel.x + (A.omega.y * raz - A.omega.z * ray);
+              const vAy = A.vel.y + (A.omega.z * rax - A.omega.x * raz);
+              const vAz = A.vel.z + (A.omega.x * ray - A.omega.y * rax);
+              const vBx = B.vel.x + (B.omega.y * rbz - B.omega.z * rby);
+              const vBy = B.vel.y + (B.omega.z * rbx - B.omega.x * rbz);
+              const vBz = B.vel.z + (B.omega.x * rby - B.omega.y * rbx);
+
+              const rvx = vAx - vBx, rvy = vAy - vBy, rvz = vAz - vBz;
+              const velAlongNormal = rvx * nx + rvy * ny + rvz * nz;
+              if (velAlongNormal < 0) {
+                const restitution = 0.22;
+                const jImpulse = -(1 + restitution) * velAlongNormal / invSum;
+                const ix = jImpulse * nx, iy = jImpulse * ny, iz = jImpulse * nz;
+                // При таране более тяжёлым танком точка удара смещена чуть вверх/вниз, создавая опрокидывающий момент!
+                A.applyRelPosWorldImpulse(rax, ray - 0.12 * shareA, raz,  ix,  iy,  iz);
+                B.applyRelPosWorldImpulse(rbx, rby - 0.12 * shareB, rbz, -ix, -iy, -iz);
               }
             }
           }
         }
+        resolveTankChassisAndWalls3D(A, 0.004);
+        resolveTankChassisAndWalls3D(B, 0.004);
+      }
+    }
+  }
+
+  // Динамическое просвечивание (X-Ray Cutaway) крыш, мостов, арок и подземелий над танком игрока
+  function updateUndergroundXrayCutaway(dt) {
+    if (typeof playerTank === 'undefined' || !playerTank) return;
+
+    // 1) Обновляем статус нахождения под мостом / в туннеле / под крышей для каждого танка
+    for (let ti = 0; ti < tanks.length; ti++) {
+      const t = tanks[ti];
+      if (t.isDead) {
+        t.isUnderground = false;
+      } else {
+        const ty = (t.y !== undefined) ? t.y : 0;
+        const cY = getCeilingHeightAbove(t.x, t.z, ty);
+        t.isUnderground = (cY !== null);
+      }
+      // В 2D виде сверху включаем яркий X-Ray силуэт сквозь крыши/мосты; в 3D виде от 3-го лица наш танк перед камерой виден напрямую!
+      const showXray = !!t.isUnderground && (!is3DCameraMode || !t.isPlayer);
+      if (t.xrayHullMesh)   t.xrayHullMesh.visible   = showXray;
+      if (t.xrayHullWire)   t.xrayHullWire.visible   = showXray;
+      if (t.xrayTurretMesh) t.xrayTurretMesh.visible = showXray;
+      if (t.xrayTurretWire) t.xrayTurretWire.visible = showXray;
+    }
+
+    const px = playerTank.x;
+    const py = (playerTank.y !== undefined) ? playerTank.y : 0;
+    const pz = playerTank.z;
+    const ceilY = getCeilingHeightAbove(px, pz, py);
+    const needRoofCutaway = !!playerTank.isUnderground && (!is3DCameraMode || (ceilY !== null && perspCamera.position.y > ceilY - 0.35));
+
+    // 2) Делаем полупрозрачными плиты моста / крыши туннеля над нашим танком в 2D виде (или если высокая 3D-камера поднялась над мостом)
+    for (let i = 0; i < mapPropRecords.length; i++) {
+      const rec = mapPropRecords[i];
+      let targetOp = 1.0;
+
+      if (needRoofCutaway && rec.wyMax > py + 2.15) {
+        const cx = clamp(px, rec.wxMin, rec.wxMax);
+        const cz = clamp(pz, rec.wzMin, rec.wzMax);
+        const distXZ = Math.hypot(px - cx, pz - cz);
+        const isElevatedRoof = (rec.wyMin >= py + 1.45) || (ceilY !== null && rec.wyMax >= ceilY - 0.85);
+        if (distXZ < 12.5 && isElevatedRoof) {
+          targetOp = distXZ < 5.5 ? 0.18 : 0.26;
+        }
+      }
+
+      if (Math.abs(rec.curOpacity - targetOp) > 0.005) {
+        rec.curOpacity = lerp(rec.curOpacity, targetOp, Math.min(1, 12 * dt));
+        if (rec.curOpacity < 0.98) {
+          if (!rec.mesh.userData.fadeMat) {
+            const fm = rec.mesh.userData.baseMat.clone();
+            fm.transparent = true;
+            fm.depthWrite = false;
+            rec.mesh.userData.fadeMat = fm;
+          }
+          rec.mesh.userData.fadeMat.opacity = rec.curOpacity;
+          if (rec.mesh.material !== rec.mesh.userData.fadeMat) {
+            rec.mesh.material = rec.mesh.userData.fadeMat;
+          }
+        } else {
+          rec.curOpacity = 1.0;
+          if (rec.mesh.material !== rec.mesh.userData.baseMat) {
+            rec.mesh.material = rec.mesh.userData.baseMat;
+          }
+        }
+      }
+    }
+
+    const badgeEl = document.getElementById('xray-underground-badge');
+    if (badgeEl) {
+      badgeEl.style.display = needRoofCutaway ? 'block' : 'none';
+    }
+  }
+
+  // Быстрая проверка: перекрывает ли 3D OBB окклюдер (здание/стена) отрезок луча от камеры (ox, oy, oz) к точке (tx, ty, tz)
+  function doesSegmentHit3DOccluder(occ, ox, oy, oz, tx, ty, tz) {
+    const dx = tx - ox, dy = ty - oy, dz = tz - oz;
+    const relOx = ox - occ.x, relOz = oz - occ.z;
+    const su = relOx * occ.ux + relOz * occ.uz;
+    const sv = relOx * occ.vx + relOz * occ.vz;
+    const du = dx * occ.ux + dz * occ.uz;
+    const dv = dx * occ.vx + dz * occ.vz;
+
+    let tmin = 0.02, tmax = 0.96;
+    if (Math.abs(du) < 1e-6) {
+      if (su < -occ.halfU || su > occ.halfU) return false;
+    } else {
+      let t1 = (-occ.halfU - su) / du;
+      let t2 = ( occ.halfU - su) / du;
+      if (t1 > t2) { const tmp = t1; t1 = t2; t2 = tmp; }
+      if (t1 > tmin) tmin = t1;
+      if (t2 < tmax) tmax = t2;
+      if (tmin > tmax) return false;
+    }
+
+    if (Math.abs(dv) < 1e-6) {
+      if (sv < -occ.halfV || sv > occ.halfV) return false;
+    } else {
+      let t1 = (-occ.halfV - sv) / dv;
+      let t2 = ( occ.halfV - sv) / dv;
+      if (t1 > t2) { const tmp = t1; t1 = t2; t2 = tmp; }
+      if (t1 > tmin) tmin = t1;
+      if (t2 < tmax) tmax = t2;
+      if (tmin > tmax) return false;
+    }
+
+    const yEnter = oy + dy * tmin;
+    const yExit  = oy + dy * tmax;
+    return (yEnter >= occ.bottomY && yEnter <= occ.topY && yExit >= occ.bottomY && yExit <= occ.topY);
+  }
+
+  // Оригинальная 6-точечная проверка видимости танка из battles.swf (TankModel.isTankInvisible + isTankPointVisible):
+  // Кастуем лучи от камеры к 6 крайним точкам корпуса + куполу башни вражеского танка.
+  // Если ВСЕ точки закрыты сплошными стенами/зданиями — танк полностью скрыт (его 2D никнейм и полоска HP не просвечивают сквозь стены!)
+  const _tankVisLocalOffsets = [
+    [-0.95,  0.15, -1.45],
+    [ 0.95,  0.15, -1.45],
+    [-0.95,  0.15,  0.0 ],
+    [ 0.95,  0.15,  0.0 ],
+    [-0.95,  0.15,  1.45],
+    [ 0.95,  0.15,  1.45],
+    [ 0.0,   0.92,  0.0 ]
+  ];
+
+  function isTankOccludedFromCamera3D(tank, camPos) {
+    if (!tank || tank.isPlayer || !is3DCameraMode || mapOccluders.length === 0) return false;
+    const cx = camPos.x, cy = camPos.y, cz = camPos.z;
+    const distSqToTank = (tank.bodyPos.x - cx) * (tank.bodyPos.x - cx) + (tank.bodyPos.z - cz) * (tank.bodyPos.z - cz);
+    if (distSqToTank < 25.0) return false;
+
+    for (let p = 0; p < _tankVisLocalOffsets.length; p++) {
+      const off = _tankVisLocalOffsets[p];
+      _physLocal.set(off[0], off[1], off[2]).applyQuaternion(tank.quat);
+      const px = tank.bodyPos.x + _physLocal.x;
+      const py = tank.bodyPos.y + _physLocal.y;
+      const pz = tank.bodyPos.z + _physLocal.z;
+
+      let pointBlocked = false;
+      for (let i = 0; i < _activeOccluders.length; i++) {
+        if (doesSegmentHit3DOccluder(_activeOccluders[i], cx, cy, cz, px, py, pz)) {
+          pointBlocked = true;
+          break;
+        }
+      }
+      // Как только хотя бы ОДНА из 6 точек корпуса/башни видна камере — танк считается видимым (early exit из TankModel.isTankInvisible!)
+      if (!pointBlocked) return false;
+    }
+    return true;
+  }
+
+  // Полноценный 3D Frustum Culling + 3D Occlusion Culling (Alternativa3D Occluder + Frustum) для оптимизации рендера всех пропов и танков
+  function updateFrustumAndOcclusionCulling(activeCamera) {
+    if (!activeCamera) return;
+    activeCamera.updateMatrixWorld();
+    _cullProjScreenMatrix.multiplyMatrices(activeCamera.projectionMatrix, activeCamera.matrixWorldInverse);
+    _cullFrustum.setFromProjectionMatrix(_cullProjScreenMatrix);
+
+    const camPos = activeCamera.position;
+    const cx = camPos.x, cy = camPos.y, cz = camPos.z;
+
+    // 1) Отбираем ближайшие к камере активные 3D окклюдеры (здания/стены), попадающие в пирамиду видимости
+    _activeOccluders.length = 0;
+    if (is3DCameraMode && mapOccluders.length > 0) {
+      for (let i = 0; i < mapOccluders.length; i++) {
+        const occ = mapOccluders[i];
+        const dx = occ.x - cx, dz = occ.z - cz;
+        const dSq = dx * dx + dz * dz;
+        if (dSq > 85 * 85) continue;
+        occ.camDistSq = dSq;
+        _activeOccluders.push(occ);
+        if (_activeOccluders.length >= 22) break;
+      }
+    }
+
+    // 2) Проверяем каждый проп карты: сначала Frustum Culling, затем 3D Occlusion Culling по 4 угловым лучам bounding-box пропа
+    let fCulled = 0;
+    let oCulled = 0;
+    for (let i = 0; i < mapPropRecords.length; i++) {
+      const rec = mapPropRecords[i];
+      _cullSphere.center.set(rec.cx, rec.cy, rec.cz);
+      _cullSphere.radius = (rec.radius || 3.5) + 0.75;
+
+      if (!_cullFrustum.intersectsSphere(_cullSphere)) {
+        rec.mesh.visible = false;
+        fCulled++;
+        continue;
+      }
+
+      if (is3DCameraMode && _activeOccluders.length > 0 && !rec.isGroundTile) {
+        const dx = rec.cx - cx, dz = rec.cz - cz;
+        const propDistSq = dx * dx + dz * dz;
+        if (propDistSq > 144.0) {
+          let fullyOccluded = false;
+          for (let j = 0; j < _activeOccluders.length; j++) {
+            const occ = _activeOccluders[j];
+            if (occ.camDistSq >= propDistSq * 0.88) continue;
+            if (occ.topY < rec.wyMax - 0.10 || occ.bottomY > rec.wyMin + 0.35) continue;
+            // Проверяем 4 крайних угла 3D AABB пропа: если один и тот же сплошной окклюдер закрывает все 4 угла, проп полностью скрыт за зданием!
+            if (
+              doesSegmentHit3DOccluder(occ, cx, cy, cz, rec.wxMin, rec.wyMax, rec.wzMin) &&
+              doesSegmentHit3DOccluder(occ, cx, cy, cz, rec.wxMax, rec.wyMax, rec.wzMax) &&
+              doesSegmentHit3DOccluder(occ, cx, cy, cz, rec.wxMin, rec.wyMin + 0.2, rec.wzMax) &&
+              doesSegmentHit3DOccluder(occ, cx, cy, cz, rec.wxMax, rec.wyMin + 0.2, rec.wzMin)
+            ) {
+              fullyOccluded = true;
+              break;
+            }
+          }
+          if (fullyOccluded) {
+            rec.mesh.visible = false;
+            oCulled++;
+            continue;
+          }
+        }
+      }
+
+      rec.mesh.visible = true;
+    }
+    culledPropsCount = fCulled;
+    occludedPropsCount = oCulled;
+
+    // 3) Обновляем Frustum и 6-точечную окклюзию видимости для всех танков на карте
+    for (let i = 0; i < tanks.length; i++) {
+      const t = tanks[i];
+      if (t.isDead) {
+        t.isOccludedFromCamera = false;
+        continue;
+      }
+      _cullSphere.center.set(t.bodyPos.x, t.bodyPos.y, t.bodyPos.z);
+      _cullSphere.radius = 3.2;
+      if (!_cullFrustum.intersectsSphere(_cullSphere)) {
+        t.group.visible = false;
+        t.isOccludedFromCamera = true;
+      } else {
+        t.group.visible = true;
+        t.isOccludedFromCamera = isTankOccludedFromCamera3D(t, camPos);
       }
     }
   }
@@ -3782,20 +4629,54 @@
       this.x = cfg.x || 0;
       this.z = cfg.z || 0;
       this.y = getTerrainHeight(this.x, this.z, cfg.y);
-      this.vy = 0;
       this.hullAngle = cfg.angle || 0;
       this.turretAngle = cfg.angle || 0;
+      this.turretDir = 0; // Угол башни в локальных координатах корпуса (как Tank.turretDir в battles.swf!)
+      this.turretTurnSpeed = 0;
+
+      // 6-DOF Твёрдое тело (AlternativaPhysics Body + Tank из battles.swf)
+      this.bodyPos = new THREE.Vector3(this.x, this.y + 0.56, this.z);
+      this.vel = new THREE.Vector3(0, 0, 0);
+      this.omega = new THREE.Vector3(0, 0, 0); // 3D угловая скорость (rad/s) в мировых координатах
+      this.quat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.hullAngle);
+      this.forceAccum = new THREE.Vector3(0, 0, 0);
+      this.torqueAccum = new THREE.Vector3(0, 0, 0);
+      this.invMass = 1 / 1500;
+      this.invInertiaLocal = new THREE.Vector3(1 / 1200, 1 / 1800, 1 / 900);
+
+      // Параметры подвески SuspensionData из battles.swf
+      this.suspData = {
+        rayLength: 0.52,
+        rayOptimalLength: 0.26,
+        dampingCoeff: 2200.0,
+        staticFriction: 3.0,
+        dynamicFriction: 0.06,
+        smallVel: 1.0,
+        horForceCoeff: 1 / 9.8
+      };
+      this.leftTrackRays = [];
+      this.rightTrackRays = [];
+      this.leftContactsNum = 5;
+      this.rightContactsNum = 5;
+      this.totalContactsNum = 10;
+
+      this.vx = 0;
+      this.vy = 0;
+      this.vz = 0;
+      this.omegaYaw = 0;
+      this.isGrounded = true;
+      this.isUpsideDown = false;
+      this.isOnSide = false;
+      this.isUnderground = false;
 
       this.speed = 0;
       this.prevSpeed = 0;
       this.recoilVel = new THREE.Vector3();
-
-      this.suspPitch = 0;
-      this.suspPitchVel = 0;
-      this.suspRoll = 0;
-      this.suspRollVel = 0;
       this.slopePitch = 0;
       this.slopeRoll = 0;
+      this.suspPitch = 0;
+      this.suspRoll = 0;
+      this.suspHeave = 0;
       this.dustAccum = 0;
 
       this.hp = HULL_DATA[this.hullId].hp;
@@ -3821,7 +4702,6 @@
       this.deadSmokeAccum = 0;
 
       this.group = new THREE.Group();
-      this.group.rotation.order = 'YXZ';
       this.hullMesh = null;
       this.turretMesh = null;
       this.turretPivotGroup = new THREE.Group();
@@ -3831,18 +4711,325 @@
       scene.add(this.group);
 
       this.buildModels();
-      resolveWallPenetration(this, 1.08);
+      this.bodyPos.set(this.x, this.y + this.hullHalfH, this.z);
+      resolveTankChassisAndWalls3D(this, 0.016);
       this.updateMeshTransforms(0.016);
+    }
+
+    // Вычисление тензора инерции параллелепипеда корпуса (MyMath.getBoxInvInertia из battles.swf) и 2 гусениц × 5 лучей SuspensionRay
+    setupPhysicsBodyFromHull(hData, tData) {
+      const hStats = HULL_DATA[this.hullId] || HULL_DATA.hunter;
+      const mass = Math.max(500, hStats.mass || 1500);
+      this.mass = mass;
+      this.invMass = 1.0 / mass;
+
+      const W = Math.max(1.85, (hData && hData.width)  ? hData.width  : 2.35);
+      const L = Math.max(2.85, (hData && hData.length) ? hData.length : 3.75);
+      const H = Math.max(0.92, (hData && hData.height) ? hData.height : 1.12);
+
+      this.hullHalfW = W * 0.45;
+      this.hullHalfL = L * 0.45;
+      this.hullHalfH = H * 0.46;
+
+      // Моменты инерции твёрдого прямоугольного корпуса: Ixx = m/12*(H^2+L^2), Iyy = m/12*(W^2+L^2), Izz = m/12*(W^2+H^2)
+      const ixx = (mass / 12.0) * (H * H + L * L);
+      const iyy = (mass / 12.0) * (W * W + L * L);
+      const izz = (mass / 12.0) * (W * W + H * H);
+      this.invInertiaLocal.set(1.0 / ixx, 1.0 / iyy, 1.0 / izz);
+
+      // Коэффициент демпфирования амортизаторов пропорционален массе танка
+      this.suspData.dampingCoeff = mass * 1.48;
+
+      // 2 гусеницы (leftTrack и rightTrack), по 5 лучей SuspensionRay на каждую (всего 10 лучей, как в battles.swf Track.as!)
+      const trackX = Math.max(0.68, this.hullHalfW * 0.86);
+      const trackLen = this.hullHalfL * 1.68;
+      const stepZ = trackLen / 4.0;
+      const rayOriginY = -this.hullHalfH + 0.24;
+
+      this.leftTrackRays = [];
+      this.rightTrackRays = [];
+      for (let i = 0; i < 5; i++) {
+        const lz = -0.5 * trackLen + i * stepZ; // От переднего катка (-Z) к заднему (+Z)
+        this.leftTrackRays.push({
+          lx: -trackX, ly: rayOriginY, lz,
+          hasCollision: true,
+          compression: this.suspData.rayOptimalLength,
+          prevCompression: this.suspData.rayOptimalLength,
+          wx: 0, wy: 0, wz: 0,
+          nx: 0, ny: 1, nz: 0,
+          vx: 0, vy: 0, vz: 0
+        });
+        this.rightTrackRays.push({
+          lx: trackX, ly: rayOriginY, lz,
+          hasCollision: true,
+          compression: this.suspData.rayOptimalLength,
+          prevCompression: this.suspData.rayOptimalLength,
+          wx: 0, wy: 0, wz: 0,
+          nx: 0, ny: 1, nz: 0,
+          vx: 0, vy: 0, vz: 0
+        });
+      }
+
+      this.muzzleLocal = (tData && tData.muzzle) ? [tData.muzzle[0], tData.muzzle[1], tData.muzzle[2]] : [0, 0.35, -2.55];
+    }
+
+    // Умножение вектора в мировых координатах на мировой обратный тензор инерции: R * diag(invInertiaLocal) * R^T * v
+    multiplyByWorldInvInertia(vecWorld, outVec) {
+      _physInvQuat.copy(this.quat).conjugate();
+      outVec.copy(vecWorld).applyQuaternion(_physInvQuat);
+      outVec.x *= this.invInertiaLocal.x;
+      outVec.y *= this.invInertiaLocal.y;
+      outVec.z *= this.invInertiaLocal.z;
+      outVec.applyQuaternion(this.quat);
+      return outVec;
+    }
+
+    // Body.addWorldForce(pos, force): добавляет силу и крутящий момент r x F относительно 3D центра масс
+    addWorldForce(wx, wy, wz, fx, fy, fz) {
+      this.forceAccum.x += fx;
+      this.forceAccum.y += fy;
+      this.forceAccum.z += fz;
+      const rx = wx - this.bodyPos.x;
+      const ry = wy - this.bodyPos.y;
+      const rz = wz - this.bodyPos.z;
+      this.torqueAccum.x += ry * fz - rz * fy;
+      this.torqueAccum.y += rz * fx - rx * fz;
+      this.torqueAccum.z += rx * fy - ry * fx;
+    }
+
+    // Body.addWorldForceScaled(pos, dir, scale)
+    addWorldForceScaled(wx, wy, wz, dx, dy, dz, scale) {
+      this.addWorldForce(wx, wy, wz, dx * scale, dy * scale, dz * scale);
+    }
+
+    // Body.applyRelPosWorldImpulse(r, impulse): мгновенный 3D импульс (отдача выстрела, попадание снаряда, удар о землю/танк)
+    applyRelPosWorldImpulse(rx, ry, rz, ix, iy, iz) {
+      this.vel.x += ix * this.invMass;
+      this.vel.y += iy * this.invMass;
+      this.vel.z += iz * this.invMass;
+      const tx = ry * iz - rz * iy;
+      const ty = rz * ix - rx * iz;
+      const tz = rx * iy - ry * ix;
+      _physV1.set(tx, ty, tz);
+      this.multiplyByWorldInvInertia(_physV1, _physV2);
+      this.omega.add(_physV2);
+    }
+
+    addWorldImpulseScaled(wx, wy, wz, dx, dy, dz, scale) {
+      this.applyRelPosWorldImpulse(
+        wx - this.bodyPos.x,
+        wy - this.bodyPos.y,
+        wz - this.bodyPos.z,
+        dx * scale,
+        dy * scale,
+        dz * scale
+      );
+    }
+
+    // Точное положение и 3D вектор направления дула пушки в мировых координатах (с учётом наклона/переворота корпуса и поворота башни!)
+    getWorldMuzzleState(lateralOffset = 0) {
+      const mX = (this.mountPos && this.mountPos[0]) || 0;
+      const mY = (this.mountPos && this.mountPos[1]) || 0.52;
+      const mZ = (this.mountPos && this.mountPos[2]) || 0;
+      const muzX = ((this.muzzleLocal && this.muzzleLocal[0]) || 0) + lateralOffset;
+      const muzY = (this.muzzleLocal && this.muzzleLocal[1]) || 0.35;
+      const muzZ = (this.muzzleLocal && this.muzzleLocal[2]) || -2.55;
+
+      const sinT = Math.sin(this.turretDir || 0);
+      const cosT = Math.cos(this.turretDir || 0);
+      // Поворот дула вокруг оси Y башни + смещение точки крепления башни mountPos в локальных координатах корпуса
+      const lx = mX + muzX * cosT + muzZ * sinT;
+      const ly = mY + muzY;
+      const lz = mZ - muzX * sinT + muzZ * cosT;
+
+      const muzzlePos = new THREE.Vector3(lx, ly, lz).applyQuaternion(this.quat).add(this.bodyPos);
+      const gunDir = new THREE.Vector3(-sinT, 0, -cosT).applyQuaternion(this.quat).normalize();
+      const gunUp = new THREE.Vector3(0, 1, 0).applyQuaternion(this.quat).normalize();
+      const gunRight = new THREE.Vector3(cosT, 0, -sinT).applyQuaternion(this.quat).normalize();
+      return { muzzlePos, gunDir, gunUp, gunRight };
+    }
+
+    // Синхронизация совместимых полей (x, y, z, vx, vy, vz, hullAngle, turretAngle, slopePitch, slopeRoll) из 3D кватерниона и центра масс
+    syncLegacyCoords() {
+      this.x = this.bodyPos.x;
+      this.z = this.bodyPos.z;
+      this.y = this.bodyPos.y - this.hullHalfH;
+      this.vx = this.vel.x;
+      this.vy = this.vel.y;
+      this.vz = this.vel.z;
+
+      // Локальные оси корпуса в мировых координатах
+      const hullFwd = _physV1.set(0, 0, -1).applyQuaternion(this.quat);
+      const hullUp  = _physV2.set(0, 1, 0).applyQuaternion(this.quat);
+      const hullRight = _physV3.set(1, 0, 0).applyQuaternion(this.quat);
+
+      if (Math.hypot(hullFwd.x, hullFwd.z) > 1e-4) {
+        this.hullAngle = Math.atan2(-hullFwd.x, -hullFwd.z);
+      }
+      this.omegaYaw = this.omega.y;
+      this.speed = this.vel.x * hullFwd.x + this.vel.y * hullFwd.y + this.vel.z * hullFwd.z;
+
+      // Мировой азимут пушки (для 2D миникарты, 3D камеры FollowCameraController и прицеливания)
+      const sinT = Math.sin(this.turretDir || 0);
+      const cosT = Math.cos(this.turretDir || 0);
+      const turWorldX = -sinT * hullFwd.x + cosT * hullRight.x; // wait: local (-sinT, 0, -cosT) = sinT*(-right) + cosT*(fwd) -> actually local X is right, local -Z is fwd!
+      const gunWorldX = -sinT * hullRight.x + cosT * hullFwd.x;
+      const gunWorldZ = -sinT * hullRight.z + cosT * hullFwd.z;
+      if (Math.hypot(gunWorldX, gunWorldZ) > 1e-4) {
+        this.turretAngle = Math.atan2(-gunWorldX, -gunWorldZ);
+      } else {
+        this.turretAngle = normalizeAngle(this.hullAngle + (this.turretDir || 0));
+      }
+
+      this.slopePitch = Math.asin(clamp(hullFwd.y, -1, 1));
+      this.slopeRoll  = Math.asin(clamp(hullRight.y, -1, 1));
+      this.isUpsideDown = (hullUp.y < -0.15);
+      this.isOnSide     = (hullUp.y >= -0.15 && hullUp.y < 0.32);
+    }
+
+    // Расчёт 10 лучей гусеничной подвески (Track.addForces + SuspensionRay.addForce из battles.swf, без аллокаций в цикле!)
+    stepTrackSuspensionForces(trackRays, trackThrottle, brakeLocked, springCoeff, maxSpeed, subDt) {
+      const sd = this.suspData;
+      const hullUpY = 1.0 - 2.0 * (this.quat.x * this.quat.x + this.quat.z * this.quat.z);
+      // Если танк перевернулся на бок или вверх гусеницами (hullUp.y <= 0.12), гусеницы смотрят в воздух и не отталкиваются от земли!
+      if (hullUpY <= 0.12) {
+        for (let i = 0; i < trackRays.length; i++) trackRays[i].hasCollision = false;
+        return 0;
+      }
+
+      const hullRight = _suspRight.set(1, 0, 0).applyQuaternion(this.quat);
+      const hullUp    = _suspUp.set(0, 1, 0).applyQuaternion(this.quat);
+      const hullFwd   = _suspFwd.set(0, 0, -1).applyQuaternion(this.quat);
+      const rayDirX = -hullUp.x, rayDirY = -hullUp.y, rayDirZ = -hullUp.z;
+
+      // Угловая скорость рыскания корпуса в локальной системе танка (для анизотропного сброса бокового трения катков при повороте)
+      const omegaLocalY = this.omega.x * hullUp.x + this.omega.y * hullUp.y + this.omega.z * hullUp.z;
+
+      let contacts = 0;
+      for (let i = 0; i < trackRays.length; i++) {
+        const ray = trackRays[i];
+        // Точка начала луча в мировых координатах
+        const rx = ray.lx * hullRight.x + ray.ly * hullUp.x - ray.lz * hullFwd.x;
+        const ry = ray.lx * hullRight.y + ray.ly * hullUp.y - ray.lz * hullFwd.y;
+        const rz = ray.lx * hullRight.z + ray.ly * hullUp.z - ray.lz * hullFwd.z;
+        const ox = this.bodyPos.x + rx;
+        const oy = this.bodyPos.y + ry;
+        const oz = this.bodyPos.z + rz;
+
+        const gInfo = getTerrainSurfaceInfo(ox, oz, this.bodyPos.y - this.hullHalfH);
+        // Если под лучом гусеницы обрыв/пропасть (gInfo.y <= mapKillMinY - 4), каток повисает в воздухе, и танк честно наклоняется через край!
+        if (gInfo.y <= mapKillMinY - 4.0) {
+          ray.hasCollision = false;
+          ray.prevCompression = ray.compression;
+          ray.compression = 0;
+          continue;
+        }
+
+        const vertDist = oy - gInfo.y;
+        const rayDist = vertDist / Math.max(0.28, -rayDirY);
+
+        if (rayDist >= -0.25 && rayDist <= sd.rayLength) {
+          ray.hasCollision = true;
+          contacts++;
+          ray.prevCompression = ray.compression;
+          ray.compression = sd.rayLength - Math.max(0, rayDist);
+
+          ray.wx = ox + rayDirX * Math.max(0, rayDist);
+          ray.wy = gInfo.y;
+          ray.wz = oz + rayDirZ * Math.max(0, rayDist);
+          ray.nx = gInfo.nx;
+          ray.ny = gInfo.ny;
+          ray.nz = gInfo.nz;
+
+          // Скорость точки контакта гусеницы относительно земли
+          const crx = ray.wx - this.bodyPos.x;
+          const cry = ray.wy - this.bodyPos.y;
+          const crz = ray.wz - this.bodyPos.z;
+          ray.vx = this.vel.x + (this.omega.y * crz - this.omega.z * cry);
+          ray.vy = this.vel.y + (this.omega.z * crx - this.omega.x * crz);
+          ray.vz = this.vel.z + (this.omega.x * cry - this.omega.y * crx);
+
+          // 1) Упругая сила пружины + демпфер амортизатора (SuspensionRay.calculateSpringForce)
+          const springRate = (ray.compression - ray.prevCompression) / Math.max(1e-4, subDt);
+          let fSpring = springCoeff * ray.compression + sd.dampingCoeff * springRate;
+          if (fSpring < 0) fSpring = 0;
+          // Прикладываем вертикальную реакцию опоры вдоль нормали поверхности
+          this.addWorldForceScaled(ray.wx, ray.wy, ray.wz, ray.nx, ray.ny, ray.nz, fSpring);
+
+          // 2) Продольная и поперечная оси гусеницы на наклонной поверхности (SuspensionRay.addForce из battles.swf, строки 681–1202)
+          const cosUpN = hullUp.x * ray.nx + hullUp.y * ray.ny + hullUp.z * ray.nz;
+          if (cosUpN > 0.15) {
+            const fDotN = hullFwd.x * ray.nx + hullFwd.y * ray.ny + hullFwd.z * ray.nz;
+            let fwdAx = hullFwd.x - fDotN * ray.nx;
+            let fwdAy = hullFwd.y - fDotN * ray.ny;
+            let fwdAz = hullFwd.z - fDotN * ray.nz;
+            const fwdLen = Math.hypot(fwdAx, fwdAy, fwdAz) || 1;
+            fwdAx /= fwdLen; fwdAy /= fwdLen; fwdAz /= fwdLen;
+
+            const rDotN = hullRight.x * ray.nx + hullRight.y * ray.ny + hullRight.z * ray.nz;
+            let sideAx = hullRight.x - rDotN * ray.nx;
+            let sideAy = hullRight.y - rDotN * ray.ny;
+            let sideAz = hullRight.z - rDotN * ray.nz;
+            const sideLen = Math.hypot(sideAx, sideAy, sideAz) || 1;
+            sideAx /= sideLen; sideAy /= sideLen; sideAz /= sideLen;
+
+            const forwardVel = ray.vx * fwdAx + ray.vy * fwdAy + ray.vz * fwdAz;
+            const sideVel    = ray.vx * sideAx + ray.vy * sideAy + ray.vz * sideAz;
+
+            // Боковое трение катка (с оригинальным сбросом трения на крайних катках при развороте из SuspensionRay.as!)
+            const slipTerm = omegaLocalY * (-ray.lz);
+            let sideFric = (sideVel * slipTerm < 0) ? (2.0 * sd.dynamicFriction) : sd.staticFriction;
+            if (Math.abs(sideVel) < sd.smallVel) {
+              sideFric *= Math.abs(sideVel) / sd.smallVel;
+            }
+            const fSide = -Math.sign(sideVel) * fSpring * sideFric * cosUpN * sd.horForceCoeff;
+            this.addWorldForceScaled(ray.wx, ray.wy, ray.wz, sideAx, sideAy, sideAz, fSide);
+
+            // Продольная тяга (SuspensionRay.addForce строки 706–805):
+            // 100% мощности rayThrottle прикладывается вплоть до достижения maxSpeed (без искусственного затухания тяги!)
+            const rayThrottle = trackThrottle / Math.max(1, this.lastTrackContacts || 5);
+            if (!brakeLocked && ((rayThrottle > 0 && forwardVel < maxSpeed) || (rayThrottle < 0 && -forwardVel < maxSpeed))) {
+              this.addWorldForceScaled(ray.wx, ray.wy, ray.wz, fwdAx, fwdAy, fwdAz, rayThrottle * cosUpN);
+            }
+
+            // Продольное трение и контр-торможение (SuspensionRay.addForce строки 1054–1154):
+            // При смене направления (forwardVel * rayThrottle < 0) включается мощное торможение 0.55 * staticFriction вместе с обратной тягой!
+            let fwdFric = 0;
+            if (brakeLocked) {
+              fwdFric = 0.45 * sd.staticFriction;
+            } else if (forwardVel * rayThrottle < -0.1) {
+              fwdFric = 0.55 * sd.staticFriction;
+            } else if (Math.abs(rayThrottle) < 1.0 || Math.abs(forwardVel) > maxSpeed) {
+              fwdFric = sd.dynamicFriction;
+            }
+            if (fwdFric > 0) {
+              if (Math.abs(forwardVel) < sd.smallVel) {
+                fwdFric *= Math.abs(forwardVel) / sd.smallVel;
+              }
+              const fBrake = -Math.sign(forwardVel) * fSpring * fwdFric * cosUpN * sd.horForceCoeff;
+              this.addWorldForceScaled(ray.wx, ray.wy, ray.wz, fwdAx, fwdAy, fwdAz, fBrake);
+            }
+          }
+        } else {
+          ray.hasCollision = false;
+          ray.prevCompression = ray.compression;
+          ray.compression = 0;
+        }
+      }
+      return contacts;
     }
 
     buildModels() {
       if (this.hullMesh) this.group.remove(this.hullMesh);
+      if (this.xrayHullMesh) this.group.remove(this.xrayHullMesh);
+      if (this.xrayHullWire) this.group.remove(this.xrayHullWire);
       while (this.turretPivotGroup.children.length > 0) {
         this.turretPivotGroup.remove(this.turretPivotGroup.children[0]);
       }
 
       const hData = TANKI_MODELS.hulls[this.hullId];
       const tData = TANKI_MODELS.turrets[this.turretId];
+      this.setupPhysicsBodyFromHull(hData, tData);
 
       const pKey = this.isPlayer ? playerPaintId : (this.paintId || (this.team === 'red' ? 'red' : 'blue'));
       const hTex = getPaintedTankTexture('hulls', this.hullId, pKey);
@@ -3853,6 +5040,8 @@
         this.hullMesh.material.map = hTex;
         this.hullMesh.material.needsUpdate = true;
       }
+      // Смещаем меш корпуса и точку крепления башни на -hullHalfH по Y, чтобы (0,0,0) группы танка точно совпадал с 3D центром масс Body!
+      this.hullMesh.position.set(0, -this.hullHalfH, 0);
       this.group.add(this.hullMesh);
 
       this.turretMesh = buildMeshFromData(tData, null, true);
@@ -3861,6 +5050,47 @@
         this.turretMesh.material.needsUpdate = true;
       }
       this.turretPivotGroup.add(this.turretMesh);
+
+      // 3D X-Ray Силуэт танка (включается автоматически, когда танк заезжает под мост, в туннель или подземелье!)
+      const xrayColor = this.isPlayer ? 0x38ff6a : (this.team === 'blue' ? 0x38bdf8 : 0xfb7185);
+      const xraySolidMat = new THREE.MeshBasicMaterial({
+        color: xrayColor,
+        side: THREE.FrontSide,
+        transparent: true,
+        opacity: this.isPlayer ? 0.42 : 0.32,
+        depthTest: false,
+        depthWrite: false
+      });
+      const xrayWireMat = new THREE.MeshBasicMaterial({
+        color: this.isPlayer ? 0xbef264 : xrayColor,
+        wireframe: true,
+        transparent: true,
+        opacity: this.isPlayer ? 0.58 : 0.35,
+        depthTest: false,
+        depthWrite: false
+      });
+
+      this.xrayHullMesh = new THREE.Mesh(this.hullMesh.geometry, xraySolidMat);
+      this.xrayHullMesh.position.set(0, -this.hullHalfH, 0);
+      this.xrayHullMesh.renderOrder = 998;
+      this.xrayHullMesh.visible = false;
+      this.group.add(this.xrayHullMesh);
+
+      this.xrayHullWire = new THREE.Mesh(this.hullMesh.geometry, xrayWireMat);
+      this.xrayHullWire.position.set(0, -this.hullHalfH, 0);
+      this.xrayHullWire.renderOrder = 999;
+      this.xrayHullWire.visible = false;
+      this.group.add(this.xrayHullWire);
+
+      this.xrayTurretMesh = new THREE.Mesh(this.turretMesh.geometry, xraySolidMat);
+      this.xrayTurretMesh.renderOrder = 998;
+      this.xrayTurretMesh.visible = false;
+      this.turretPivotGroup.add(this.xrayTurretMesh);
+
+      this.xrayTurretWire = new THREE.Mesh(this.turretMesh.geometry, xrayWireMat);
+      this.xrayTurretWire.renderOrder = 999;
+      this.xrayTurretWire.visible = false;
+      this.turretPivotGroup.add(this.xrayTurretWire);
 
       // 3-слойный вращающийся спрайт разогрева Рельсы из Tank Testing Tool (Charge1.jpg + Charge2.jpg + Charge3.jpg)
       const muzZ = (tData.muzzle && tData.muzzle[2]) ? tData.muzzle[2] : -2.6;
@@ -3883,11 +5113,9 @@
       });
       this.chargeSprite = this.chargeSprites[0];
 
-      this.mountPos = [hData.mount[0], hData.mount[1], hData.mount[2]];
-      this.hullHalfL = (hData.length || 3.8) * 0.44;
-      this.hullHalfW = (hData.width || 2.4) * 0.44;
+      this.mountPos = [hData.mount[0], hData.mount[1] - this.hullHalfH, hData.mount[2]];
       this.turretPivotGroup.position.set(this.mountPos[0], this.mountPos[1], this.mountPos[2]);
-      this.turretPivotGroup.rotation.set(0, 0, 0);
+      this.turretPivotGroup.rotation.set(0, this.turretDir || 0, 0);
 
       this.maxHp = HULL_DATA[this.hullId].hp;
       this.hp = Math.min(this.hp, this.maxHp);
@@ -3905,6 +5133,26 @@
       if (typeof rebuildGaragePreviewTank === 'function') rebuildGaragePreviewTank();
     }
 
+    // Принудительная установка позы танка (для спавна, телепортации или переворота по клавише R)
+    setPose(x, y, z, yawAngle = 0, turretWorldAngle = undefined, rollAngle = 0, pitchAngle = 0) {
+      this.x = x;
+      this.y = y;
+      this.z = z;
+      this.hullAngle = yawAngle;
+      this.turretDir = (turretWorldAngle !== undefined) ? normalizeAngle(turretWorldAngle - yawAngle) : 0;
+      this.turretAngle = normalizeAngle(yawAngle + this.turretDir);
+      this.turretTurnSpeed = 0;
+
+      const euler = new THREE.Euler(pitchAngle, yawAngle, rollAngle, 'YXZ');
+      this.quat.setFromEuler(euler);
+      this.bodyPos.set(x, y + this.hullHalfH + 0.04, z);
+      this.vel.set(0, 0, 0);
+      this.omega.set(0, 0, 0);
+      this.forceAccum.set(0, 0, 0);
+      this.torqueAccum.set(0, 0, 0);
+      this.syncLegacyCoords();
+    }
+
     respawn() {
       this.isDead = false;
       this.hp = this.maxHp;
@@ -3914,8 +5162,7 @@
       this.burnTimer = 0;
       this.freezeTimer = 0;
       this.recoilVel.set(0, 0, 0);
-      this.suspPitch = 0; this.suspPitchVel = 0;
-      this.suspRoll = 0;  this.suspRollVel = 0;
+      this.isGrounded = true;
 
       if (this.hullMesh && this.hullMesh.userData.normalMat) {
         this.hullMesh.material = this.hullMesh.userData.normalMat;
@@ -3923,27 +5170,76 @@
       if (this.turretMesh && this.turretMesh.userData.normalMat) {
         this.turretMesh.material = this.turretMesh.userData.normalMat;
       }
+      if (this.xrayHullMesh) this.xrayHullMesh.visible = false;
+      if (this.xrayHullWire) this.xrayHullWire.visible = false;
+      if (this.xrayTurretMesh) this.xrayTurretMesh.visible = false;
+      if (this.xrayTurretWire) this.xrayTurretWire.visible = false;
       this.turretPivotGroup.position.set(this.mountPos[0], this.mountPos[1], this.mountPos[2]);
       this.turretPivotGroup.rotation.set(0, 0, 0);
 
       const safe = findSafeSpawnPoint(this.team, this, 1.35);
-      this.x = safe.x;
-      this.z = safe.z;
-      this.y = (safe.y !== undefined) ? safe.y : getTerrainHeight(this.x, this.z);
-      this.vy = 0;
-      this.hullAngle = safe.angle;
-      this.turretAngle = safe.angle;
-      resolveWallPenetration(this, 1.08);
+      const sy = (safe.y !== undefined) ? safe.y : getTerrainHeight(safe.x, safe.z);
+      this.setPose(safe.x, sy, safe.z, safe.angle, safe.angle, 0, 0);
+      resolveTankChassisAndWalls3D(this, 0.016);
 
       this.group.visible = true;
       this.updateMeshTransforms(0.016);
       spawnRespawnFlash(this.x, this.y + 0.5, this.z);
     }
 
+    // Оригинальное самоуничтожение танка при падении в пропасть / за пределы карты (TankModel.sendSuicideCommand + MIN_ALLOWED_Z из battles.swf)
+    triggerKillZoneSuicide(reason = 'abyss') {
+      if (this.isDead) return;
+      this.isDead = true;
+      this.hp = 0;
+      this.isCharging = false;
+      if (this.chargeSprites) this.chargeSprites.forEach(sp => { sp.visible = false; });
+      if (this.chargeSprite) this.chargeSprite.visible = false;
+      this.respawnTimer = 3.2;
+      this.deaths = (this.deaths || 0) + 1;
+
+      // Если танк упал в пропасть с флагом — флаг мгновенно возвращается на базу (как в CTFModel.as из battles.swf!)
+      for (const fk of ['blue', 'red']) {
+        const fl = ctfFlags[fk];
+        if (fl.carrier === this) {
+          if (reason === 'abyss') {
+            returnFlagToBase(fl, null);
+          } else {
+            dropCarriedFlag(this, false);
+          }
+        }
+      }
+
+      if (this.hullMesh) this.hullMesh.material = deadCharredMat;
+      if (this.turretMesh) this.turretMesh.material = deadCharredMat;
+      this.turretPivotGroup.position.set(
+        this.mountPos[0] + (Math.random() - 0.5) * 0.35,
+        this.mountPos[1] + 0.18,
+        this.mountPos[2] + (Math.random() - 0.5) * 0.35
+      );
+      this.turretPivotGroup.rotation.z = (Math.random() > 0.5 ? 1 : -1) * 0.28;
+      this.turretPivotGroup.rotation.x = -0.18;
+      this.updateMeshTransforms(0.016);
+
+      playTankiSound('explosion', 0.78, this);
+      spawn3DExplosion(this.x, this.bodyPos.y + 0.8, this.z, true);
+
+      const tClass = this.team === 'blue' ? 't-blue' : 't-red';
+      addEventLog(`☠ <span class="${tClass}">${this.name}</span> <b>самоуничтожился</b>`);
+      if (this.isPlayer && reason === 'abyss') {
+        showCtfBanner('☠ Вы упали в пропасть (сработал триггер смерти карты)!', '#f87171');
+      }
+      updateTabTable();
+    }
+
     update(dt) {
       if (this.dropFlagCooldown > 0) this.dropFlagCooldown -= dt;
 
       if (this.isDead) {
+        if (this.xrayHullMesh) this.xrayHullMesh.visible = false;
+        if (this.xrayHullWire) this.xrayHullWire.visible = false;
+        if (this.xrayTurretMesh) this.xrayTurretMesh.visible = false;
+        if (this.xrayTurretWire) this.xrayTurretWire.visible = false;
         this.respawnTimer -= dt;
         this.deadSmokeAccum += dt;
         if (this.deadSmokeAccum > 0.14) {
@@ -3955,6 +5251,16 @@
           }
         }
         if (this.respawnTimer <= 0) this.respawn();
+        return;
+      }
+
+      // Проверка триггера смерти карты (MIN_ALLOWED_Z и внешние границы пропасти из TankModel.updateLocalTank в battles.swf)
+      if (
+        this.bodyPos.y < mapKillMinY ||
+        this.bodyPos.x < mapKillMinX || this.bodyPos.x > mapKillMaxX ||
+        this.bodyPos.z < mapKillMinZ || this.bodyPos.z > mapKillMaxZ
+      ) {
+        this.triggerKillZoneSuicide('abyss');
         return;
       }
 
@@ -3978,10 +5284,26 @@
       }
       if (this.freezeTimer > 0) this.freezeTimer -= dt;
 
-      let maxSpeed = HULL_DATA[this.hullId].speed;
-      let turnRate = HULL_DATA[this.hullId].turn;
-      if (this.supplies.speed > 0) { maxSpeed *= 1.42; turnRate *= 1.32; }
-      if (this.freezeTimer > 0)   { maxSpeed *= 0.45; turnRate *= 0.45; }
+      const hStats = HULL_DATA[this.hullId] || HULL_DATA.hunter;
+      const tStats = TURRET_DATA[this.turretId] || TURRET_DATA.smoky;
+
+      let maxSpeed = hStats.speed;
+      let maxTurnSpeed = hStats.turn;
+      let trackPower = hStats.power || 9800;
+      let maxTurretTurnSpeed = tStats.turnSpeed || 1.47;
+      let turretTurnAccel = tStats.turnAccel || 1.62;
+
+      if (this.supplies.speed > 0) {
+        maxSpeed *= 1.38;
+        maxTurnSpeed *= 1.28;
+        trackPower *= 1.35;
+      }
+      if (this.freezeTimer > 0) {
+        maxSpeed *= 0.42;
+        maxTurnSpeed *= 0.42;
+        trackPower *= 0.48;
+        maxTurretTurnSpeed *= 0.45;
+      }
 
       let moveIntent = 0;
       let turnIntent = 0;
@@ -3997,38 +5319,92 @@
           if (keys['KeyA'] || keys['ArrowLeft']) turnIntent += 1;
           if (keys['KeyD'] || keys['ArrowRight']) turnIntent -= 1;
 
+          // В 3D режиме Q / E и PageUp / PageDown плавно меняют высоту дуги камеры FollowCameraController (как в Tank Testing Tool!)
+          if (is3DCameraMode) {
+            if (keys['KeyQ'] || keys['PageUp'])   cam3DArcLevel = Math.min(1.0, cam3DArcLevel + 0.55 * dt);
+            if (keys['KeyE'] || keys['PageDown']) cam3DArcLevel = Math.max(0.05, cam3DArcLevel - 0.55 * dt);
+          }
+
           const mts = window.mobileTouchState;
           if (mts && mts.enabled) {
             if (Math.abs(mts.moveY) > 0.08) moveIntent = clamp(-mts.moveY, -1, 1);
             if (Math.abs(mts.moveX) > 0.08) turnIntent = clamp(-mts.moveX, -1, 1);
           }
 
-          // Классическое управление башней Танков Онлайн: Z / X — поворот башни, C — центрирование, правый стик на телефоне, либо наведение мышью
-          const prevTurret = this.turretAngle;
+          // Оригинальная физика привода башни Tank.rotateTurret из battles.swf (строки 1806–1957):
+          // Башня вращается в локальных координатах корпуса (turretDir), разгоняясь с ускорением turretTurnAcceleration до maxTurretTurnSpeed,
+          // а при отпускании Z/X мгновенно останавливается (stopTurret)! При нажатии C включается автоцентровка к 0.
+          const prevTurretDir = this.turretDir;
           if (mts && mts.enabled && mts.aimActive) {
-            this.turretAngle = rotateTowards(this.turretAngle, mts.aimAngle, 5.2 * dt);
+            this.centerTurretLocked = false;
+            const targetLocalDir = normalizeAngle(mts.aimAngle - this.hullAngle);
+            const diff = normalizeAngle(targetLocalDir - this.turretDir);
+            if (Math.abs(diff) > 0.008) {
+              const sign = diff > 0 ? 1 : -1;
+              if (this.turretTurnSpeed * sign < 0) this.turretTurnSpeed = 0;
+              this.turretTurnSpeed = clamp(this.turretTurnSpeed + sign * turretTurnAccel * dt, -maxTurretTurnSpeed, maxTurretTurnSpeed);
+              this.turretDir = rotateTowards(this.turretDir, targetLocalDir, Math.abs(this.turretTurnSpeed) * dt);
+            } else {
+              this.turretTurnSpeed = 0;
+            }
             this.keyboardTurretMode = true;
           } else if (keys['KeyZ'] || keys['Comma']) {
-            this.turretAngle += 2.6 * dt;
+            this.centerTurretLocked = false;
+            if (this.turretTurnSpeed < 0) this.turretTurnSpeed = 0;
+            this.turretTurnSpeed = Math.min(maxTurretTurnSpeed, this.turretTurnSpeed + turretTurnAccel * dt);
+            this.turretDir = normalizeAngle(this.turretDir + this.turretTurnSpeed * dt);
             this.keyboardTurretMode = true;
           } else if (keys['KeyX'] || keys['Period']) {
-            this.turretAngle -= 2.6 * dt;
+            this.centerTurretLocked = false;
+            if (this.turretTurnSpeed > 0) this.turretTurnSpeed = 0;
+            this.turretTurnSpeed = Math.max(-maxTurretTurnSpeed, this.turretTurnSpeed - turretTurnAccel * dt);
+            this.turretDir = normalizeAngle(this.turretDir + this.turretTurnSpeed * dt);
             this.keyboardTurretMode = true;
-          } else if (keys['KeyC']) {
-            this.turretAngle = rotateTowards(this.turretAngle, this.hullAngle, 4.2 * dt);
+          } else if (keys['KeyC'] || this.centerTurretLocked) {
+            if (keys['KeyC']) this.centerTurretLocked = true;
+            const signToCenter = this.turretDir > 0 ? -1 : 1;
+            if (this.turretTurnSpeed * signToCenter < 0) this.turretTurnSpeed = 0;
+            this.turretTurnSpeed = clamp(this.turretTurnSpeed + signToCenter * turretTurnAccel * dt, -maxTurretTurnSpeed, maxTurretTurnSpeed);
+            const deltaDir = this.turretTurnSpeed * dt;
+            if (Math.abs(this.turretDir) <= Math.abs(deltaDir) + 0.008) {
+              this.turretDir = 0;
+              this.turretTurnSpeed = 0;
+              this.centerTurretLocked = false;
+            } else {
+              this.turretDir = normalizeAngle(this.turretDir + deltaDir);
+            }
             this.keyboardTurretMode = true;
-          } else if (!this.keyboardTurretMode) {
+          } else if (!this.keyboardTurretMode && !is3DCameraMode) {
             const raycaster = new THREE.Raycaster();
             raycaster.setFromCamera(mouseNDC, camera);
             const aimPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -(this.y + 1.2));
             const hitPt = new THREE.Vector3();
             if (raycaster.ray.intersectPlane(aimPlane, hitPt)) {
-              const targetAngle = Math.atan2(-(hitPt.x - this.x), -(hitPt.z - this.z));
-              this.turretAngle = rotateTowards(this.turretAngle, targetAngle, 4.4 * dt);
+              const targetWorldAngle = Math.atan2(-(hitPt.x - this.x), -(hitPt.z - this.z));
+              const targetLocalDir = normalizeAngle(targetWorldAngle - this.hullAngle);
+              const diff = normalizeAngle(targetLocalDir - this.turretDir);
+              if (Math.abs(diff) > 0.008) {
+                const sign = diff > 0 ? 1 : -1;
+                if (this.turretTurnSpeed * sign < 0) this.turretTurnSpeed = 0;
+                this.turretTurnSpeed = clamp(this.turretTurnSpeed + sign * turretTurnAccel * dt, -maxTurretTurnSpeed, maxTurretTurnSpeed);
+                this.turretDir = rotateTowards(this.turretDir, targetLocalDir, Math.abs(this.turretTurnSpeed) * dt);
+              } else {
+                this.turretTurnSpeed = 0;
+              }
             }
+          } else {
+            // stopTurret() из battles.swf — мгновенная остановка привода при отпускании Z/X
+            this.turretTurnSpeed = 0;
           }
-          if (Math.abs(normalizeAngle(this.turretAngle - prevTurret)) > 0.004) {
+
+          if (Math.abs(normalizeAngle(this.turretDir - prevTurretDir)) > 0.001) {
             this.turretRotatingTimer = 0.08;
+          }
+
+          // Если танк лежит вверх гусеницами или на боку и игрок крутит башню, ствол упирается в землю и слегка покачивает корпус!
+          if ((this.isUpsideDown || this.isOnSide) && Math.abs(this.turretTurnSpeed) > 0.1) {
+            this.omega.y += this.turretTurnSpeed * 0.08 * dt;
+            this.omega.z += Math.sin(this.turretDir) * this.turretTurnSpeed * 0.06 * dt;
           }
 
           // Оптический прицел Шафта при зажатии Shift или кнопки «Прицел» на телефоне
@@ -4043,38 +5419,145 @@
           }
         }
       } else {
-        this.updateSmartBotAI(dt);
-        moveIntent = this.aiMove;
-        turnIntent = this.aiTurn;
+        if (tttBotAiEnabled) {
+          this.updateSmartBotAI(dt);
+          moveIntent = this.aiMove;
+          turnIntent = this.aiTurn;
+        } else {
+          // Режим неподвижных танков-мишеней из оригинального Tank Testing Tool!
+          moveIntent = 0;
+          turnIntent = 0;
+        }
       }
 
-      // Аутентичная танковая инерция AlternativaPhysics:
-      // 1) При сдаче назад (KeyS) инвертируется направление поворота гусениц, как в оригинальных Танках Онлайн
-      const steerDir = (moveIntent < -0.1 || (moveIntent === 0 && this.speed < -1.5)) ? -turnIntent : turnIntent;
-      if (steerDir !== 0) {
-        const dAng = steerDir * turnRate * dt;
-        this.hullAngle += dAng;
-        if (this.keyboardTurretMode) this.turretAngle += dAng;
+      // ==========================================
+      // ДИФФЕРЕНЦИАЛЬНОЕ УПРАВЛЕНИЕ 2 ГУСЕНИЦАМИ (TankModel.setControlState из battles.swf, строки 7558–7789)
+      // ==========================================
+      const fwd = Math.abs(moveIntent) > 0.08 ? Math.sign(moveIntent) : 0;
+      const turn = Math.abs(turnIntent) > 0.08 ? Math.sign(turnIntent) : 0;
+
+      let leftThrottle = fwd * trackPower;
+      let rightThrottle = fwd * trackPower;
+      let leftBrake = false;
+      let rightBrake = false;
+
+      if (fwd === 0) {
+        if (turn === 0) {
+          // Полное торможение гусеницами на месте (setBrakes(true, true)), чтобы танк уверенно стоял на наклонных рампах!
+          leftBrake = true;
+          rightBrake = true;
+        } else {
+          // Разворот на месте (turnCoeff = 0.8): гусеницы крутятся в противоположные стороны!
+          const turnCoeff = 0.8;
+          leftThrottle  -= turn * trackPower * turnCoeff;
+          rightThrottle += turn * trackPower * turnCoeff;
+        }
+      } else if (fwd === 1) {
+        // Поворот в движении вперёд (turnCoeff = 0.4 + подтормаживание внутренней гусеницы setBrakes(turn==1, turn==-1))
+        leftBrake  = (turn === 1);
+        rightBrake = (turn === -1);
+        const turnCoeff = 0.4;
+        if (turn === 1)  leftThrottle  -= trackPower * turnCoeff;
+        if (turn === -1) rightThrottle -= trackPower * turnCoeff;
+      } else if (fwd === -1) {
+        // Поворот при движении задним ходом (reverseBackTurn = false из battles.swf)
+        leftBrake  = (turn === -1);
+        rightBrake = (turn === 1);
+        const turnCoeff = 0.4;
+        if (turn === -1) leftThrottle  += trackPower * turnCoeff;
+        if (turn === 1)  rightThrottle += trackPower * turnCoeff;
       }
 
-      // 2) Плавный разгон, мощное контр-торможение гусеницами и инерционный накат с учётом уклона пандуса
-      this.prevSpeed = this.speed;
-      const targetSpeed = moveIntent * maxSpeed;
-      const massFactor = 2.0 / Math.max(1.0, HULL_DATA[this.hullId].mass * 0.72);
-      const isCounterBraking = (moveIntent !== 0 && this.speed !== 0 && Math.sign(moveIntent) !== Math.sign(this.speed));
-      const accelRate = isCounterBraking ? (28.0 * massFactor) : (moveIntent !== 0 ? (15.5 * massFactor) : (9.5 * massFactor));
-      const diffSpd = targetSpeed - this.speed;
-      const maxStep = accelRate * dt;
-      if (Math.abs(diffSpd) <= maxStep) this.speed = targetSpeed;
-      else this.speed += Math.sign(diffSpd) * maxStep;
+      // ==========================================
+      // СУБШАГОВОЕ ИНТЕГРИРОВАНИЕ 6-DOF ТВЁРДОГО ТЕЛА И 10 ЛУЧЕЙ ПОДВЕСКИ (PhysicsScene + Body + Tank)
+      // ==========================================
+      const subSteps = 4;
+      const subDt = dt / subSteps;
+      const gravity = 9.8;
 
-      // Гравитационная составляющая на крутых подъёмах/спусках
-      if (Math.abs(this.slopePitch) > 0.04) {
-        this.speed -= Math.sin(this.slopePitch) * 6.5 * dt;
+      for (let s = 0; s < subSteps; s++) {
+        this.forceAccum.set(0, -this.mass * gravity, 0);
+        this.torqueAccum.set(0, 0, 0);
+
+        // Оригинальная компенсация скатывающей силы тяжести на подъёмах < 45° из Tank.beforePhysicsStep (battles.swf, строки 2807–2937):
+        // когда хотя бы половина катков гусеницы касается земли и наклон < 45° (hullUp.y > SQRT1_2), танк не теряет скорость на пандусах и мостах!
+        if ((this.leftContactsNum >= 2 || this.rightContactsNum >= 2)) {
+          _suspUp.set(0, 1, 0).applyQuaternion(this.quat);
+          if (_suspUp.y > Math.SQRT1_2 && _suspUp.y < 0.9999) {
+            const gProj = -gravity * _suspUp.y;
+            this.forceAccum.x += this.mass * (_suspUp.x * gProj);
+            this.forceAccum.y += this.mass * (_suspUp.y * gProj + gravity);
+            this.forceAccum.z += this.mass * (_suspUp.z * gProj);
+          }
+        }
+
+        // Ограничитель максимальной угловой скорости поворота из Tank.beforePhysicsStep (если omega > maxTurnSpeed, тяга поворотных гусениц снижается в 10 раз!)
+        let curLeftThr = leftThrottle;
+        let curRightThr = rightThrottle;
+        if (curLeftThr !== curRightThr && Math.abs(this.omega.y) > maxTurnSpeed) {
+          curLeftThr *= 0.1;
+          curRightThr *= 0.1;
+        }
+
+        // Коэффициент жёсткости каждой из 2 гусениц: springCoeff = 0.5 * mass * 9.8 / (lastContactsNum * rayOptimalLength)
+        const lContactsPrev = Math.max(1, this.leftContactsNum || 5);
+        const rContactsPrev = Math.max(1, this.rightContactsNum || 5);
+        const lSpringCoeff = (0.5 * this.mass * gravity) / (lContactsPrev * this.suspData.rayOptimalLength);
+        const rSpringCoeff = (0.5 * this.mass * gravity) / (rContactsPrev * this.suspData.rayOptimalLength);
+
+        this.lastTrackContacts = lContactsPrev;
+        this.leftContactsNum = this.stepTrackSuspensionForces(this.leftTrackRays, curLeftThr, leftBrake, lSpringCoeff, maxSpeed, subDt);
+        this.lastTrackContacts = rContactsPrev;
+        this.rightContactsNum = this.stepTrackSuspensionForces(this.rightTrackRays, curRightThr, rightBrake, rSpringCoeff, maxSpeed, subDt);
+        this.totalContactsNum = this.leftContactsNum + this.rightContactsNum;
+        this.isGrounded = (this.totalContactsNum > 0);
+
+        // Интегрирование линейной и угловой скорости (Body.calcAccelerations + calcVelQuat из battles.swf)
+        this.vel.x += (this.forceAccum.x * this.invMass) * subDt;
+        this.vel.y += (this.forceAccum.y * this.invMass) * subDt;
+        this.vel.z += (this.forceAccum.z * this.invMass) * subDt;
+
+        this.multiplyByWorldInvInertia(this.torqueAccum, _physV2);
+        this.omega.x += _physV2.x * subDt;
+        this.omega.y += _physV2.y * subDt;
+        this.omega.z += _physV2.z * subDt;
+
+        // Экспоненциальное затухание скоростей (при нажатом газе сопротивление минимально, чтобы танк мгновенно набирал и держал полную maxSpeed!)
+        const linDampRate = this.isGrounded ? (fwd !== 0 ? 0.03 : 0.18) : 0.05;
+        const linDamp = Math.exp(-linDampRate * subDt);
+        const angDamp = this.isGrounded ? Math.exp(-2.85 * subDt) : Math.exp(-0.45 * subDt);
+        this.vel.multiplyScalar(linDamp);
+        this.omega.multiplyScalar(angDamp);
+
+        // Ограничение максимальной угловой скорости кувырка для численной стабильности
+        const wLen = this.omega.length();
+        if (wLen > 9.5) this.omega.multiplyScalar(9.5 / wLen);
+
+        // Интегрирование положения центра масс и 3D кватерниона ориентации: dq/dt = 0.5 * omega * q (без аллокации new THREE.Quaternion!)
+        this.bodyPos.x += this.vel.x * subDt;
+        this.bodyPos.y += this.vel.y * subDt;
+        this.bodyPos.z += this.vel.z * subDt;
+
+        if (wLen > 1e-6) {
+          const halfTheta = 0.5 * wLen * subDt;
+          const sinHT = Math.sin(halfTheta) / wLen;
+          _stepQuat.set(
+            this.omega.x * sinHT,
+            this.omega.y * sinHT,
+            this.omega.z * sinHT,
+            Math.cos(halfTheta)
+          );
+          this.quat.premultiply(_stepQuat).normalize();
+        }
+
+        // Солвер 3D контактов корпуса/крыши/башни с землёй и стенами
+        resolveTankChassisAndWalls3D(this, subDt);
       }
 
-      // Оригинальная пыль из-под гусениц (dust_sheet 16 кадров из battles.swf) при движении танка
-      if (Math.abs(this.speed) > 2.2) {
+      this.syncLegacyCoords();
+
+      // Оригинальная пыль из-под гусениц (dust_sheet 16 кадров из battles.swf) при движении на гусеницах
+      if (this.isGrounded && Math.abs(this.speed) > 2.2) {
         this.dustAccum += dt;
         if (this.dustAccum > 0.11) {
           this.dustAccum = 0;
@@ -4090,105 +5573,19 @@
         }
       }
 
-      // Импульс подвески от ускорения/торможения и поворота
-      const accel = (this.speed - this.prevSpeed) / Math.max(0.008, dt);
-      this.suspPitchVel += clamp(accel * 0.011, -0.35, 0.35) * dt * 11;
-      this.suspRollVel  += (-steerDir * (this.speed / maxSpeed) * 0.32) * dt * 10;
-
-      const springK = 55.0, dampK = 10.5;
-      this.suspPitchVel += (-springK * this.suspPitch - dampK * this.suspPitchVel) * dt;
-      this.suspPitch += this.suspPitchVel * dt;
-      this.suspRollVel  += (-springK * this.suspRoll  - dampK * this.suspRollVel) * dt;
-      this.suspRoll  += this.suspRollVel * dt;
-
-      let vx = -Math.sin(this.hullAngle) * this.speed * dt + this.recoilVel.x * dt;
-      let vz = -Math.cos(this.hullAngle) * this.speed * dt + this.recoilVel.z * dt;
-      this.recoilVel.multiplyScalar(Math.max(0, 1 - 9 * dt));
-
-      // Движение с 3-круговым ориентированным коллайдером корпуса (плавное скольжение вдоль стен под любым углом!)
-      this.x += vx;
-      this.z += vz;
-      resolveWallPenetration(this, 1.08);
-
-      for (const other of tanks) {
-        if (other === this || other.isDead) continue;
-        if (Math.abs((other.y || 0) - this.y) > 2.2) continue;
-        const dx = this.x - other.x;
-        const dz = this.z - other.z;
-        const d = Math.hypot(dx, dz);
-        const minDist = 2.65;
-        if (d > 0.001 && d < minDist) {
-          const push = (minDist - d) * 0.52;
-          const nx = dx / d, nz = dz / d;
-          this.x += nx * push;
-          this.z += nz * push;
-          resolveWallPenetration(this, 1.08);
-        }
-      }
-
       this.updateMeshTransforms(dt);
     }
 
     updateMeshTransforms(dt = 0.016) {
-      const fwdX = -Math.sin(this.hullAngle);
-      const fwdZ = -Math.cos(this.hullAngle);
-      const rightX = Math.cos(this.hullAngle);
-      const rightZ = -Math.sin(this.hullAngle);
-
-      const hL = this.hullHalfL || 1.7;
-      const hW = this.hullHalfW || 1.1;
-
-      const hCenter = getTerrainHeight(this.x, this.z, this.y);
-      const hFront  = getTerrainHeight(this.x + fwdX * hL, this.z + fwdZ * hL, this.y);
-      const hBack   = getTerrainHeight(this.x - fwdX * hL, this.z - fwdZ * hL, this.y);
-      const hRight  = getTerrainHeight(this.x + rightX * hW, this.z + rightZ * hW, this.y);
-      const hLeft   = getTerrainHeight(this.x - rightX * hW, this.z - rightZ * hW, this.y);
-
-      if (hCenter < this.y - 0.35) {
-        this.vy = (this.vy || 0) - 26.0 * dt;
-        this.y += this.vy * dt;
-        if (this.y <= hCenter) {
-          this.y = hCenter;
-          if (this.vy < -4.0) this.suspPitchVel += 0.32;
-          this.vy = 0;
-        }
-      } else {
-        this.y = lerp(this.y, hCenter, Math.min(1, 24 * dt));
-        this.vy = 0;
+      this.syncLegacyCoords();
+      this.group.position.copy(this.bodyPos);
+      if (this.isDead) {
+        this.group.position.y -= 0.10;
       }
-
-      const clampSample = (h) => (Math.abs(h - this.y) <= 2.15 ? h : this.y);
-      const sfFront = clampSample(hFront);
-      const sfBack  = clampSample(hBack);
-      const sfLeft  = clampSample(hLeft);
-      const sfRight = clampSample(hRight);
-
-      // В правой системе координат Three.js (YXZ):
-      // +X rotation поднимает нос (-Z) вверх при sfFront > sfBack;
-      // +Z rotation поднимает правый борт (+X) вверх при sfRight > sfLeft!
-      const targetSlopePitch = Math.atan2(sfFront - sfBack, hL * 2);
-      const targetSlopeRoll  = Math.atan2(sfRight - sfLeft, hW * 2);
-
-      this.slopePitch = lerp(this.slopePitch, targetSlopePitch, Math.min(1, 18 * dt));
-      this.slopeRoll  = lerp(this.slopeRoll,  targetSlopeRoll,  Math.min(1, 18 * dt));
-
-      const sinP = Math.sin(this.slopePitch);
-      const sinR = Math.sin(this.slopeRoll);
-      const supportY = Math.max(
-        this.y,
-        sfFront - hL * sinP,
-        sfBack  + hL * sinP,
-        sfRight - hW * sinR,
-        sfLeft  + hW * sinR
-      );
-
-      this.group.position.set(this.x, this.isDead ? supportY - 0.12 : supportY + 0.04, this.z);
-      this.group.rotation.y = this.hullAngle;
-      this.group.rotation.x = this.slopePitch + this.suspPitch;
-      this.group.rotation.z = this.slopeRoll  + this.suspRoll;
+      this.group.quaternion.copy(this.quat);
 
       if (!this.isDead) {
-        this.turretPivotGroup.rotation.y = this.turretAngle - this.hullAngle;
+        this.turretPivotGroup.rotation.set(0, this.turretDir || 0, 0);
       }
     }
 
@@ -4199,7 +5596,7 @@
       if (t.type === 'bullet') {
         if (this.reloadTimer > 0) return;
         this.reloadTimer = t.reload;
-        this.applyRecoil(t.recoil);
+        this.applyRecoil(t.recoil, 0);
         playTankiSound('smoky_shot', 0.65, this);
         spawnMuzzleFlash(this, 'smoky_shot', 0);
 
@@ -4210,14 +5607,15 @@
       } else if (t.type === 'twins') {
         if (this.reloadTimer > 0) return;
         this.reloadTimer = t.reload;
-        this.applyRecoil(t.recoil);
-        playTankiSound('twins_shot', 0.5, this);
         this.twinsBarrelSide = -this.twinsBarrelSide;
-        spawnMuzzleFlash(this, 'twins_muzzle', this.twinsBarrelSide * 0.45);
+        const latOff = this.twinsBarrelSide * 0.45;
+        this.applyRecoil(t.recoil, latOff);
+        playTankiSound('twins_shot', 0.5, this);
+        spawnMuzzleFlash(this, 'twins_muzzle', latOff);
 
         const dmg = Math.round(t.dmg * (this.supplies.damage > 0 ? 2 : 1));
         spawnBullet(this, dmg, t.speed, 0x38bdf8, {
-          lateralOffset: this.twinsBarrelSide * 0.45,
+          lateralOffset: latOff,
           radius: 0.45,
           isTwins: true,
           effectKey: 'twins_shot'
@@ -4226,7 +5624,7 @@
       } else if (t.type === 'thunder') {
         if (this.reloadTimer > 0) return;
         this.reloadTimer = t.reload;
-        this.applyRecoil(t.recoil);
+        this.applyRecoil(t.recoil, 0);
         playTankiSound('thunder_shot', 0.7, this);
         spawnMuzzleFlash(this, 'thunder_shot', 0);
 
@@ -4254,7 +5652,7 @@
         if (this.reloadTimer > 0 || this.energy < t.drain) return;
         this.energy -= t.drain;
         this.reloadTimer = t.reload;
-        this.applyRecoil(t.recoil);
+        this.applyRecoil(t.recoil, 0);
         playTankiSound('ricochet_shot', 0.58, this);
         spawnMuzzleFlash(this, 'ricochet_flash', 0);
 
@@ -4270,7 +5668,7 @@
       } else if (t.type === 'shaft') {
         if (this.reloadTimer > 0) return;
         this.reloadTimer = t.reload;
-        this.applyRecoil(t.recoil);
+        this.applyRecoil(t.recoil, 0);
         playTankiSound('shaft_shot', 0.75, this);
         spawnMuzzleFlash(this, 'shaft_shot', 0);
 
@@ -4284,22 +5682,60 @@
       }
     }
 
-    applyRecoil(force) {
-      const mass = HULL_DATA[this.hullId].mass;
-      const recoilDirX = Math.sin(this.turretAngle);
-      const recoilDirZ = Math.cos(this.turretAngle);
-      this.recoilVel.x += (recoilDirX * force) / mass;
-      this.recoilVel.z += (recoilDirZ * force) / mass;
-      const relAngle = Math.cos(this.turretAngle - this.hullAngle);
-      this.suspPitchVel += (relAngle * force * 0.45) / mass;
-      this.suspRollVel  += (Math.sin(this.turretAngle - this.hullAngle) * force * 0.35) / mass;
+    // Оригинальная 3D отдача выстрела из WeaponCommonModel / RailgunModel (battles.swf строки 6044, 7180):
+    // Прикладывает импульс -kickback в 3D мировой точке среза ствола (_globalMuzzlePosition) вдоль вектора ствола (_globalGunDirection)!
+    // Поскольку башня и ствол возвышаются над центром масс корпуса, выстрел создаёт настоящий 3D крутящий момент (задирает нос, кренит корпус вбок,
+    // а если танк лежит на боку или вверх гусеницами — выстрел в сторону земли переворачивает танк обратно на гусеницы, как в TTT!).
+    applyRecoil(kickbackImpulse, lateralOffset = 0) {
+      const mState = this.getWorldMuzzleState(lateralOffset);
+      const kb = kickbackImpulse || 1800;
+      this.addWorldImpulseScaled(
+        mState.muzzlePos.x,
+        mState.muzzlePos.y,
+        mState.muzzlePos.z,
+        mState.gunDir.x,
+        mState.gunDir.y,
+        mState.gunDir.z,
+        -kb
+      );
+
+      // Если танк лежит на боку или вверх гусеницами и стреляет в сторону земли/борта — земля отталкивает взрывную волну/отдачу, помогая самоперевороту выстрелом!
+      if (this.isUpsideDown || this.isOnSide) {
+        const hullRight = _physV1.set(1, 0, 0).applyQuaternion(this.quat);
+        const sideTorque = (mState.gunDir.x * hullRight.x + mState.gunDir.z * hullRight.z);
+        const fwdAxis = _physV2.set(0, 0, -1).applyQuaternion(this.quat);
+        const rollKick = (kb / this.mass) * 0.85 * (Math.abs(sideTorque) > 0.25 ? Math.sign(sideTorque) : 1);
+        this.omega.addScaledVector(fwdAxis, rollKick);
+        this.vel.y += Math.min(2.6, (kb / this.mass) * 0.45);
+      }
+
+      if (this.isPlayer && is3DCameraMode) {
+        const normKb = kb / Math.max(900, this.mass);
+        cam3DPitchRecoil = Math.min(0.18, cam3DPitchRecoil + normKb * 0.045);
+        cam3DBackRecoil  = Math.min(0.95, cam3DBackRecoil  + normKb * 0.22);
+      }
     }
 
-    takeDamage(amount, attacker, gunId) {
+    takeDamage(amount, attacker, gunId, hitPosWorld = null) {
       if (this.isDead) return;
       if (this.supplies.armor > 0) amount *= 0.5;
 
       this.hp -= amount;
+
+      // Физический 3D импульс попадания снаряда (impactForce из battles.swf — прикладывается в 3D точке попадания выше центра масс, раскачивая и опрокидывая цель!)
+      if (attacker && gunId !== 'firebird' && gunId !== 'freeze' && gunId !== 'isida') {
+        const gData = TURRET_DATA[gunId];
+        const imp = (gData && gData.impact) ? gData.impact : (gunId === 'mine' ? 5200 : 2000);
+        const dx = this.bodyPos.x - attacker.bodyPos.x;
+        const dy = (this.bodyPos.y + 0.35) - attacker.bodyPos.y;
+        const dz = this.bodyPos.z - attacker.bodyPos.z;
+        const dist = Math.max(0.5, Math.hypot(dx, dy, dz));
+        const nx = dx / dist, ny = clamp(dy / dist, -0.25, 0.35), nz = dz / dist;
+        const hx = hitPosWorld ? hitPosWorld.x : (this.bodyPos.x - nx * 0.6);
+        const hy = hitPosWorld ? hitPosWorld.y : (this.bodyPos.y + 0.42);
+        const hz = hitPosWorld ? hitPosWorld.z : (this.bodyPos.z - nz * 0.6);
+        this.addWorldImpulseScaled(hx, hy, hz, nx, ny, nz, imp);
+      }
 
       if (this.hp <= 0) {
         this.isDead = true;
@@ -4421,9 +5857,12 @@
         }
       }
 
+      const maxBotTurretSpeed = (TURRET_DATA[this.turretId] && TURRET_DATA[this.turretId].turnSpeed) || 2.0;
       if (combatTarget) {
         const angleToCombat = Math.atan2(-(combatTarget.x - this.x), -(combatTarget.z - this.z));
-        this.turretAngle = rotateTowards(this.turretAngle, angleToCombat, 3.6 * dt);
+        const targetLocalDir = normalizeAngle(angleToCombat - this.hullAngle);
+        this.turretDir = rotateTowards(this.turretDir, targetLocalDir, maxBotTurretSpeed * dt);
+        this.syncLegacyCoords();
 
         const distC = Math.hypot(combatTarget.x - this.x, combatTarget.z - this.z);
         const dirX = -Math.sin(this.turretAngle), dirZ = -Math.cos(this.turretAngle);
@@ -4434,7 +5873,7 @@
           this.fire();
         }
       } else {
-        this.turretAngle = rotateTowards(this.turretAngle, this.hullAngle, 2.5 * dt);
+        this.turretDir = rotateTowards(this.turretDir, 0, maxBotTurretSpeed * 0.85 * dt);
       }
     }
   }
@@ -4450,33 +5889,56 @@
   const floatingTexts = [];
 
   function spawnMuzzleFlash(tank, effectKey, lateralOffset = 0) {
-    const dirX = -Math.sin(tank.turretAngle);
-    const dirZ = -Math.cos(tank.turretAngle);
-    const rightX = Math.cos(tank.turretAngle);
-    const rightZ = -Math.sin(tank.turretAngle);
-    const muz = (TANKI_MODELS.turrets[tank.turretId] && TANKI_MODELS.turrets[tank.turretId].muzzle)
-      ? Math.abs(TANKI_MODELS.turrets[tank.turretId].muzzle[2]) : 2.6;
-    const fx = tank.x + dirX * muz + rightX * lateralOffset;
-    const fz = tank.z + dirZ * muz + rightZ * lateralOffset;
-    const fy = (tank.y !== undefined ? tank.y : getTerrainHeight(tank.x, tank.z)) + 1.45;
+    const mState = (tank && tank.getWorldMuzzleState)
+      ? tank.getWorldMuzzleState(lateralOffset)
+      : {
+          muzzlePos: new THREE.Vector3(tank.x - Math.sin(tank.turretAngle) * 2.5, (tank.y || 0) + 1.45, tank.z - Math.cos(tank.turretAngle) * 2.5),
+          gunDir: new THREE.Vector3(-Math.sin(tank.turretAngle), 0, -Math.cos(tank.turretAngle))
+        };
 
     const key = tttEffectFrames[effectKey] ? effectKey : 'smoky_shot';
-    spawnFlipbookSprite(key, fx, fy, fz, 1.85, 0.14, {
-      vx: dirX * 2.5,
-      vz: dirZ * 2.5,
+    spawnFlipbookSprite(key, mState.muzzlePos.x, mState.muzzlePos.y, mState.muzzlePos.z, 1.85, 0.14, {
+      vx: mState.gunDir.x * 2.5,
+      vy: mState.gunDir.y * 2.5,
+      vz: mState.gunDir.z * 2.5,
       endScale: 2.35,
       fadeOut: true
     });
   }
 
+  // Вертикальное автоприцеливание пушки из Tank Testing Tool (auto_aiming_angle_up / auto_aiming_angle_down + учёт реального 3D наклона ствола!)
+  function computeVerticalAimSlope(shooter, dirX, dirZ, maxRange = 68, mState = null) {
+    const ms = mState || (shooter && shooter.getWorldMuzzleState ? shooter.getWorldMuzzleState(0) : null);
+    let baseSlope = ms ? clamp(ms.gunDir.y / Math.max(0.25, Math.hypot(ms.gunDir.x, ms.gunDir.z)), -0.65, 0.65) : 0;
+    const sY = ms ? ms.muzzlePos.y : ((shooter.y !== undefined ? shooter.y : getTerrainHeight(shooter.x, shooter.z)) + 1.35);
+
+    let bestDist = maxRange;
+    let targetSlope = baseSlope;
+    for (const t of tanks) {
+      if (t === shooter || t.isDead || t.team === shooter.team) continue;
+      const dx = t.x - shooter.x;
+      const dz = t.z - shooter.z;
+      const proj = dx * dirX + dz * dirZ;
+      if (proj < 1.5 || proj > bestDist) continue;
+      const perp = Math.abs(dx * (-dirZ) + dz * dirX);
+      if (perp > 2.35 + proj * 0.04) continue;
+      const tCenterY = t.bodyPos ? t.bodyPos.y + 0.15 : ((t.y !== undefined ? t.y : getTerrainHeight(t.x, t.z)) + 1.15);
+      const reqSlope = (tCenterY - sY) / proj;
+      // Допуск вертикальной автонаводки TTT (~13° вниз и ~16° вверх относительно текущего 3D наклона ствола)
+      if (reqSlope >= baseSlope - 0.25 && reqSlope <= baseSlope + 0.30) {
+        bestDist = proj;
+        targetSlope = reqSlope;
+      }
+    }
+    return clamp(targetSlope, -0.65, 0.65);
+  }
+
   function spawnBullet(shooter, dmg, speed, colorHex, opts = {}) {
-    const spread = opts.spread || 0;
-    const spreadAngle = shooter.turretAngle + (Math.random() - 0.5) * spread;
-    const dirX = -Math.sin(spreadAngle);
-    const dirZ = -Math.cos(spreadAngle);
-    const rightX = Math.cos(shooter.turretAngle);
-    const rightZ = -Math.sin(shooter.turretAngle);
     const lat = opts.lateralOffset || 0;
+    const mState = (shooter && shooter.getWorldMuzzleState) ? shooter.getWorldMuzzleState(lat) : null;
+    const horizLen = mState ? Math.hypot(mState.gunDir.x, mState.gunDir.z) : 1.0;
+    const dirX = (mState && horizLen > 0.1) ? (mState.gunDir.x / horizLen) : -Math.sin(shooter.turretAngle);
+    const dirZ = (mState && horizLen > 0.1) ? (mState.gunDir.z / horizLen) : -Math.cos(shooter.turretAngle);
 
     // Используем оригинальный спрайт снаряда из Tank Testing Tool (Твинс / Рикошет / Смоки / Гром)
     const effKey = opts.effectKey || 'smoky_shot';
@@ -4498,12 +5960,11 @@
       mesh = new THREE.Mesh(new THREE.SphereGeometry(r, 8, 8), new THREE.MeshBasicMaterial({ color: colorHex }));
     }
 
-    const muz = (TANKI_MODELS.turrets[shooter.turretId] && TANKI_MODELS.turrets[shooter.turretId].muzzle)
-      ? Math.abs(TANKI_MODELS.turrets[shooter.turretId].muzzle[2]) : 2.5;
-    const sx = shooter.x + dirX * muz + rightX * lat;
-    const sz = shooter.z + dirZ * muz + rightZ * lat;
+    const sx = mState ? mState.muzzlePos.x : (shooter.x + dirX * 2.5);
+    const sz = mState ? mState.muzzlePos.z : (shooter.z + dirZ * 2.5);
     const baseY = (shooter.y !== undefined) ? shooter.y : getTerrainHeight(sx, sz);
-    const sy = baseY + 1.35;
+    const aimSlope = computeVerticalAimSlope(shooter, dirX, dirZ, 68, mState);
+    const sy = mState ? mState.muzzlePos.y : (baseY + 1.35 + aimSlope * 2.5);
     mesh.position.set(sx, sy, sz);
     scene.add(mesh);
 
@@ -4511,6 +5972,7 @@
       mesh, shooter, dmg,
       baseY,
       vx: dirX * speed,
+      vy: aimSlope * speed,
       vz: dirZ * speed,
       life: opts.life || 1.45,
       age: 0,
@@ -4525,41 +5987,81 @@
     });
   }
 
-  function raycastWalls(startX, startZ, dirX, dirZ, maxDist, refY = undefined) {
+  // Точный 3D OBB рейкаст по всем повёрнутым стенам, зданиям и парапетам карты (в локальных осях u, v каждого бокса!)
+  function raycastWalls(startX, startZ, dirX, dirZ, maxDist, refY = undefined, aimSlope = 0) {
     let closestDist = maxDist;
     let hitWall = null;
     const startH = (refY !== undefined) ? refY : getTerrainHeight(startX, startZ);
 
-    for (const w of walls) {
-      if (w.topY <= startH + 0.75) continue;
-      if (w.bottomY >= startH + 1.75) continue;
-      const minX = w.x - w.w / 2, maxX = w.x + w.w / 2;
-      const minZ = w.z - w.d / 2, maxZ = w.z + w.d / 2;
+    for (let i = 0; i < walls.length; i++) {
+      const w = walls[i];
+      if (w.topY <= startH + 0.72) continue;
+      if (w.bottomY >= startH + 1.85 + Math.max(0, aimSlope * maxDist)) continue;
 
-      let tmin = 0, tmax = maxDist;
-      if (Math.abs(dirX) < 1e-6) {
-        if (startX < minX || startX > maxX) continue;
-      } else {
-        let tx1 = (minX - startX) / dirX;
-        let tx2 = (maxX - startX) / dirX;
-        if (tx1 > tx2) { const tmp = tx1; tx1 = tx2; tx2 = tmp; }
-        tmin = Math.max(tmin, tx1);
-        tmax = Math.min(tmax, tx2);
-      }
+      let tmin = 0, tmax = closestDist;
+      if (w.ux !== undefined) {
+        const relX = startX - w.x;
+        const relZ = startZ - w.z;
+        const su = relX * w.ux + relZ * w.uz;
+        const sv = relX * w.vx + relZ * w.vz;
+        const du = dirX * w.ux + dirZ * w.uz;
+        const dv = dirX * w.vx + dirZ * w.vz;
 
-      if (Math.abs(dirZ) < 1e-6) {
-        if (startZ < minZ || startZ > maxZ) continue;
+        if (Math.abs(du) < 1e-6) {
+          if (su < -w.halfU || su > w.halfU) continue;
+        } else {
+          let tu1 = (-w.halfU - su) / du;
+          let tu2 = ( w.halfU - su) / du;
+          if (tu1 > tu2) { const tmp = tu1; tu1 = tu2; tu2 = tmp; }
+          if (tu1 > tmin) tmin = tu1;
+          if (tu2 < tmax) tmax = tu2;
+          if (tmin > tmax) continue;
+        }
+
+        if (Math.abs(dv) < 1e-6) {
+          if (sv < -w.halfV || sv > w.halfV) continue;
+        } else {
+          let tv1 = (-w.halfV - sv) / dv;
+          let tv2 = ( w.halfV - sv) / dv;
+          if (tv1 > tv2) { const tmp = tv1; tv1 = tv2; tv2 = tmp; }
+          if (tv1 > tmin) tmin = tv1;
+          if (tv2 < tmax) tmax = tv2;
+          if (tmin > tmax) continue;
+        }
       } else {
-        let tz1 = (minZ - startZ) / dirZ;
-        let tz2 = (maxZ - startZ) / dirZ;
-        if (tz1 > tz2) { const tmp = tz1; tz1 = tz2; tz2 = tmp; }
-        tmin = Math.max(tmin, tz1);
-        tmax = Math.min(tmax, tz2);
+        const minX = w.x - w.w / 2, maxX = w.x + w.w / 2;
+        const minZ = w.z - w.d / 2, maxZ = w.z + w.d / 2;
+        if (Math.abs(dirX) < 1e-6) {
+          if (startX < minX || startX > maxX) continue;
+        } else {
+          let tx1 = (minX - startX) / dirX;
+          let tx2 = (maxX - startX) / dirX;
+          if (tx1 > tx2) { const tmp = tx1; tx1 = tx2; tx2 = tmp; }
+          tmin = Math.max(tmin, tx1);
+          tmax = Math.min(tmax, tx2);
+        }
+        if (Math.abs(dirZ) < 1e-6) {
+          if (startZ < minZ || startZ > maxZ) continue;
+        } else {
+          let tz1 = (minZ - startZ) / dirZ;
+          let tz2 = (maxZ - startZ) / dirZ;
+          if (tz1 > tz2) { const tmp = tz1; tz1 = tz2; tz2 = tmp; }
+          tmin = Math.max(tmin, tz1);
+          tmax = Math.min(tmax, tz2);
+        }
       }
 
       if (tmax >= tmin && tmin >= 0 && tmin < closestDist) {
-        closestDist = tmin;
-        hitWall = w;
+        const hitX = startX + dirX * tmin;
+        const hitZ = startZ + dirZ * tmin;
+        const rayY = startH + 1.25 + aimSlope * tmin;
+        if (rayY >= w.bottomY && rayY <= w.topY) {
+          const floorAtHit = getTerrainHeight(hitX, hitZ, startH);
+          if (w.topY > floorAtHit + 0.68) {
+            closestDist = tmin;
+            hitWall = w;
+          }
+        }
       }
     }
 
@@ -4608,14 +6110,15 @@
       const startX = tank.x + dirX * 2.5;
       const startZ = tank.z + dirZ * 2.5;
       const tankY = (tank.y !== undefined) ? tank.y : getTerrainHeight(tank.x, tank.z);
-      const startY = tankY + 1.45;
+      const aimSlope = computeVerticalAimSlope(tank, dirX, dirZ, 85);
+      const startY = tankY + 1.45 + aimSlope * 2.5;
 
       const maxRange = 85;
       const wallHit = raycastWalls(startX, startZ, dirX, dirZ, maxRange, tankY);
       const beamLen = wallHit ? wallHit.dist : maxRange;
       const endX = startX + dirX * beamLen;
       const endZ = startZ + dirZ * beamLen;
-      const endY = startY;
+      const endY = startY + aimSlope * beamLen;
 
       const start = new THREE.Vector3(startX, startY, startZ);
       const end = new THREE.Vector3(endX, endY, endZ);
@@ -4628,11 +6131,12 @@
       const dmg = Math.round(TURRET_DATA[tank.turretId].dmg * (tank.supplies.damage > 0 ? 2 : 1));
       for (const t of tanks) {
         if (t === tank || t.isDead) continue;
-        if (Math.abs((t.y || 0) - tankY) > 3.2) continue;
         const toTankX = t.x - startX;
         const toTankZ = t.z - startZ;
         const proj = toTankX * dirX + toTankZ * dirZ;
         if (proj > 0 && proj <= beamLen + 1.0) {
+          const beamYAtTank = startY + aimSlope * proj;
+          if (Math.abs(((t.y || 0) + 1.35) - beamYAtTank) > 2.65) continue;
           const perpDist = Math.abs(toTankX * (-dirZ) + toTankZ * dirX);
           if (perpDist < 2.15) {
             t.takeDamage(dmg, tank, 'railgun');
@@ -5062,7 +6566,7 @@
   const tanks = [];
   let playerTank = null;
   let blueScore = 0, redScore = 0;
-  let battleSeconds = 300;
+  let battleSeconds = 900;
   let playerCrystals = 21319;
   let playerTotalKills = 0;
   let playerTotalFlags = 0;
@@ -5090,8 +6594,8 @@
       role: 'attacker',
       x: pSpawn.x, z: pSpawn.z,
       angle: pSpawn.angle,
-      hullId: 'hunter',
-      turretId: 'smoky',
+      hullId: 'hornet',
+      turretId: 'railgun',
       paintId: 'green'
     });
     tanks.push(playerTank);
@@ -5100,7 +6604,7 @@
     const b2 = getSpawnEntry(BLUE_SPAWNS, 2);
     const b3 = getSpawnEntry(BLUE_SPAWNS, 3);
     // Союзники (Синие: флагоносец, защитник и медик с Изидой в оригинальных красках TTT!)
-    tanks.push(new TankEntity({ name: 'Снайпер2012', team: 'blue', role: 'attacker', x: b1.x, z: b1.z, angle: b1.angle, hullId: 'hornet',   turretId: 'railgun',  paintId: 'digital' }));
+    tanks.push(new TankEntity({ name: 'Снайпер2012', team: 'blue', role: 'attacker', x: b1.x, z: b1.z, angle: b1.angle, hullId: 'hunter',   turretId: 'smoky',    paintId: 'digital' }));
     tanks.push(new TankEntity({ name: 'Танкист_RU',  team: 'blue', role: 'defender', x: b2.x, z: b2.z, angle: b2.angle, hullId: 'viking',   turretId: 'thunder',  paintId: 'tundra' }));
     tanks.push(new TankEntity({ name: 'Доктор_Изи',  team: 'blue', role: 'healer',   x: b3.x, z: b3.z, angle: b3.angle, hullId: 'dictator', turretId: 'isida',    paintId: 'electra' }));
 
@@ -5124,12 +6628,156 @@
     selectBattleMap(currentMapId || 'sandbox');
     updateTabTable();
     updateSuppliesDisplay();
+    updateTttQuickBarUI();
+    snapFollowCamera3D();
   }
+
+  // ==========================================
+  // БЫСТРЫЙ ПЕРЕКЛЮЧАТЕЛЬ И СПАВНЕР МИШЕНЕЙ ИЗ TANK TESTING TOOL (НОВАЯ ГРАФИКА M3)
+  // ==========================================
+  const TTT_HULL_KEYS   = Object.keys(HULL_DATA);
+  const TTT_TURRET_KEYS = Object.keys(TURRET_DATA);
+  const TTT_PAINT_KEYS  = Object.keys(PAINT_SHOP_DATA);
+  let tttDummyCounter = 1;
+
+  function updateTttQuickBarUI() {
+    if (!playerTank) return;
+    const hName = HULL_DATA[playerTank.hullId] ? HULL_DATA[playerTank.hullId].name : playerTank.hullId;
+    const tName = TURRET_DATA[playerTank.turretId] ? TURRET_DATA[playerTank.turretId].name : playerTank.turretId;
+    const pName = PAINT_SHOP_DATA[playerTank.paintId] ? PAINT_SHOP_DATA[playerTank.paintId].name : playerTank.paintId;
+    const elH = document.getElementById('ttt-lbl-hull');
+    const elT = document.getElementById('ttt-lbl-turret');
+    const elP = document.getElementById('ttt-lbl-paint');
+    const elAi = document.getElementById('ttt-lbl-ai');
+    if (elH) elH.textContent = `${hName} M3`;
+    if (elT) elT.textContent = `${tName} M3`;
+    if (elP) elP.textContent = pName;
+    if (elAi) elAi.textContent = tttBotAiEnabled ? 'ИИ: Бой' : 'Мишени TTT';
+  }
+
+  function cyclePlayerHull(dir = 1) {
+    if (!playerTank) return;
+    const idx = (TTT_HULL_KEYS.indexOf(playerTank.hullId) + dir + TTT_HULL_KEYS.length) % TTT_HULL_KEYS.length;
+    const nextHull = TTT_HULL_KEYS[idx];
+    playerTank.setEquipment(nextHull, playerTank.turretId, playerTank.paintId);
+    garagePreviewHullId = nextHull;
+    updateTttQuickBarUI();
+    spawnRespawnFlash(playerTank.x, (playerTank.y || 0) + 0.5, playerTank.z);
+    showCtfBanner(`Корпус TTT: ${HULL_DATA[nextHull].name} M3 (Новая графика)`, '#bef264');
+  }
+
+  function cyclePlayerTurret(dir = 1) {
+    if (!playerTank) return;
+    const idx = (TTT_TURRET_KEYS.indexOf(playerTank.turretId) + dir + TTT_TURRET_KEYS.length) % TTT_TURRET_KEYS.length;
+    const nextTurret = TTT_TURRET_KEYS[idx];
+    playerTank.setEquipment(playerTank.hullId, nextTurret, playerTank.paintId);
+    garagePreviewTurretId = nextTurret;
+    updateTttQuickBarUI();
+    spawnRespawnFlash(playerTank.x, (playerTank.y || 0) + 0.8, playerTank.z);
+    showCtfBanner(`Пушка TTT: ${TURRET_DATA[nextTurret].name} M3 (Новая графика)`, '#bef264');
+  }
+
+  function cyclePlayerPaint(dir = 1) {
+    if (!playerTank) return;
+    const idx = (TTT_PAINT_KEYS.indexOf(playerTank.paintId) + dir + TTT_PAINT_KEYS.length) % TTT_PAINT_KEYS.length;
+    const nextPaint = TTT_PAINT_KEYS[idx];
+    playerTank.setEquipment(playerTank.hullId, playerTank.turretId, nextPaint);
+    garagePreviewPaintId = nextPaint;
+    updateTttQuickBarUI();
+    showCtfBanner(`Покрытие TTT: ${PAINT_SHOP_DATA[nextPaint].name}`, '#38bdf8');
+  }
+
+  function spawnTttTargetDummyTank() {
+    if (!playerTank) return;
+    const fwdX = -Math.sin(playerTank.turretAngle);
+    const fwdZ = -Math.cos(playerTank.turretAngle);
+    const tx = clamp(playerTank.x + fwdX * 10.5, -mapHalfW + 3, mapHalfW - 3);
+    const tz = clamp(playerTank.z + fwdZ * 10.5, -mapHalfD + 3, mapHalfD - 3);
+    const ty = getTerrainHeight(tx, tz, playerTank.y);
+    const hKey = TTT_HULL_KEYS[(tttDummyCounter + 1) % TTT_HULL_KEYS.length];
+    const tKey = TTT_TURRET_KEYS[(tttDummyCounter + 2) % TTT_TURRET_KEYS.length];
+    const pKey = TTT_PAINT_KEYS[(tttDummyCounter * 3) % TTT_PAINT_KEYS.length];
+    const dummy = new TankEntity({
+      name: `Мишень_M3_${tttDummyCounter++}`,
+      team: 'red',
+      role: 'defender',
+      x: tx,
+      z: tz,
+      y: ty,
+      angle: normalizeAngle(playerTank.turretAngle + Math.PI),
+      hullId: hKey,
+      turretId: tKey,
+      paintId: pKey
+    });
+    resolveWallPenetration(dummy, 1.08);
+    dummy.updateMeshTransforms(0.016);
+    tanks.push(dummy);
+    spawnRespawnFlash(dummy.x, dummy.y + 0.5, dummy.z);
+    updateTabTable();
+    showCtfBanner(`Создан танк-мишень: ${HULL_DATA[hKey].name} M3 + ${TURRET_DATA[tKey].name} M3`, '#facc15');
+  }
+
+  function toggleTttBotAi() {
+    tttBotAiEnabled = !tttBotAiEnabled;
+    updateTttQuickBarUI();
+    showCtfBanner(
+      tttBotAiEnabled
+        ? 'Режим ИИ Ботов: танки активно сражаются за флаги'
+        : 'Режим Tank Testing Tool: танки неподвижны (мишени для теста физики и отдачи)',
+      tttBotAiEnabled ? '#65f732' : '#38bdf8'
+    );
+  }
+
+  function selfDestructPlayerTank() {
+    if (!playerTank || playerTank.isDead) return;
+    playerTank.triggerKillZoneSuicide('delete');
+  }
+
+  // Переворот танка игрока по клавише [R] или кнопке «Переворот [R]» в панели TTT:
+  // Если танк стоит на гусеницах — подбрасывает и переворачивает его на крышу/башню вверх гусеницами (как при жёстком выстреле или съезде с обрыва в TTT!),
+  // чтобы игрок мог протестировать поведение перевёрнутого танка и самопереворот отдачей пушки (Рейлган/Гром/Смоки/Твинс/Рикошет)!
+  // Если танк уже лежит вверх гусеницами или на боку — ставит его обратно ровно на гусеницы!
+  function flipOrRightPlayerTank(forceUpsideDown = false) {
+    if (!playerTank || playerTank.isDead) return;
+    const gY = getTerrainHeight(playerTank.x, playerTank.z, playerTank.y);
+    if (!forceUpsideDown && (playerTank.isUpsideDown || playerTank.isOnSide)) {
+      playerTank.setPose(playerTank.x, gY, playerTank.z, playerTank.hullAngle, playerTank.turretAngle, 0, 0);
+      playerTank.vel.set(0, 1.8, 0);
+      playerTank.updateMeshTransforms(0.016);
+      showCtfBanner('Танк поставлен обратно на гусеницы! [R]', '#65f732');
+    } else {
+      playerTank.setPose(playerTank.x, gY + 0.55, playerTank.z, playerTank.hullAngle, playerTank.turretAngle, Math.PI * 0.96, 0.08);
+      playerTank.vel.set(0, -0.4, 0);
+      playerTank.omega.set(0.15, 0, 0.35);
+      resolveTankChassisAndWalls3D(playerTank, 0.016);
+      playerTank.updateMeshTransforms(0.016);
+      showCtfBanner('Танк перевёрнут вверх гусеницами! Поверните башню (Z/X) и выстрелите (Пробел) для раскачки или нажмите [R]', '#facc15');
+    }
+  }
+
+  const tttPrevHull = document.getElementById('ttt-prev-hull');
+  if (tttPrevHull) tttPrevHull.onclick = () => cyclePlayerHull(-1);
+  const tttNextHull = document.getElementById('ttt-next-hull');
+  if (tttNextHull) tttNextHull.onclick = () => cyclePlayerHull(1);
+  const tttPrevTurret = document.getElementById('ttt-prev-turret');
+  if (tttPrevTurret) tttPrevTurret.onclick = () => cyclePlayerTurret(-1);
+  const tttNextTurret = document.getElementById('ttt-next-turret');
+  if (tttNextTurret) tttNextTurret.onclick = () => cyclePlayerTurret(1);
+  const tttNextPaint = document.getElementById('ttt-next-paint');
+  if (tttNextPaint) tttNextPaint.onclick = () => cyclePlayerPaint(1);
+  const tttSpawnDummy = document.getElementById('ttt-spawn-dummy');
+  if (tttSpawnDummy) tttSpawnDummy.onclick = () => spawnTttTargetDummyTank();
+  const tttToggleAi = document.getElementById('ttt-toggle-ai');
+  if (tttToggleAi) tttToggleAi.onclick = () => toggleTttBotAi();
+  const tttFlipTank = document.getElementById('ttt-flip-tank');
+  if (tttFlipTank) tttFlipTank.onclick = () => flipOrRightPlayerTank(false);
+  const tttSelfDestruct = document.getElementById('ttt-self-destruct');
+  if (tttSelfDestruct) tttSelfDestruct.onclick = () => selfDestructPlayerTank();
 
   function resetMatchRound() {
     blueScore = 0;
     redScore = 0;
-    battleSeconds = 300;
+    battleSeconds = 900;
     document.getElementById('score-blue').textContent = '0';
     document.getElementById('score-red').textContent = '0';
     returnFlagToBase(ctfFlags.blue, null);
@@ -5221,8 +6869,21 @@
       dropCarriedFlag(playerTank, true);
     }
 
+    // Горячие клавиши Tank Testing Tool (Новая графика M3):
+    // [ / ] — смена корпуса M3, - / = — смена пушки M3, P — смена краски, Insert — создать танк-мишень, B — вкл/выкл ИИ ботов, R — перевернуть танк / поставить на гусеницы, Delete — самоуничтожение!
+    if (e.code === 'BracketLeft')  cyclePlayerHull(-1);
+    if (e.code === 'BracketRight') cyclePlayerHull(1);
+    if (e.code === 'Minus')        cyclePlayerTurret(-1);
+    if (e.code === 'Equal')        cyclePlayerTurret(1);
+    if (e.code === 'KeyP')         cyclePlayerPaint(1);
+    if (e.code === 'Insert')       spawnTttTargetDummyTank();
+    if (e.code === 'KeyB')         toggleTttBotAi();
+    if (e.code === 'KeyR')         flipOrRightPlayerTank(false);
+    if (e.code === 'Delete')       selfDestructPlayerTank();
+
     if (e.code === 'KeyG') toggleGarage();
     if (e.code === 'KeyM') toggleBattles();
+    if (e.code === 'KeyV') toggleCameraDimensionMode();
     if (e.code === 'Tab') {
       e.preventDefault();
       document.getElementById('tab-screen').style.display = 'flex';
@@ -5246,6 +6907,14 @@
     const rect = canvas.getBoundingClientRect();
     mouseNDC.x = ((e.clientX - rect.left) / Math.max(1, rect.width)) * 2 - 1;
     mouseNDC.y = -((e.clientY - rect.top) / Math.max(1, rect.height)) * 2 + 1;
+    if (e.target === canvas && typeof playerTank !== 'undefined' && playerTank && !playerTank.isDead) {
+      if (is3DCameraMode) {
+        // В 3D режиме TTT башня вращается строго со своей паспортной скоростью (Z / X / C или < / >) без мгновенного рывка мышью
+        playerTank.keyboardTurretMode = true;
+      } else {
+        playerTank.keyboardTurretMode = false;
+      }
+    }
   });
 
   window.addEventListener('mousedown', e => {
@@ -5883,6 +7552,11 @@
       const rofM0 = (parseFloat(rofM3) * 0.76).toFixed(1);
       const rofM1 = (parseFloat(rofM3) * 0.84).toFixed(1);
       const rofM2 = (parseFloat(rofM3) * 0.92).toFixed(1);
+      const tDeg3 = info.turnDeg || (info.turnSpeed ? (info.turnSpeed * 180 / Math.PI) : 110.0);
+      const rotM0 = (tDeg3 * 0.68).toFixed(1);
+      const rotM1 = (tDeg3 * 0.79).toFixed(1);
+      const rotM2 = (tDeg3 * 0.90).toFixed(1);
+      const rotM3 = tDeg3.toFixed(1);
 
       statsContainer.innerHTML = `
         <div class="mod-specs-box">
@@ -5901,7 +7575,7 @@
               <tr>
                 <td>${m0Dmg}</td>
                 <td>${rofM0}</td>
-                <td>72,5</td>
+                <td>${rotM0}</td>
                 <td>60,0</td>
                 <td class="mod-badge-cell">${renderPipsHtml(1)}${r1}</td>
                 <td class="mod-price-cell">10 ${cryImg}</td>
@@ -5909,7 +7583,7 @@
               <tr>
                 <td>${m1Dmg}</td>
                 <td>${rofM1}</td>
-                <td>86,0</td>
+                <td>${rotM1}</td>
                 <td>75,0</td>
                 <td class="mod-badge-cell">${renderPipsHtml(2)}${r2}</td>
                 <td class="mod-price-cell">150 ${cryImg}</td>
@@ -5917,7 +7591,7 @@
               <tr>
                 <td>${m2Dmg}</td>
                 <td>${rofM2}</td>
-                <td>102,4</td>
+                <td>${rotM2}</td>
                 <td>90,0</td>
                 <td class="mod-badge-cell">${renderPipsHtml(3)}${r3}</td>
                 <td class="mod-price-cell">450 ${cryImg}</td>
@@ -5925,7 +7599,7 @@
               <tr class="mod-active-row">
                 <td>${m3Dmg}</td>
                 <td>${rofM3}</td>
-                <td>118,5</td>
+                <td>${rotM3}</td>
                 <td>110,0</td>
                 <td class="mod-badge-cell">${renderPipsHtml(4)}${r4}</td>
                 <td class="mod-price-cell">1350 ${cryImg}</td>
@@ -5940,11 +7614,11 @@
       const m1Hp = Math.round(m3Hp * 0.76);
       const m2Hp = Math.round(m3Hp * 0.88);
 
-      const m3Spd = info.speed;
+      const m3Spd = info.garageSpeed || info.speed;
       const m0Spd = (m3Spd * 0.76).toFixed(1);
       const m1Spd = (m3Spd * 0.84).toFixed(1);
       const m2Spd = (m3Spd * 0.92).toFixed(1);
-      const m3Turn = (info.turn * 42).toFixed(1);
+      const m3Turn = (info.turnDeg || (info.turn * 180 / Math.PI)).toFixed(1);
 
       statsContainer.innerHTML = `
         <div class="mod-specs-box">
@@ -6123,6 +7797,7 @@
       if (hit) {
         const contactFloorY = Math.max(floorY, getTerrainHeight(closeX, closeZ, curY));
         if (w.topY <= contactFloorY + 0.68) continue;
+        if (w.isSlopedBox && contactFloorY > w.bottomY + 0.25) continue;
         return true;
       }
     }
@@ -6162,7 +7837,7 @@
 
   function animate(now) {
     requestAnimationFrame(animate);
-    const dt = Math.min((now - lastTime) / 1000, 0.1);
+    const dt = Math.min((now - lastTime) / 1000, 0.033);
     dtGlobal = dt;
     lastTime = now;
 
@@ -6189,6 +7864,8 @@
       t.update(dt);
       handleRailgunTick(t, dt);
     });
+    resolveTankToTankCollisions3D();
+    updateUndergroundXrayCutaway(dt);
 
     // Обновление флагов CTF + индикация в правом нижнем углу (CTFScoreIndicator)
     updateCtfFlags(dt);
@@ -6294,8 +7971,14 @@
 
       b.mesh.position.x = nextX;
       b.mesh.position.z = nextZ;
-      b.baseY = getTerrainHeight(nextX, nextZ, bY);
-      b.mesh.position.y = b.baseY + 1.35;
+      if (Math.abs(b.vy || 0) > 0.15) {
+        b.mesh.position.y += b.vy * dt;
+        const floorH = getTerrainHeight(nextX, nextZ, b.baseY);
+        b.baseY = Math.max(floorH, b.mesh.position.y - 1.35);
+      } else {
+        b.baseY = getTerrainHeight(nextX, nextZ, bY);
+        b.mesh.position.y = b.baseY + 1.35;
+      }
 
       let hit = false;
       for (const t of tanks) {
@@ -6400,14 +8083,65 @@
       }
     }
 
-    // Следование камеры за реальной 3D высотой игрока (на мосту или под мостом)
+    // ==========================================
+    // КАМЕРА FOLLOWCAMERACONTROLLER ИЗ TANK TESTING TOOL (3D ПЕРСПЕКТИВА ПО УМОЛЧАНИЮ + ПЕРЕХОД В 2D ПО КЛАВИШЕ V)
+    // ==========================================
     const pGround = (playerTank.y !== undefined) ? playerTank.y : getTerrainHeight(playerTank.x, playerTank.z);
-    const targetCamX = playerTank.x;
-    const targetCamZ = playerTank.z + camDist * Math.cos(camPitch);
-    camera.position.x = lerp(camera.position.x, targetCamX, 0.12);
-    camera.position.y = lerp(camera.position.y, pGround + camDist * Math.sin(camPitch), 0.12);
-    camera.position.z = lerp(camera.position.z, targetCamZ, 0.12);
-    camera.lookAt(playerTank.x, pGround, playerTank.z);
+    if (is3DCameraMode) {
+      camera = perspCamera;
+
+      // 1) Пружинно-инерционное следование азимута камеры за башней танка (как в оригинальном FollowCameraController!)
+      const angleDiff = normalizeAngle(playerTank.turretAngle - cam3DYaw);
+      const camSpringK = 68.0, camDampK = 14.5;
+      cam3DYawVel += (camSpringK * angleDiff - camDampK * cam3DYawVel) * dt;
+      cam3DYaw = normalizeAngle(cam3DYaw + cam3DYawVel * dt);
+
+      // 2) Гашение импульса отдачи камеры (ProjectileHitCameraModifier) и плавное отслеживание высоты танка
+      cam3DPitchRecoil = Math.max(0, cam3DPitchRecoil - 0.55 * dt);
+      cam3DBackRecoil  = Math.max(0, cam3DBackRecoil  - 2.60 * dt);
+      cam3DSmoothY = lerp(cam3DSmoothY, pGround, Math.min(1, 16.0 * dt));
+
+      const backDirX = Math.sin(cam3DYaw);
+      const backDirZ = Math.cos(cam3DYaw);
+
+      // 3) Квадратичная дуга подъёма камеры TTT по Q / E (от низкого вида от башни до командирского обзора сверху)
+      const arc = cam3DArcLevel;
+      let desiredDist = 6.8 + arc * 7.8 + cam3DBackRecoil;
+      const desiredHeight = 2.25 + (arc * arc * 0.55 + arc * 0.45) * 8.4 + cam3DPitchRecoil * 2.1;
+
+      // 4) Защита 3D камеры от проваливания сквозь стены позади танка
+      const camWallHit = raycastWalls(playerTank.x, playerTank.z, backDirX, backDirZ, desiredDist, pGround);
+      if (camWallHit && camWallHit.dist > 1.8) {
+        desiredDist = Math.max(2.3, camWallHit.dist - 0.65);
+      }
+
+      const target3DX = playerTank.x + backDirX * desiredDist;
+      const target3DY = cam3DSmoothY + desiredHeight;
+      const target3DZ = playerTank.z + backDirZ * desiredDist;
+
+      perspCamera.position.x = lerp(perspCamera.position.x, target3DX, Math.min(1, 22 * dt));
+      perspCamera.position.y = lerp(perspCamera.position.y, target3DY, Math.min(1, 20 * dt));
+      perspCamera.position.z = lerp(perspCamera.position.z, target3DZ, Math.min(1, 22 * dt));
+
+      const lookDist = 11.5 - arc * 5.2;
+      const pitchAlongCam = ((playerTank.slopePitch || 0) * Math.cos(cam3DYaw - playerTank.hullAngle)
+                           + (playerTank.slopeRoll  || 0) * Math.sin(cam3DYaw - playerTank.hullAngle));
+      const lookAheadX = playerTank.x - backDirX * lookDist;
+      const lookAheadY = cam3DSmoothY + 1.55 - arc * 0.45 - Math.sin(pitchAlongCam) * 4.2 + cam3DPitchRecoil * 3.5;
+      const lookAheadZ = playerTank.z - backDirZ * lookDist;
+      perspCamera.lookAt(lookAheadX, lookAheadY, lookAheadZ);
+    } else {
+      camera = orthoCamera;
+      const targetCamX = playerTank.x;
+      const targetCamZ = playerTank.z + camDist * Math.cos(camPitch);
+      orthoCamera.position.x = lerp(orthoCamera.position.x, targetCamX, 0.12);
+      orthoCamera.position.y = lerp(orthoCamera.position.y, pGround + camDist * Math.sin(camPitch), 0.12);
+      orthoCamera.position.z = lerp(orthoCamera.position.z, targetCamZ, 0.12);
+      orthoCamera.lookAt(playerTank.x, pGround, playerTank.z);
+    }
+
+    // 3D Frustum Culling + Alternativa3D Occlusion Culling (скрытие невидимых пропов за крупными зданиями и 6-точечный тест видимости танков)
+    updateFrustumAndOcclusionCulling(camera);
 
     // 2D Оверлей (battles.swf usertitle):
     // Над танком игрока — двойной индикатор (слева зелёное HP, справа жёлто-оранжевый заряд/перезарядка пушки) + иконки активных припасов!
@@ -6425,6 +8159,9 @@
       const tempV = new THREE.Vector3();
       tanks.forEach(t => {
         if (t.isDead) return;
+        // Оригинальное правило TankModel.isTankInvisible из battles.swf:
+        // если все 6 контрольных точек вражеского танка закрыты непрозрачными стенами/зданиями (Occluders), его никнейм и полоска HP не просвечивают сквозь стены!
+        if (!t.isPlayer && t.team !== playerTank.team && t.isOccludedFromCamera) return;
         const ty = (t.y !== undefined) ? t.y : getTerrainHeight(t.x, t.z);
         tempV.set(t.x, ty + 2.75, t.z).project(camera);
         if (tempV.z <= -1 || tempV.z >= 1) return;
@@ -6441,6 +8178,26 @@
         if (t.supplies.speed > 0  && swf.eff_nitro)  activeEffs.push(swf.eff_nitro);
 
         if (t.isPlayer) {
+          // Если наш танк заехал в подземелье / под мост — рисуем тактическое X-Ray кольцо локатора вокруг танка!
+          if (t.isUnderground) {
+            const centerV = new THREE.Vector3(t.x, ty + 0.9, t.z).project(camera);
+            const cx = Math.round((centerV.x * 0.5 + 0.5) * overlay.width);
+            const cy = Math.round((-centerV.y * 0.5 + 0.5) * overlay.height);
+            octx.save();
+            octx.strokeStyle = 'rgba(56, 255, 106, 0.85)';
+            octx.lineWidth = 2.0;
+            octx.setLineDash([6, 4]);
+            octx.beginPath();
+            octx.arc(cx, cy, is3DCameraMode ? 48 : 34, 0, Math.PI * 2);
+            octx.stroke();
+            octx.setLineDash([]);
+            octx.font = 'bold 10px Tahoma, sans-serif';
+            octx.fillStyle = '#65f732';
+            octx.textAlign = 'center';
+            octx.fillText('🚇 ПОДЗЕМЕЛЬЕ (X-RAY)', sx, sy + 16);
+            octx.restore();
+          }
+
           // Классический двойной индикатор игрока над танком (как в оригинальном battles.swf!)
           const tInfo = TURRET_DATA[t.turretId];
           let wepPct = 1.0;
@@ -6537,44 +8294,54 @@
 
   window.addEventListener('resize', () => {
     const asp = container.clientWidth / Math.max(1, container.clientHeight);
-    camera.left = -viewSize * asp / 2;
-    camera.right = viewSize * asp / 2;
-    camera.top = viewSize / 2;
-    camera.bottom = -viewSize / 2;
-    camera.updateProjectionMatrix();
+    orthoCamera.left = -viewSize * asp / 2;
+    orthoCamera.right = viewSize * asp / 2;
+    orthoCamera.top = viewSize / 2;
+    orthoCamera.bottom = -viewSize / 2;
+    orthoCamera.updateProjectionMatrix();
+    perspCamera.aspect = asp;
+    perspCamera.updateProjectionMatrix();
     renderer.setSize(container.clientWidth, container.clientHeight);
   });
 
   // Сразу размещаем 2 ящика припасов в начале боя, чтобы игрок видел их правильную развёртку box.3ds!
   initMatch();
   if (currentMapId === 'sandbox' && playerTank) {
-    playerTank.x = -26.0;
-    playerTank.z = -18.5;
-    playerTank.hullAngle = 0.65;
-    playerTank.turretAngle = 0.65;
+    playerTank.setPose(-14.5, getTerrainHeight(-14.5, -10.5), -10.5, -0.78, -0.72, 0, 0);
     playerTank.supplies.damage = 18.0;
     playerTank.supplies.armor = 18.0;
-    camera.position.x = playerTank.x;
-    camera.position.z = playerTank.z + camDist * Math.cos(camPitch);
+    playerTank.updateMeshTransforms(0.016);
+    if (tanks[4]) {
+      tanks[4].setPose(-2.5, getTerrainHeight(-2.5, -2.0), -2.0, 2.35, 2.35, 0, 0);
+      tanks[4].updateMeshTransforms(0.016);
+    }
+    if (tanks[5]) {
+      tanks[5].setPose(4.5, getTerrainHeight(4.5, -7.5), -7.5, 1.95, 2.15, 0, 0);
+      tanks[5].updateMeshTransforms(0.016);
+    }
+    orthoCamera.position.x = playerTank.x;
+    orthoCamera.position.y = playerTank.y + camDist * Math.sin(camPitch);
+    orthoCamera.position.z = playerTank.z + camDist * Math.cos(camPitch);
+    snapFollowCamera3D();
     // Размещаем 3D мину mine.3ds и демонстрационный выстрел/взрыв из TTT на старте!
     placeTankMine(playerTank);
-    spawnFlipbookSprite('thunder_explosion', -18.5, getTerrainHeight(-18.5, -13.5) + 1.8, -13.5, 4.6, 0.58, { additive: false, endScale: 5.8 });
-    spawnFlipbookSprite('smoky_shot', -24.2, getTerrainHeight(-24.2, -16.8) + 1.6, -16.8, 2.2, 0.25, { endScale: 2.8, fadeOut: true });
+    spawnFlipbookSprite('thunder_explosion', -5.5, getTerrainHeight(-5.5, -4.5) + 1.8, -4.5, 4.6, 0.58, { additive: false, endScale: 5.8 });
+    spawnFlipbookSprite('smoky_shot', -11.5, getTerrainHeight(-11.5, -8.0) + 1.6, -8.0, 2.2, 0.25, { endScale: 2.8, fadeOut: true });
     setTimeout(() => {
       if (currentMapId === 'sandbox' && document.getElementById('garage-screen').style.display !== 'flex') {
-        spawnFlipbookSprite('thunder_explosion', -19.5, getTerrainHeight(-19.5, -14.5) + 1.6, -14.5, 4.8, 0.65, { additive: false, endScale: 6.0 });
-        spawnFlipbookSprite('smoky_crit', -23.0, getTerrainHeight(-23.0, -16.0) + 1.5, -16.0, 3.6, 0.55, { additive: true, endScale: 4.5 });
+        spawnFlipbookSprite('thunder_explosion', -4.5, getTerrainHeight(-4.5, -3.5) + 1.6, -3.5, 4.8, 0.65, { additive: false, endScale: 6.0 });
+        spawnFlipbookSprite('smoky_crit', -9.0, getTerrainHeight(-9.0, -6.5) + 1.5, -6.5, 3.6, 0.55, { additive: true, endScale: 4.5 });
       }
-    }, 1850);
+    }, 820);
   }
-  dropBoxes.push(new DropBoxEntity('damage', -20.5, -21.0));
-  dropBoxes[0].altitude = getTerrainHeight(-20.5, -21.0) + 0.02;
+  dropBoxes.push(new DropBoxEntity('damage', -8.5, -9.0));
+  dropBoxes[0].altitude = getTerrainHeight(-8.5, -9.0) + 0.02;
   dropBoxes[0].landed = true;
   dropBoxes[0].mesh.position.y = dropBoxes[0].altitude;
   scene.remove(dropBoxes[0].paraMesh);
 
-  dropBoxes.push(new DropBoxEntity('repair', -14.0, -12.0));
-  dropBoxes[1].altitude = getTerrainHeight(-14.0, -12.0) + 0.02;
+  dropBoxes.push(new DropBoxEntity('repair', -10.5, -3.0));
+  dropBoxes[1].altitude = getTerrainHeight(-10.5, -3.0) + 0.02;
   dropBoxes[1].landed = true;
   dropBoxes[1].mesh.position.y = dropBoxes[1].altitude;
   scene.remove(dropBoxes[1].paraMesh);
@@ -6586,29 +8353,102 @@
     } else if (h === '#battle' || h === '#mobile') {
       setBattlesOpen(false);
       setGarageOpen(false);
+      toggleCameraDimensionMode(true);
+      snapFollowCamera3D();
+    } else if (h === '#2d') {
+      setBattlesOpen(false);
+      setGarageOpen(false);
+      toggleCameraDimensionMode(false);
+    } else if (h === '#3d' || h === '#flipped') {
+      setBattlesOpen(false);
+      setGarageOpen(false);
+      battleSeconds = 900;
+      tttBotAiEnabled = false;
+      updateTttQuickBarUI();
+      if (playerTank) {
+        playerTank.maxHp = 99999;
+        playerTank.hp = 99999;
+        if (h === '#flipped') {
+          playerTank.setPose(-13.5, getTerrainHeight(-13.5, -9.5) + 0.55, -9.5, -0.78, -0.45, Math.PI * 0.96, 0.06);
+          resolveTankChassisAndWalls3D(playerTank, 0.016);
+        } else {
+          playerTank.setPose(-15.5, getTerrainHeight(-15.5, -11.5), -11.5, -0.78, -0.72, 0, 0);
+        }
+        playerTank.supplies.damage = 30.0;
+        playerTank.supplies.armor = 30.0;
+        playerTank.isCharging = true;
+        playerTank.chargeTimer = 0.45;
+        playerTank.updateMeshTransforms(0.016);
+      }
+      if (tanks[4]) {
+        // В режиме #flipped или #3d показываем также перевёрнутый на крышу танк-мишень рядом, чтобы сразу было видно 6-DOF физику переворота!
+        if (h === '#flipped') {
+          tanks[4].setPose(-6.5, getTerrainHeight(-6.5, -4.5) + 0.58, -4.5, 2.15, 2.45, Math.PI * 0.95, -0.05);
+          resolveTankChassisAndWalls3D(tanks[4], 0.016);
+        } else {
+          tanks[4].setPose(-4.5, getTerrainHeight(-4.5, -2.5), -2.5, 2.15, 2.35, 0, 0);
+        }
+        tanks[4].updateMeshTransforms(0.016);
+      }
+      if (tanks[5]) {
+        tanks[5].setPose(2.5, getTerrainHeight(2.5, -7.0), -7.0, 1.85, 2.10, 0, 0);
+        tanks[5].updateMeshTransforms(0.016);
+      }
+      toggleCameraDimensionMode(true);
+      snapFollowCamera3D();
+      setTimeout(() => {
+        if (playerTank && !playerTank.isDead && (window.location.hash === '#3d' || window.location.hash === '#flipped')) {
+          playerTank.isCharging = true;
+          playerTank.chargeTimer = 0.25;
+        }
+      }, 650);
+    } else if (h === '#underground') {
+      // Демонстрация X-Ray просвечивания в 2D виде сверху, когда наш танк заехал ПОД мост / в туннель на Кунгуре!
+      selectedBattleMapId = 'kungur';
+      launchSelectedBattleMap('blue', false);
+      toggleCameraDimensionMode(false);
+      tttBotAiEnabled = false;
+      updateTttQuickBarUI();
+      battleSeconds = 900;
+      if (playerTank) {
+        playerTank.maxHp = 99999;
+        playerTank.hp = 99999;
+        playerTank.setPose(82.5, getTerrainHeight(82.5, -2.0, 0.0), -2.0, 1.57, 1.25, 0, 0); // Танк ПОД мостом на высоте Y=0м, а над ним мост Y=9м!
+        playerTank.supplies.damage = 30.0;
+        playerTank.supplies.armor = 30.0;
+        playerTank.updateMeshTransforms(0.016);
+        if (tanks[1]) {
+          tanks[1].setPose(76.5, getTerrainHeight(76.5, -2.5, 0.0), -2.5, -1.57, -1.2, 0, 0);
+          tanks[1].updateMeshTransforms(0.016);
+        }
+        orthoCamera.position.x = playerTank.x;
+        orthoCamera.position.y = playerTank.y + camDist * Math.sin(camPitch);
+        orthoCamera.position.z = playerTank.z + camDist * Math.cos(camPitch);
+        orthoCamera.lookAt(playerTank.x, playerTank.y, playerTank.z);
+        updateUndergroundXrayCutaway(1.0);
+      }
     } else if (h.startsWith('#map=')) {
       const mId = h.slice(5);
       if (TANKI_BUILT_IN_MAPS && TANKI_BUILT_IN_MAPS[mId]) {
         selectedBattleMapId = mId;
         launchSelectedBattleMap('blue', false);
+        battleSeconds = 900;
         if (mId === 'kungur' && playerTank) {
-          // Демонстрация 2-уровневой физики моста Кунгура: игрок на мосту (X=82.5, Z=-2.0, Y=9.0м), бот проезжает прямо под мостом (Y=0.0м)
-          playerTank.x = 82.5;
-          playerTank.z = -2.0;
-          playerTank.y = getTerrainHeight(82.5, -2.0, 9.0);
-          playerTank.hullAngle = 0.0;
-          playerTank.turretAngle = -0.45;
+          playerTank.maxHp = 99999;
+          playerTank.hp = 99999;
+          // Демонстрация 2-уровневой 3D физики моста Кунгура: игрок на мосту (X=82.5, Z=-2.0, Y=9.0м), бот проезжает под мостом (Y=0.0м)
+          playerTank.setPose(82.5, getTerrainHeight(82.5, -2.0, 9.0), -2.0, 0.0, -0.35, 0, 0);
           playerTank.supplies.damage = 18.0;
+          playerTank.updateMeshTransforms(0.016);
           if (tanks[1]) {
-            tanks[1].x = 75.5;
-            tanks[1].z = -5.0;
-            tanks[1].y = getTerrainHeight(75.5, -5.0, 0.0);
-            tanks[1].hullAngle = 1.57;
-            tanks[1].turretAngle = 1.2;
+            tanks[1].setPose(75.5, getTerrainHeight(75.5, -5.0, 0.0), -5.0, 1.57, 1.2, 0, 0);
+            tanks[1].updateMeshTransforms(0.016);
           }
-          camera.position.x = playerTank.x;
-          camera.position.y = playerTank.y + camDist * Math.sin(camPitch);
-          camera.position.z = playerTank.z + camDist * Math.cos(camPitch);
+          orthoCamera.position.x = playerTank.x;
+          orthoCamera.position.y = playerTank.y + camDist * Math.sin(camPitch);
+          orthoCamera.position.z = playerTank.z + camDist * Math.cos(camPitch);
+          toggleCameraDimensionMode(true);
+          snapFollowCamera3D();
         }
       }
     } else if (h !== '#loader') {
