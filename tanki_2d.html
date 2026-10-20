@@ -1270,7 +1270,7 @@
   }
 
   /* =========================================================
-     ОРИГИНАЛЬНОЕ ОКНО ЗАГРУЗКИ ТАНКОВ ОНЛАЙН (LoaderWindow + ColdLoad + Лампочки ProgressBar)
+     ОРИГИНАЛЬНОЕ ОКНО ЗАГРУЗКИ ТАНКОВ ОНЛАЙН (GTanksLoaderWindow + ColdLoad + Летящие патроны GTanksLoaderWindow_p)
      ========================================================= */
   #to-preloader-screen {
     position: fixed;
@@ -1286,26 +1286,28 @@
     user-select: none;
   }
   .to-loader-window {
-    width: 566px;
-    max-width: 95vw;
-    padding: 56px 22px 22px 22px;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
+    width: 610px;
+    max-width: 96vw;
+    padding: 11px 10px 12px 10px;
+    border-style: solid;
+    border-width: 14px;
+    border-image-source: var(--ui-window-9slice);
+    border-image-slice: 14 fill;
+    border-image-repeat: stretch;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     box-shadow: 0 24px 65px rgba(0, 0, 0, 0.92);
     position: relative;
   }
   .to-loader-art-box {
-    width: 522px;
+    width: 589px;
     max-width: 100%;
-    height: 190px;
-    border-radius: 4px;
+    height: 225px;
     overflow: hidden;
     background: #141a16;
-    border: 1px solid rgba(0,0,0,0.85);
+    border: 1px solid #161b18;
     position: relative;
   }
   .to-loader-art-box img {
@@ -1314,89 +1316,48 @@
     object-fit: fill;
     display: block;
   }
+  .to-loader-cartridges-wrap {
+    width: 586px;
+    max-width: 100%;
+    height: 30px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.95), 0 1px 0 rgba(255,255,255,0.12);
+  }
+  #to-loader-cartridges-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
   .to-loader-status-row {
-    width: 522px;
+    width: 586px;
     max-width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 11px;
     font-weight: 700;
-    color: #d9f99d;
+    color: #b7f582;
     text-shadow: 0 1px 2px #000;
     padding: 0 2px;
-  }
-  .to-loader-lamps-bar {
-    width: 522px;
-    max-width: 100%;
-    height: 26px;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-  }
-  .to-loader-lamp {
-    width: 16px;
-    height: 16px;
-    object-fit: contain;
-  }
-  .to-loader-tube-wrap {
-    width: 522px;
-    max-width: 100%;
-    height: 28px;
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-  .to-loader-tube-bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
-    pointer-events: none;
-    z-index: 2;
-  }
-  .to-loader-tube-fill-clip {
-    position: absolute;
-    left: 16px;
-    right: 16px;
-    top: 5px;
-    bottom: 5px;
-    overflow: hidden;
-    border-radius: 8px;
-    z-index: 1;
-    background: #101712;
-  }
-  .to-loader-tube-fill {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(180deg, #a3ff4d 0%, #44c800 55%, #1c5c00 100%);
-    background-size: 100% 100%;
-    transition: width 0.08s linear;
   }
 </style>
 </head>
 <body>
 
-<!-- ОРИГИНАЛЬНОЕ ОКНО ЗАГРУЗКИ ТАНКОВ ОНЛАЙН (ПРЕДЗАГРУЗКА ВСЕХ ТЕКСТУР, КАРТОЧЕК ГАРАЖА И СПРАЙТОВ ЭФФЕКТОВ) -->
+<!-- ОРИГИНАЛЬНОЕ ОКНО ЗАГРУЗКИ ТАНКОВ ОНЛАЙН (GTanksLoaderWindow: КАРТОЧКА COLDLOAD + АНИМАЦИЯ ДОСЫЛАНИЯ И ПОЛЁТА ПАТРОНОВ GTanksLoaderWindow_p) -->
 <div id="to-preloader-screen">
   <div class="to-loader-window" id="to-loader-window-box">
     <div class="to-loader-art-box">
       <img id="to-loader-art-img" src="" alt="Загрузка Танков Онлайн">
     </div>
+    <div class="to-loader-cartridges-wrap">
+      <canvas id="to-loader-cartridges-canvas" width="586" height="30"></canvas>
+    </div>
     <div class="to-loader-status-row">
       <span id="to-loader-stage-text">Загрузка ресурсов библиотеки и текстур...</span>
       <span id="to-loader-pct-text">0%</span>
-    </div>
-    <div class="to-loader-lamps-bar" id="to-loader-lamps-row"></div>
-    <div class="to-loader-tube-wrap">
-      <div class="to-loader-tube-fill-clip">
-        <div class="to-loader-tube-fill" id="to-loader-tube-fill"></div>
-      </div>
-      <img class="to-loader-tube-bg" id="to-loader-tube-bg-img" src="" alt="">
     </div>
   </div>
 </div>
@@ -1878,42 +1839,117 @@
   }
 
   // ==========================================
-  // 0.1. ОРИГИНАЛЬНОЕ ОКНО ЗАГРУЗКИ ТАНКОВ ОНЛАЙН (ПРЕДЗАГРУЗКА ВСЕХ КАРТИНОК И ТЕКСТУР ДО ОТКРЫТИЯ СПИСКА БИТВ!)
+  // 0.1. ОРИГИНАЛЬНОЕ ОКНО ЗАГРУЗКИ ТАНКОВ ОНЛАЙН (GTanksLoaderWindow + Анимация летящих патронов GTanksLoaderWindow_p из battles.swf!)
   // ==========================================
   const preloaderScreen = document.getElementById('to-preloader-screen');
-  const loaderWinBox = document.getElementById('to-loader-window-box');
   const loaderArtImg = document.getElementById('to-loader-art-img');
   const loaderStageText = document.getElementById('to-loader-stage-text');
   const loaderPctText = document.getElementById('to-loader-pct-text');
-  const loaderLampsRow = document.getElementById('to-loader-lamps-row');
-  const loaderTubeFill = document.getElementById('to-loader-tube-fill');
-  const loaderTubeBgImg = document.getElementById('to-loader-tube-bg-img');
-  const LAMP_COUNT = 18;
-  const lampEls = [];
+  const loaderCartridgesCanvas = document.getElementById('to-loader-cartridges-canvas');
+  const loaderCartridgesCtx = loaderCartridgesCanvas ? loaderCartridgesCanvas.getContext('2d') : null;
 
-  if (typeof TANKI_SWF_UI !== 'undefined') {
-    if (loaderWinBox && TANKI_SWF_UI.loader_window_big) {
-      loaderWinBox.style.backgroundImage = `url("${TANKI_SWF_UI.loader_window_big}")`;
-    }
-    if (loaderLampsRow && TANKI_SWF_UI.loader_bar_bg) {
-      loaderLampsRow.style.backgroundImage = `url("${TANKI_SWF_UI.loader_bar_bg}")`;
-    }
-    if (loaderTubeBgImg && TANKI_SWF_UI.loader_tube_bg) {
-      loaderTubeBgImg.src = TANKI_SWF_UI.loader_tube_bg;
-    }
-    if (loaderTubeFill && TANKI_SWF_UI.loader_tube_fuel) {
-      loaderTubeFill.style.backgroundImage = `url("${TANKI_SWF_UI.loader_tube_fuel}")`;
-    }
-    if (loaderLampsRow) {
-      loaderLampsRow.innerHTML = '';
-      for (let i = 0; i < LAMP_COUNT; i++) {
-        const lImg = document.createElement('img');
-        lImg.className = 'to-loader-lamp';
-        lImg.src = TANKI_SWF_UI.loader_lamp_off || '';
-        loaderLampsRow.appendChild(lImg);
-        lampEls.push(lImg);
+  // Предзагружаем 5 оригинальных спрайтов казённика и патронов из встроенного SWF GTanksLoaderWindow_p_dataClass (CID 900)
+  const loaderSprites = {
+    bg: getSwfImage('loader_p_bg'),
+    shell: getSwfImage('loader_p_shell'),
+    feeder: getSwfImage('loader_p_feeder'),
+    bolt: getSwfImage('loader_p_bolt'),
+    chamber: getSwfImage('loader_p_chamber')
+  };
+
+  // Точная покадровая таблица координат X (кадры 20..79 из Sprite CID=22 в loader_p_data.swf, 60 FPS)
+  const LOADER_SHELL_X = [
+    0.2, 0.85, 2.0, 3.7, 6.0, 9.05, 12.9, 17.6, 23.2, 29.85,
+    37.45, 45.95, 55.15, 65.7, 78.2, 91.4, 104.95, 118.7, 132.65, 146.7,
+    160.8, 175.0, 189.3, 203.6, 217.95, 232.3, 246.7, 261.15, 275.55, 290.0,
+    304.45, 318.9, 333.35, 347.8, 362.25, 376.65, 391.05, 405.45, 419.75, 434.05,
+    448.25, 462.4, 476.4, 490.25, 503.8, 516.85, 528.1, 537.85, 546.6, 554.25,
+    560.8, 566.3, 570.8, 574.45, 577.35, 579.55, 581.15, 582.2, 582.8, 583.0
+  ];
+  const LOADER_BOLT_X = [
+    0.25, 1.0, 2.3, 4.25, 6.85, 10.15, 14.25, 19.15, 24.9, 31.5,
+    38.95, 47.0, 55.55, 65.65, 78.3, 91.7, 105.4, 119.35, 133.45, 147.65,
+    161.95, 176.3, 190.7, 205.1, 219.6, 234.1, 248.6, 263.1, 277.65, 292.2,
+    306.7, 321.25, 335.75, 350.25, 364.75, 379.2, 393.6, 408.0, 422.3, 436.55,
+    450.7, 464.75, 478.65, 492.35, 505.65, 518.25, 528.65, 537.6, 546.0, 553.6,
+    560.25, 565.95, 570.75, 574.65, 577.8, 580.2, 581.95, 583.1, 583.8, 584.0
+  ];
+
+  function drawSingleCartridgeCycle(ctx, k) {
+    // Смещение Sprite CID=22 на сцене: x = 3, y = -1
+    const ox = 3.0, oy = -1.0;
+    const sh = loaderSprites.shell;
+    const fd = loaderSprites.feeder;
+    const bl = loaderSprites.bolt;
+
+    if (k < 10) {
+      // Кадры 0..9: подача патрона снизу вверх подавателем (29.0 -> 0.0)
+      const sy = 29.0 * (1 - k / 9.0);
+      const fy = sy + 2.0;
+      if (sh && sh.complete && sh.naturalWidth) ctx.drawImage(sh, ox, oy + sy);
+      if (fd && fd.complete && fd.naturalWidth) ctx.drawImage(fd, ox, oy + fy);
+    } else if (k < 20) {
+      // Кадры 10..19: патрон на линии досылания, нижний подаватель уходит вниз, сверху опускается затвор
+      const fy = 2.0 + (k - 9) * 2.9;
+      if (sh && sh.complete && sh.naturalWidth) ctx.drawImage(sh, ox, oy + 0.0);
+      if (fd && fd.complete && fd.naturalWidth) ctx.drawImage(fd, ox, oy + fy);
+      if (k >= 12 && bl && bl.complete && bl.naturalWidth) {
+        const by = (k <= 17) ? (-11.0 + (k - 12) * 2.6) : 2.0;
+        ctx.drawImage(bl, ox, oy + by);
       }
+    } else {
+      // Кадры 20..79: стремительный разгон и полёт патрона в казённик ствола справа
+      const idx = Math.min(59, k - 20);
+      const sx = LOADER_SHELL_X[idx];
+      const bx = LOADER_BOLT_X[idx];
+      if (sh && sh.complete && sh.naturalWidth) ctx.drawImage(sh, ox + sx, oy + 0.0);
+      if (bl && bl.complete && bl.naturalWidth) ctx.drawImage(bl, ox + bx, oy + 2.0);
     }
+  }
+
+  let loaderAnimStartMs = performance.now();
+  function renderLoaderCartridgesFrame(nowMs) {
+    if (!preloaderScreen || preloaderScreen.style.display === 'none' || !loaderCartridgesCtx) return;
+    const ctx = loaderCartridgesCtx;
+    ctx.clearRect(0, 0, 586, 30);
+
+    // 1. Подложка казённика (586x30)
+    const bg = loaderSprites.bg;
+    if (bg && bg.complete && bg.naturalWidth) {
+      ctx.drawImage(bg, 0, 0);
+    } else {
+      ctx.fillStyle = '#1b1f1c';
+      ctx.fillRect(0, 0, 586, 30);
+    }
+
+    // 2. Внутренняя маска (Shape CID=15: rect 1, 1 .. 583, 29 -> 582x28)
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(1, 1, 582, 28);
+    ctx.clip();
+
+    // В оригинальном SWF 60 кадров/сек, цикл 80 кадров, второй патрон смещён ровно на 40 кадров!
+    const totalFrames = Math.floor(((nowMs - loaderAnimStartMs) / 1000) * 60) + 8;
+    const f1 = ((totalFrames % 80) + 80) % 80;
+    const f2 = (f1 + 40) % 80;
+
+    // Сначала рисуем дальний патрон (впереди по стволу), затем ближний (подаваемый слева)
+    if (f1 >= f2) {
+      drawSingleCartridgeCycle(ctx, f1);
+      drawSingleCartridgeCycle(ctx, f2);
+    } else {
+      drawSingleCartridgeCycle(ctx, f2);
+      drawSingleCartridgeCycle(ctx, f1);
+    }
+
+    // 3. Ствольная муфта справа (Shape CID=25 на x=543, y=1 поверх летящих патронов)
+    const ch = loaderSprites.chamber;
+    if (ch && ch.complete && ch.naturalWidth) {
+      ctx.drawImage(ch, 543, 1);
+    }
+    ctx.restore();
+
+    requestAnimationFrame(renderLoaderCartridgesFrame);
   }
 
   let currentColdLoadIdx = 1;
@@ -1929,13 +1965,6 @@
     const pctInt = Math.round(clamped * 100);
     if (loaderPctText) loaderPctText.textContent = `${pctInt}%`;
     if (stageLabel && loaderStageText) loaderStageText.textContent = stageLabel;
-    if (loaderTubeFill) loaderTubeFill.style.width = `${pctInt}%`;
-    if (typeof TANKI_SWF_UI !== 'undefined' && lampEls.length > 0) {
-      const litCount = Math.round(clamped * LAMP_COUNT);
-      for (let i = 0; i < lampEls.length; i++) {
-        lampEls[i].src = (i < litCount ? TANKI_SWF_UI.loader_lamp_on : TANKI_SWF_UI.loader_lamp_off) || '';
-      }
-    }
   }
 
   function collectAllGameImageUris() {
@@ -1969,11 +1998,13 @@
 
   function runTankiAssetPreloader(stagePrefix, minDurationMs, onComplete) {
     if (!preloaderScreen) { if (onComplete) onComplete(); return; }
+    loaderAnimStartMs = performance.now();
     // Если открыт специальный хэш #loader — оставляем экран загрузки открытым на 68% для демонстрации/проверки!
     if (window.location.hash === '#loader') {
       preloaderScreen.style.display = 'flex';
       setColdLoadArtwork(1);
       updatePreloaderUI(0.68, 'Загрузка ресурсов: 3D-модели корпусов, пушек, звуков и 57 карт...');
+      requestAnimationFrame(renderLoaderCartridgesFrame);
       return;
     }
 
@@ -1981,6 +2012,7 @@
     currentColdLoadIdx = (currentColdLoadIdx % 8) + 1;
     setColdLoadArtwork(currentColdLoadIdx);
     updatePreloaderUI(0.04, `${stagePrefix} (инициализация)...`);
+    requestAnimationFrame(renderLoaderCartridgesFrame);
 
     const allUris = collectAllGameImageUris();
     const total = Math.max(1, allUris.length);

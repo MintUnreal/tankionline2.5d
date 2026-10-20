@@ -3,10 +3,7 @@
 # 🛡️ ТАНКИ ОНЛАЙН 2.5D — Классика 2010–2012
 ### *«Многопользовательский браузерный боевик • Башенно-гусеничный Quake»*
 
-[![Запустить портал 2010](https://img.shields.io/badge/▶_САЙТ_ТАНКОВ_ОНЛАЙН_2010-index.html-47e622?style=for-the-badge&logoColor=white)](./index.html)
-[![Начать игру сразу](https://img.shields.io/badge/⚔_В_БОЙ_НА_СЕРВЕР_RU1-tanki__2d.html-d97706?style=for-the-badge&logoColor=white)](./tanki_2d.html)
-[![Гараж M3](https://img.shields.io/badge/🔧_ГАРАЖ_2010_(garage.3ds)-tanki__2d.html%23garage-2563eb?style=for-the-badge&logoColor=white)](./tanki_2d.html#garage)
-[![Список 57 карт](https://img.shields.io/badge/🗺_ВСЕ_57_КАРТ_CTF_%2F_DM-tanki__2d.html%23battles-16a34a?style=for-the-badge&logoColor=white)](./tanki_2d.html#battles)
+[![Начать игру](https://img.shields.io/badge/▶_НАЧАТЬ_ИГРУ-ТАНКИ_ОНЛАЙН_2.5D-47e622?style=for-the-badge&logoColor=white)](https://mintunreal.github.io/tankionline2.5d/)
 
 </div>
 
@@ -101,8 +98,8 @@
 
 Никаких сборщиков, серверов или установки зависимостей не требуется:
 
-1. Откройте **[`index.html`](./index.html)** в любом современном браузере — вы попадёте на олдскульный портал **«Танки Онлайн» 2010 года**.
-2. Нажмите большую кнопку **«Начать игру»** (или откройте напрямую **[`tanki_2d.html`](./tanki_2d.html)**).
+1. Перейдите по ссылке **[https://mintunreal.github.io/tankionline2.5d/](https://mintunreal.github.io/tankionline2.5d/)** (или откройте `index.html` в браузере).
+2. Нажмите кнопку **«Начать игру»**.
 
 ---
 
