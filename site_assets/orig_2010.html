@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="ru-RU">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title> Танки Онлайн &#8211; многопользовательский браузерный боевик</title>
+		<link rel="pingback" href="http://tankionline.com/ru/xmlrpc.php" />
+		<link href="http://tankionline.com/ru/wp-content/themes/tanki/css/all.css" rel="stylesheet" type="text/css" media="all"/>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+		<script type="text/javascript" src="/site.js"></script>
+		<!--[if lt IE 7]>
+			<style type="text/css" media="screen">@import "http://tankionline.com/ru/wp-content/themes/tanki/css/ie.css";</style>
+			<script type="text/javascript" src="http://tankionline.com/ru/wp-content/themes/tanki/js/png-fix.js"></script>
+		<![endif]-->
+		<script type="text/javascript">
+			var lang="ru";
+			var barNormal="http://tankionline.com/ru/wp-content/themes/tanki/images/item1.gif";
+			var barOver="http://tankionline.com/ru/wp-content/themes/tanki/images/item1-over.gif";
+			var barOff="http://tankionline.com/ru/wp-content/themes/tanki/images/item1-off.gif";
+			var stat = {"total":194821,"nodes":{"c6.tankionline.com":{"load":"0","online":280,"inbattles":248},"tankionline.com":{"load":"0","online":0,"inbattles":0},"c2.tankionline.com":{"load":"9","online":511,"inbattles":457},"c4.tankionline.com":{"load":"0","online":309,"inbattles":276},"c5.tankionline.com":{"load":"0","online":273,"inbattles":246},"c3.tankionline.com":{"load":"1","online":410,"inbattles":373}}};
+		</script>
+ 
+
+<link rel="alternate" type="application/rss+xml" title="Танки Онлайн - многопользовательский браузерный боевик &raquo; Лента" href="http://tankionline.com/ru/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Танки Онлайн - многопользовательский браузерный боевик &raquo; Лента комментариев" href="http://tankionline.com/ru/comments/feed/" />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://tankionline.com/ru/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://tankionline.com/ru/wp-includes/wlwmanifest.xml" /> 
+<link rel='index' title='Танки Онлайн - многопользовательский браузерный боевик' href='http://tankionline.com/ru' />
+<meta name="generator" content="WordPress 2.9.2" />
+		
+	</head>
+	<body >
+		<div id="main">
+			<div id="header">
+				<div class="header">
+					<ul class="icons">
+						<li><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/ico02.gif" alt="ico" /></li>
+						<li><a href="/en/"><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/ico01.gif" alt="ico" /></a></li>
+						<li><a href="http://3dtank.com"><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/ico03.gif" alt="ico" /></a></li>
+						
+					</ul>
+					<ul id="menu">
+						<li><a href="/ru/game/" class="btn-about" title="ОБ ИГРЕ">ОБ ИГРЕ</a></li>
+						<li><a href="/ru/howtostart/" class="btn-begin" title="КАК НАЧАТЬ">КАК НАЧАТЬ</a></li>
+						<li><a href="/ru/articles/" class="btn-article" title="СТАТЬИ">СТАТЬИ</a></li>
+						<li><a href="http://blog.tankionline.com" class="btn-blog" title="БЛОГ">БЛОГ</a></li>
+						<li><a href="http://forum.tankionline.com" class="btn-forum" title="ФОРУМ">ФОРУМ</a></li>
+					</ul>
+					<h1 class="logo"><a href="/ru/">Танки Online</a></h1>
+					<div class="info">
+						<div class="server">
+							<div class="btn-not">Серверы недоступны</div>
+							<a href="/battle-ru1.html" id="startButton" class="btn">Начать игру</a>
+							<div class="item">
+								<strong class="title">Сервер</strong>
+								<div class="part">
+									<div id="currentServer" onclick="$('#serversList').slideToggle('fast');return false">
+										<span>1</span>
+										<ul>
+											<li><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/item1-over.gif" alt="" /></li>
+											<li><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/item1.gif" alt="" /></li>
+											<li><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/item1.gif" alt="" /></li>
+											<li><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/item1.gif" alt="" /></li>
+										</ul>
+										<a href="#" class="play players"></a>
+									</div>
+									<div id="serversList">
+										<img src="http://tankionline.com/ru/wp-content/themes/tanki/images/pl_top.png" alt="" />
+										<div class="lines"></div>
+										<img src="http://tankionline.com/ru/wp-content/themes/tanki/images/pl_bottom.png" alt="" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="all">
+							<ul>
+								<li>
+									<strong class="text-all">Всего игроков</strong>
+									<p id="statTotal"></p>
+								</li>
+								<li>
+									<strong class="text-online">В онлайне</strong>
+									<p id="statOnline"></p>
+								</li>
+								<li>
+									<strong class="text-battle">В битвах</strong>
+									<p id="statInBattles"></p>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="holder">
+					<strong class="slogan">Многопользовательский браузерный боевик</strong>
+					<div class="box">
+						<div class="t">&nbsp;</div>
+						<div class="c">
+							<div class="text">
+								<p>Игроки сражаются на онлайновых аренах, зарабатывая деньги и продвигаясь вверх по карьерной
+лестнице. В игре доступны различные виды танков и оружия, десантируемые на поле боя
+и покупаемые перед сражением бонусы. Предусмотрено несколько режимов игры и система
+военных званий, функционирует чат.</p>
+							</div>
+						</div>
+						<div class="b">&nbsp;</div>
+					</div>
+				</div>
+			</div>	
+			<div id="content">
+				<div class="content">
+					<div class="links-box">
+						<div class="item one">
+							<div class="photo">
+								<a href="#"><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/logo1.png" alt="" /></a>
+							</div>
+							<div class="mini">
+								<p>КРИ Awards 2009<br />Победитель в номинациях:<br /><a href="http://kriconf.ru/2009/index.php?type=info&doc=news">«Лучшая игра без издателя»</a><br /><a href="http://kriconf.ru/2009/index.php?type=info&doc=news">«Лучшая технология»</a></p>
+							</div>
+						</div>
+						<div class="item">
+							<div class="photo">
+								<a href="#"><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/logo2.png" alt="" /></a>
+							</div>
+							<div class="mini">
+								<p>Russian Flash Awards 2009<br />Победитель в номинации<br /><a href="http://flashawards.ru/">«Техническая заслуга»</a></p>
+							</div>
+						</div>
+					</div>
+					<div class="screen-box">
+						<h2 style="padding-bottom:8px;">СКРИНШОТЫ ИГРЫ</h2>
+						<ul>
+							<li><a href="http://tankionline.com/ru/wp-content/themes/tanki/images/scr01.jpg" target=_new><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/scr_5.jpg" alt="" /></a></li>
+                                                                                          <li><a href="http://tankionline.com/ru/wp-content/themes/tanki/images/scr02.jpg" target=_new><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/scr_2.jpg" alt="" /></a></li>
+                                                                                          <li><a href="http://tankionline.com/ru/wp-content/themes/tanki/images/scr03.jpg" target=_new><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/scr_6.jpg" alt="" /></a></li>
+							<li><a href="http://tankionline.com/ru/wp-content/themes/tanki/images/scr04.jpg" target=_new><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/scr_4.jpg" alt="" /></a></li>
+                                                                                          <li><a href="http://tankionline.com/ru/wp-content/themes/tanki/images/scr05.jpg" target=_new><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/scr_1.jpg" alt="" /></a></li>
+                                                                                          <li><a href="http://tankionline.com/ru/wp-content/themes/tanki/images/scr06.jpg" target=_new><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/scr_3.jpg" alt="" /></a></li>
+						</ul>
+					</div>
+					<div class="video-box">
+						<h2>ВИДЕО ИГРЫ</h2><br>
+						<p>Телесюжет о «Танках Онлайн» на «<a href="http://www.1gtv.ru/">Первом Игровом</a>». Остальные видео в разделе <a href="/ru/game/">«Об игре»</a></p>
+						<div class="photo" align="center" valign="middle">
+<object width="584" height="366"><param name="movie" value="http://www.youtube.com/v/7oSytYkO_9w&hl=ru_RU&fs=1&rel=0&color1=0x261e1a&color2=0x261e1a"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/7oSytYkO_9w&hl=ru_RU&fs=1&rel=0&color1=0x261e1a&color2=0x261e1a" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="584" height="366"></embed></object>
+						</div>
+					</div>
+					<div class="boxes">
+						<div class="box important">
+							<!---<h2>ВАЖНО</h2>
+							<p>Полезная информация</p>
+							<div class="photo">
+								<a href="http://test.tankionline.com/"><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/img02.jpg" alt="" /></a>
+							</div>
+							<p style="margin-right:20px;">Если твой ранг Штаб-Сержант и выше, ты готов терпеть баги и рестарты, хочешь помочь проекту и получить доступ к свежим фичам, которых ещё нет на основном сервере — <a href="http://test.tankionline.com/">приходи на тестовый сервер</a>.<p><a href="http://forum.tankionline.com/posts/list/285/1380.page">Обсуждение работы тестового сервера.</a></p>
+						-->
+<h2>ГРАФИК ЗАГРУЗКИ СЕРВЕРОВ</h2>
+						<div class="photo">
+							<div class="holder">
+								<object width="263" height="167"><param name="movie" value="/ru/graphic.swf"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="/ru/graphic.swf" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="false" width="263" height="167"></embed></object>
+							</div>
+						</div>
+</div>
+					<!--<div class="graphic-box">
+						<
+					</div>-->
+						<div class="box klan">
+							<h2>КЛАНЫ</h2>
+							<ul class="pic-list">
+								<li>
+									<div class="pic">
+										<img src="http://tankionline.com/ru/wp-content/themes/tanki/images/pic01.jpg" alt="" />
+									</div>
+									<p><a href="http://forum.tankionline.com/posts/list/1300.page">Черные ножи</a></p>
+								</li>
+								<li>
+									<div class="pic">
+										<img src="http://tankionline.com/ru/wp-content/themes/tanki/images/pic02.jpg" alt="" />
+									</div>
+									<p><a href="http://forum.tankionline.com/posts/list/971.page">42nd Tank Division (TD42)</a></p>
+								</li>
+								<li>
+									<div class="pic">
+										<img src="http://tankionline.com/ru/wp-content/themes/tanki/images/pic03.jpg" alt="" />
+									</div>
+									<p><a href="http://forum.tankionline.com/posts/list/2974.page">WTF</a></p>
+								</li>
+                                                                                                      <li>
+									<div class="pic">
+										<img src="http://tankionline.com/ru/wp-content/themes/tanki/images/pic06.jpg" alt="" />
+									</div>
+									<p><a href="http://forum.tankionline.com/posts/list/1478.page">Отцы</a></p>
+								</li>
+								<li>
+									<div class="pic">
+										<img src="http://tankionline.com/ru/wp-content/themes/tanki/images/pic04.jpg" alt="" />
+									</div>
+									<p><a href="http://forum.tankionline.com/posts/list/3056.page">Orkz</a></p>
+								</li>
+								<li>
+									<div class="pic">
+										<img src="http://tankionline.com/ru/wp-content/themes/tanki/images/pic05.jpg" alt="" />
+									</div>
+									<p><a href="http://forum.tankionline.com/posts/list/965.page">Колхоз</a></p>
+								</li>
+							</ul>
+							<br>
+							<a href="http://forum.tankionline.com/forums/show/38.page">Все кланы</a>
+						</div>
+						
+					</div>
+				</div>
+				<div class="sidebar">
+					<div class="ad">
+						<a href="/ru/howtostart/"><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/ad.jpg" alt="" /></a>
+					</div>
+					<div class="ad"><a href="/ru/invite/"><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/ad_1.jpg" alt="" /></a></div>
+					<div class="ad"><a href="http://forum.tankionline.com/posts/list/5787.page"><img src="http://tankionline.com/ru/wp-content/themes/tanki/images/ad_2.jpg" alt="" /></a></div>
+					
+					<div class="news-box">
+					<h2>НОВОСТИ</h2>						<div class="item">
+							<em class="date">26.03.2010 </em>
+							<p><table border="0">
+<tbody>
+<tr>
+<td valign="top"><img class="alignnone size-full wp-image-267" title="no-supplies2" src="http://tankionline.com/ru/wp-content/uploads/2010/03/no-supplies22.png" alt="" width="71" height="68" /></td>
+<td style="padding-left: 10px;" valign="top">До 29 марта абонемент на &laquo;битвы без припасов&raquo; можно купить вдвое дешевле!</td>
+</tr>
+</tbody>
+</table>
+</p>
+						</div>
+						<div class="item">
+							<em class="date">11.03.2010 </em>
+							<p><table border=0>
+<tr>
+<td><img class="alignnone size-full wp-image-73" title="terminal" src="/ru/wp-content/uploads/2010/03/terminal.png" alt="" width="68" height="50" /></td>
+<td valign=top>
+Теперь возможна покупка кристаллов <a href="http://forum.tankionline.com/posts/list/30/740.page#72243">через терминалы QIWI</a>, для чего нужно помнить лишь игровой ник. Никаких идентификаторов и агрегаторов.</td>
+</tr>
+</table>
+</p>
+						</div>
+						<div class="item">
+							<em class="date">02.03.2010 </em>
+							<p><table border=0>
+<tr>
+<td valign=top><img class="alignnone size-full wp-image-60" title="up-score" src="/ru/wp-content/uploads/2010/03/up-score.png" alt="" width="68" height="50" /></td>
+<td valign=top style="padding-left:10px;">
+&laquo;Повышенный опыт&raquo; &#8211; карьерный рост быстрее на четверть! Новая модная фишка. 25% невидимого преимущества перед врагами. Абонемент действует месяц. Владельцам утрачивающих силу сертификатов &laquo;Двойной опыт&raquo; будут возвращены потраченные кристаллы.</td>
+</tr>
+</table>
+</p>
+						</div>
+					</div>
+					<div class="view-box">
+					<h2>ОБЗОРЫ</h2>						<div class="item">
+							<a href="http://tankionline.com/ru/articles/%d1%82%d0%b0%d0%bd%d1%87%d0%b8%d0%ba%d0%b8-%d0%be%d0%bd%d0%bb%d0%b0%d0%b9%d0%bd-%d0%b8%d0%bb%d0%b8-%c2%ab%d1%88%d1%83%d1%80%d1%83%d0%bf-%d0%b7%d0%b0%d0%b1%d0%b8%d1%82%d1%8b%d0%b9-%d0%bc%d0%be%d0%bb/">Танчики онлайн, или «шуруп, забитый молотком…»</a><br>
+							<p><p>«Живой пример, от которого до сих пор пребываю в легком шоке: как вам полноценная 3D MMORPG, сделанная полностью на Flash.»</p>
+</p>
+						</div>
+						<div class="item">
+							<a href="http://tankionline.com/ru/articles/%d0%be%d0%b1%d0%b7%d0%be%d1%80%d1%8b/privet-mir/">Про Конференцию Разработчиков Игр</a><br>
+							<p><p>«Ну а больше всего из найденного понравился проект Tanki Online. Выглядит непритязательно, реализьму никакого, игровой процесс однообразный, оторваться невозможно. Просто арена с пандусами, домиками, деревцами и т.п. По ней просто ездят несколько онлайн-танкистов и просто стреляют друг в друга – либо беспорядочно, либо в составах неорганизованных групп. Сверху на парашютиках просто падают рулезы. Башенно-гусеничный Quake.»</p>
+</p>
+						</div>
+					</div>
+					<br><br>
+				<ul class="ico-list">
+						<!--<li><a href="#" class="ico1">ico1</a></li>-->
+						<li><a href="http://blog.tankionline.com/feed/" class="ico3">RSS</a></li>
+						<li><a href="http://vkontakte.ru/club13118351" class="ico6">Вконтакте</a></li>
+						<li><a href="http://tankionline.livejournal.com" class="ico5">Livejournal</a></li>
+						<li><a href="http://tanki-on-line.ya.ru" class="ico2">Я</a></li>
+						
+						<!--<li><a href="#" class="ico4">ico4</a></li>-->
+						
+						
+						<!--<li><a href="#" class="ico7">ico7</a></li>-->
+					</ul>
+
+				</div>
+			</div>
+
+			<div id="footer">
+				<div class="footer">
+					<div class="holder">
+						<div class="copy">
+							<p>&copy; ООО &laquo;Танки Онлайн&raquo; 2010. Все права защищены.</p>
+							<ul>
+								<li><a href="/ru/adv/">Реклама в проекте</a></li>
+								<li><a href="/ru/presskit.zip">Пресс-пакет проекта «Танки Онлайн»</a></li>
+							</ul>
+						</div>
+						<div class="item">
+							<a href="http://alternativaplatform.com" class="logotype">alternativaplatforma</a>
+							<p><a href="http://alternativaplatform.com">AlternativaPlatform</a> &#151; компания, создающая и поддерживающая инновационные решения для разработчиков многопользовательских браузерных проектов.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+//<![CDATA[
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+//]]>
+</script><script type="text/javascript">
+//<![CDATA[
+try {
+var pageTracker = _gat._getTracker("UA-2354052-9");
+pageTracker._trackPageview();
+} catch(err) {}
+//]]>
+</script>		
+	</body>
+</html>
